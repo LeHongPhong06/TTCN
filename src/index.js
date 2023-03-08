@@ -1,13 +1,18 @@
+import { ConfigProvider } from 'antd';
+import viVN from 'antd/locale/vi_VN';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { RouterProvider } from 'react-router-dom';
 import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
+import router from './router';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <ConfigProvider locale={viVN}>
+      <RouterProvider router={router} />
+    </ConfigProvider>
   </React.StrictMode>
 );
 
