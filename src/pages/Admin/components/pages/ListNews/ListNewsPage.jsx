@@ -1,7 +1,7 @@
 import React from 'react';
 
 function AdminListNewsPage(props) {
-  return <div></div>;
+  return <div>This is NewsPage</div>;
 }
 
 export default AdminListNewsPage;

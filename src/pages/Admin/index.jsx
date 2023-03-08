@@ -1,27 +1,29 @@
 import {
+  FundOutlined,
+  HomeOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  UploadOutlined,
-  UserOutlined,
-  VideoCameraOutlined,
+  ReadOutlined,
+  TeamOutlined,
 } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-components';
 import { Layout, Menu } from 'antd';
 import React, { useState } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 function Admin(props) {
   const navigate = useNavigate();
+  const location = useLocation();
   const { Header, Sider, Content } = Layout;
   const [collapsed, setCollapsed] = useState(false);
 
   return (
     <PageContainer>
-      <Layout className='h-[90vh]'>
-        <Sider trigger={null} collapsible collapsed={collapsed}>
+      <Layout className='min-h-[95vh]'>
+        <Sider trigger={null} collapsible collapsed={collapsed} width={240} className='rounded-md'>
           <div className='mb-3'>
             <img
-              className='h-[100px] w-[200px] object-cover'
+              className='h-[100px] w-full object-cover rounded-t-md'
               src='https://images.unsplash.com/photo-1496200186974-4293800e2c20?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OXx8bG9nb3xlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60'
               alt='avt'
             />
@@ -34,27 +36,35 @@ function Admin(props) {
             items={[
               {
                 onClick: () => {
-                  navigate('/admin/home');
+                  navigate('/admin');
                 },
                 key: '1',
-                icon: <UserOutlined />,
+                icon: <HomeOutlined className='text-lg' />,
                 label: 'Trang chủ',
               },
               {
                 onClick: () => {
-                  navigate('/admin/liststudents');
+                  navigate('/admin/students');
                 },
                 key: '2',
-                icon: <VideoCameraOutlined />,
-                label: 'Danh sách sinh viên',
+                icon: <TeamOutlined className='text-lg' />,
+                label: 'Quản lí sinh viên',
               },
               {
                 onClick: () => {
-                  navigate('/admin/listnews');
+                  navigate('/admin/news');
                 },
                 key: '3',
-                icon: <UploadOutlined />,
-                label: 'Danh sách tin tức',
+                icon: <ReadOutlined className='text-lg' />,
+                label: 'Quản lí tin tức',
+              },
+              {
+                onClick: () => {
+                  navigate('/admin/trainingpoints');
+                },
+                key: '4',
+                icon: <FundOutlined style={{ fontSize: 16 }} />,
+                label: 'Quản lí điểm rèn luyện',
               },
             ]}
           />
