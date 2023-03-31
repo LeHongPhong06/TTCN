@@ -1,5 +1,4 @@
 import {
-<<<<<<< HEAD
   BarChartOutlined,
   BellOutlined,
   FundOutlined,
@@ -12,78 +11,80 @@ import {
 import { PageContainer } from '@ant-design/pro-components';
 import { Avatar, Badge, Button, Layout, Menu, Space, Tooltip, Typography } from 'antd';
 import React from 'react';
-=======
-  FundOutlined,
-  HomeOutlined,
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  ReadOutlined,
-  TeamOutlined,
-} from '@ant-design/icons';
-import { PageContainer } from '@ant-design/pro-components';
-import { Layout, Menu } from 'antd';
-import React, { useState } from 'react';
->>>>>>> 2af0486c725ede62c016e02b0e0d2e3c9805ea43
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 function Admin(props) {
   const navigate = useNavigate();
   const location = useLocation();
-<<<<<<< HEAD
   const { Title } = Typography;
-=======
->>>>>>> 2af0486c725ede62c016e02b0e0d2e3c9805ea43
   const { Header, Sider, Content } = Layout;
 
   const newArr = location.pathname.split('/');
   const pathAdd = newArr[newArr.length - 1];
   const addIcon = () => {
     if (pathAdd === 'students') {
+      return '1';
+    } else if (pathAdd === 'classes') {
       return '2';
-    } else if (pathAdd === 'statistical') {
+    } else if (pathAdd === 'semesters') {
       return '3';
-    } else if (pathAdd === 'trainingpoints') {
+    } else if (pathAdd === 'classification') {
       return '4';
-    } else if (pathAdd === 'changepassword') {
+    } else if (pathAdd === 'authorization') {
       return '5';
-    } else return '0';
+    } else return '6';
   };
   const items = [
     {
+      key: '1',
       onClick: () => {
         navigate('/admin/students');
       },
-      key: '2',
       icon: <TeamOutlined className='text-lg' />,
-      label: 'Danh sách sinh viên',
+      label: 'Quản lí thông tin sinh viên',
     },
     {
+      key: '2',
       onClick: () => {
-        navigate('/admin/statistical');
+        navigate('/admin/classes');
       },
-      key: '3',
       icon: <BarChartOutlined className='text-lg' />,
-      label: 'Thống kê và báo cáo',
+      label: 'Quản lí lớp',
     },
     {
+      key: '3',
       onClick: () => {
-        navigate('/admin/trainingpoints');
+        navigate('/admin/semesters');
       },
-      key: '4',
       icon: <FundOutlined className='text-lg' />,
-      label: 'Quản lí điểm',
+      label: 'Quản lí học kì',
     },
     {
+      key: '4',
+      onClick: () => {
+        navigate('/admin/classification');
+      },
+      icon: <UnlockOutlined className='text-lg' />,
+      label: 'Quản lí xếp loại sinh viên',
+    },
+    {
+      key: '5',
+      onClick: () => {
+        navigate('/admin/authorization');
+      },
+      icon: <UnlockOutlined className='text-lg' />,
+      label: 'Phân quyền',
+    },
+    {
+      key: '6',
       onClick: () => {
         navigate('/admin/changepassword');
       },
-      key: '5',
       icon: <UnlockOutlined className='text-lg' />,
       label: 'Đổi mật khẩu',
     },
   ];
   return (
-<<<<<<< HEAD
     <PageContainer className=''>
       <Layout className='min-h-[95vh]'>
         <Sider style={{ borderRadius: '6px' }} width={250}>
@@ -91,62 +92,13 @@ function Admin(props) {
             <Title style={{ color: '#fff', marginBottom: 0 }} level={4}>
               Xin chào Admin
             </Title>
-=======
-    <PageContainer>
-      <Layout className='min-h-[95vh]'>
-        <Sider trigger={null} collapsible collapsed={collapsed} width={240} className='rounded-md'>
-          <div className='mb-3'>
-            <img
-              className='h-[100px] w-full object-cover rounded-t-md'
-              src='https://images.unsplash.com/photo-1496200186974-4293800e2c20?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OXx8bG9nb3xlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60'
-              alt='avt'
-            />
->>>>>>> 2af0486c725ede62c016e02b0e0d2e3c9805ea43
           </div>
           <Menu
             className='rounded-md mt-1'
             theme='dark'
             mode='inline'
-<<<<<<< HEAD
             defaultSelectedKeys={[addIcon()]}
             items={items}
-=======
-            defaultSelectedKeys={['1']}
-            items={[
-              {
-                onClick: () => {
-                  navigate('/admin');
-                },
-                key: '1',
-                icon: <HomeOutlined className='text-lg' />,
-                label: 'Trang chủ',
-              },
-              {
-                onClick: () => {
-                  navigate('/admin/students');
-                },
-                key: '2',
-                icon: <TeamOutlined className='text-lg' />,
-                label: 'Quản lí sinh viên',
-              },
-              {
-                onClick: () => {
-                  navigate('/admin/news');
-                },
-                key: '3',
-                icon: <ReadOutlined className='text-lg' />,
-                label: 'Quản lí tin tức',
-              },
-              {
-                onClick: () => {
-                  navigate('/admin/trainingpoints');
-                },
-                key: '4',
-                icon: <FundOutlined style={{ fontSize: 16 }} />,
-                label: 'Quản lí điểm rèn luyện',
-              },
-            ]}
->>>>>>> 2af0486c725ede62c016e02b0e0d2e3c9805ea43
           />
         </Sider>
         <Layout className='site-layout ml-2'>

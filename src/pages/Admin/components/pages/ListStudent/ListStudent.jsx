@@ -1,26 +1,23 @@
-<<<<<<< HEAD
 import {
   CheckCircleOutlined,
   DeleteOutlined,
   EditOutlined,
+  FileExcelOutlined,
   SearchOutlined,
   SolutionOutlined,
   SyncOutlined,
   UserAddOutlined,
   UsergroupAddOutlined,
 } from '@ant-design/icons';
-import { Button, Drawer, Input, message, Popconfirm, Space, Table, Tag, Tooltip } from 'antd';
-import Title from 'antd/es/typography/Title';
+import { Button, Drawer, Dropdown, Input, Popconfirm, Space, Table, Tag, Tooltip, Typography, message } from 'antd';
 import React, { useRef, useState } from 'react';
 import Highlighter from 'react-highlight-words';
-import LineChartPointStudent from '../../ColumnChart/ColumnChartPointStudent';
-import LineChartTraningPointStudent from '../../ColumnChart/ColumnChartTraningPointStudent';
-import ColumnCreditsStudent from '../../ColumnChart/ColumnCreditsStudent';
 import DescriptionInfoStudent from '../../Descriptions/DescriptionInfoStudent';
-import ModalFormStudentPoint from '../../Modal/modalFormPoint';
+import ModalFormStudentInfo from '../../Modal/ModalFormInfo';
 import ProgressCredits from '../../Progress/ProgressCredits';
 
 function AdminListStudentPage(props) {
+  const { Title } = Typography;
   const [loadingBtn, setLoadingBtn] = useState(false);
   const [openModalFormUser, setOpenModalFormStudent] = useState(false);
   const [openDrawerInfo, setOpenDrawerInfo] = useState(false);
@@ -35,10 +32,6 @@ function AdminListStudentPage(props) {
   const [loading, setLoading] = useState(false);
   const handleSelectDeleteStudent = () => {
     setLoading(true);
-    setTimeout(() => {
-      setSelectedRowKeys([]);
-      setLoading(false);
-    }, 1000);
   };
   const onSelectChange = (newSelectedRowKeys) => {
     setSelectedRowKeys(newSelectedRowKeys);
@@ -48,6 +41,25 @@ function AdminListStudentPage(props) {
     onChange: onSelectChange,
   };
   const hasSelected = selectedRowKeys.length > 0;
+  // items in dropdown export excel
+  const items = [
+    {
+      key: '1',
+      label: (
+        <a target='_blank' rel='noopener noreferrer' href='!#'>
+          Thông tin cơ bản
+        </a>
+      ),
+    },
+    {
+      key: '2',
+      label: (
+        <a target='_blank' rel='noopener noreferrer' href='!#'>
+          Thông tin chi tiết
+        </a>
+      ),
+    },
+  ];
   // Filter student
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
@@ -292,117 +304,8 @@ function AdminListStudentPage(props) {
   const columns = [
     {
       title: 'STT',
+      align: 'center',
       dataIndex: 'id',
-=======
-import { DeleteOutlined, EditOutlined, SearchOutlined } from '@ant-design/icons';
-import { Button, Input, Space, Table } from 'antd';
-import React, { useState } from 'react';
-import { UserAddOutlined } from '@ant-design/icons';
-import ModalFormUser from '../../Modal/modalForm';
-function AdminListStudentPage(props) {
-  const [loadingButtonSearch, setLoadingButtonSearch] = useState(false);
-  const [openModalFormUser, setOpenModalFormUser] = useState();
-  const [dataStudentList, setDataStudentList] = useState({});
-  const handleSearchStundent = () => {
-    setLoadingButtonSearch(true);
-  };
-  const handleClickDeleteStudent = () => {};
-  const dataSource = [
-    {
-      name: '1',
-      age: 32,
-      address: '10 Downing Street',
-    },
-    {
-      name: '2',
-      age: 32,
-      address: '10 Downing Street',
-    },
-    {
-      name: '3',
-      age: 32,
-      address: '10 Downing Street',
-    },
-    {
-      name: '4',
-      age: 32,
-      address: '10 Downing Street',
-    },
-    {
-      name: 'Mike',
-      age: 32,
-      address: '10 Downing Street',
-    },
-    {
-      name: 'Mike',
-      age: 32,
-      address: '10 Downing Street',
-    },
-    {
-      name: 'Mike',
-      age: 32,
-      address: '10 Downing Street',
-    },
-    {
-      name: 'Mike',
-      age: 32,
-      address: '10 Downing Street',
-    },
-    {
-      name: 'Mike',
-      age: 32,
-      address: '10 Downing Street',
-    },
-    {
-      name: 'Mike',
-      age: 32,
-      address: '10 Downing Street',
-    },
-    {
-      name: 'Mike',
-      age: 32,
-      address: '10 Downing Street',
-    },
-    {
-      name: 'John',
-      age: 42,
-      address: '10 Downing Street',
-    },
-    {
-      name: 'John',
-      age: 42,
-      address: '10 Downing Street',
-    },
-    {
-      name: 'John',
-      age: 42,
-      address: '10 Downing Street',
-    },
-    {
-      name: 'John',
-      age: 42,
-      address: '10 Downing Street',
-    },
-    {
-      name: 'John',
-      age: 42,
-      address: '10 Downing Street',
-    },
-  ];
-
-  const columns = [
-    {
-      title: 'STT',
-      dataIndex: 'name',
->>>>>>> 2af0486c725ede62c016e02b0e0d2e3c9805ea43
-      align: 'center',
-    },
-    {
-      title: 'MSV',
-<<<<<<< HEAD
-      dataIndex: 'studentId',
-      align: 'center',
-      ...getColumnSearchProps('studentId'),
     },
     {
       title: 'Họ và tên',
@@ -410,25 +313,18 @@ function AdminListStudentPage(props) {
       dataIndex: 'name',
     },
     {
+      title: 'MSV',
+      dataIndex: 'studentId',
+      align: 'center',
+      ...getColumnSearchProps('studentId'),
+    },
+    {
       title: 'Lớp',
       dataIndex: 'className',
-=======
-      dataIndex: 'age',
-      align: 'center',
-    },
-    {
-      title: 'Họ Tên',
-      dataIndex: 'age',
-    },
-    {
-      title: 'Lớp',
-      dataIndex: 'address',
->>>>>>> 2af0486c725ede62c016e02b0e0d2e3c9805ea43
       align: 'center',
     },
     {
       title: 'Chuyên ngành',
-<<<<<<< HEAD
       dataIndex: 'majorName',
       align: 'center',
       filters: [
@@ -526,54 +422,42 @@ function AdminListStudentPage(props) {
               }}
             ></Button>
           </Tooltip>
-=======
-      dataIndex: 'address',
-    },
-    {
-      title: 'Điểm chuyên cần',
-      dataIndex: 'address',
-      align: 'center',
-    },
-    {
-      title: 'Tùy chọn',
-      render: (e, record, index) => (
-        <Space size='middle'>
-          <Button
-            className='flex justify-center items-center text-md'
-            icon={<EditOutlined />}
-            onClick={() => {
-              setDataStudentList(record);
-              setOpenModalFormUser(true);
-            }}
-          ></Button>
-          <Button
-            className='flex justify-center items-center text-md'
-            icon={<DeleteOutlined />}
-            onClick={handleClickDeleteStudent}
-          ></Button>
->>>>>>> 2af0486c725ede62c016e02b0e0d2e3c9805ea43
         </Space>
       ),
     },
   ];
-<<<<<<< HEAD
   return (
     <>
       <div className='flex justify-between items-center mb-3'>
         <Button onClick={handleSelectDeleteStudent} disabled={!hasSelected} loading={loading}>
           Xóa
         </Button>
-        <Title level={3} style={{ textTransform: 'uppercase', marginLeft: '350px' }}>
-          Danh sách sinh viên khoa
+        <Title level={3} style={{ textTransform: 'uppercase', marginLeft: '150px' }}>
+          Danh sách thông tin sinh viên khoa
         </Title>
         <Space size={8}>
+          <Dropdown
+            menu={{
+              items,
+            }}
+            placement='bottomLeft'
+            arrow
+          >
+            <Button
+              icon={<FileExcelOutlined />}
+              className='flex justify-center items-center text-md font-medium shadow-md bg-slate-100'
+            >
+              Xuất file excel
+            </Button>
+          </Dropdown>
           <Button
-            className='flex justify-center items-center text-md font-medium shadow-md bg-slate-100 mr-2'
+            className='flex justify-center items-center text-md font-medium shadow-md bg-slate-100'
             icon={<UsergroupAddOutlined />}
           >
             Thêm danh sách sinh viên
           </Button>
           <Button
+            icon={<UserAddOutlined />}
             loading={loadingBtn}
             onClick={() => {
               setLoadingBtn(true);
@@ -581,51 +465,14 @@ function AdminListStudentPage(props) {
               setLoadingBtn(false);
             }}
             className='flex justify-center items-center text-md font-medium shadow-md bg-slate-100'
-=======
-
-  return (
-    <>
-      <div className='flex justify-between items-center mb-4'>
-        <div>
-          <Space className='mb-4'>
-            <Input placeholder='Nhập mã sinh viên . . .' className='w-[300px]' size='large ' type='number' />
-            <Button
-              className=' justify-center items-center'
-              type='primary'
-              shape='circle'
-              icon={<SearchOutlined />}
-              size='middle'
-              loading={loadingButtonSearch}
-              onClick={handleSearchStundent}
-            />
-          </Space>
-        </div>
-        <div>
-          <p className='uppercase text-xl'>Danh sách sinh viên khoa</p>
-        </div>
-        <div>
-          <Button
-            onClick={() => {
-              setOpenModalFormUser(true);
-            }}
-            className='flex justify-center items-center text-md'
->>>>>>> 2af0486c725ede62c016e02b0e0d2e3c9805ea43
-            icon={<UserAddOutlined />}
           >
             Thêm sinh viên
           </Button>
-<<<<<<< HEAD
         </Space>
       </div>
       <Table
         rowKey='id'
         rowSelection={rowSelection}
-=======
-        </div>
-      </div>
-      <Table
-        rowKey='id'
->>>>>>> 2af0486c725ede62c016e02b0e0d2e3c9805ea43
         bordered={true}
         dataSource={dataSource}
         columns={columns}
@@ -633,8 +480,7 @@ function AdminListStudentPage(props) {
           onChange: {},
         }}
       />
-<<<<<<< HEAD
-      <ModalFormStudentPoint
+      <ModalFormStudentInfo
         onSuccess={() => {
           setOpenModalFormStudent(false);
         }}
@@ -648,24 +494,9 @@ function AdminListStudentPage(props) {
         }}
       />
       <Drawer size='large' open={openDrawerInfo} onClose={() => setOpenDrawerInfo(false)} placement='right'>
-        <DescriptionInfoStudent dataStudent={data} />
-        <LineChartPointStudent />
-        <LineChartTraningPointStudent />
-        <ColumnCreditsStudent />
-        <ProgressCredits />
+        <DescriptionInfoStudent dataStudent={dataStudent} />
+        <ProgressCredits data={dataStudent} />
       </Drawer>
-=======
-      <ModalFormUser
-        dataStudent={dataStudentList}
-        openForm={openModalFormUser}
-        onChangeClickOpen={(open) => {
-          if (!open) {
-            setDataStudentList({});
-            setOpenModalFormUser(false);
-          }
-        }}
-      />
->>>>>>> 2af0486c725ede62c016e02b0e0d2e3c9805ea43
     </>
   );
 }

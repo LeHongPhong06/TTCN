@@ -1,7 +1,7 @@
 import { ModalForm, ProForm, ProFormDatePicker, ProFormSelect, ProFormText } from '@ant-design/pro-components';
-import { message, Button } from 'antd';
+import { Button, message } from 'antd';
 import React, { useState } from 'react';
-function ModalFormStudentPoint({ openForm, onChangeClickOpen, dataStudent, onSuccess }) {
+function ModalFormStudentInfo({ openForm, onChangeClickOpen, dataStudent, onSuccess }) {
   const [loading, setLoading] = useState();
   const handleCreateStudent = (value) => {
     setLoading(true);
@@ -153,4 +153,4 @@ function ModalFormStudentPoint({ openForm, onChangeClickOpen, dataStudent, onSuc
   );
 }
 
-export default ModalFormStudentPoint;
+export default ModalFormStudentInfo;

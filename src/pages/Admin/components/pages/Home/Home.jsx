@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { Result } from 'antd';
 import React from 'react';
 
@@ -12,12 +11,5 @@ function AdminHomePage(props) {
       />
     </div>
   );
-=======
-import React from 'react';
-
-function AdminHomePage(props) {
-  return <div>This is AdminHomePage</div>;
->>>>>>> 2af0486c725ede62c016e02b0e0d2e3c9805ea43
 }
-
 export default AdminHomePage;

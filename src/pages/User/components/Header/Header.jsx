@@ -5,8 +5,10 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import logo from '../../../../assets/img/Logo/Logo.png';
 function HeaderTop(props) {
   // Handle stundent click btn Logout
-  const handleClickConfirmLogOutStudent = () => {};
-  
+  const handleClickConfirmLogOutStudent = () => {
+    navigate('/');
+  };
+
   const { Title, Text } = Typography;
   const navigate = useNavigate();
   const location = useLocation();

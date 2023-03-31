@@ -1,5 +1,5 @@
 import { Column } from '@ant-design/plots';
-import { PageContainer } from '@ant-design/pro-components';
+import Title from 'antd/es/typography/Title';
 import React from 'react';
 
 function ColumnCreditsStudent(props) {
@@ -147,10 +147,9 @@ function ColumnCreditsStudent(props) {
     },
   };
   return (
-    <div>
-      <PageContainer title='Tín chỉ học tập'>
-        <Column {...config} />
-      </PageContainer>
+    <div className='mt-8'>
+      <Title level={4}>Điểm trung bình theo từng kì</Title>
+      <Column {...config} />
     </div>
   );
 }
