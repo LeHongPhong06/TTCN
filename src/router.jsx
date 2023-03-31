@@ -3,26 +3,16 @@ import { createBrowserRouter } from 'react-router-dom';
 import ErrorPage from './components/Error/ErrorPage';
 import './index.css';
 import Admin from './pages/Admin';
-import AdminChangePasswordPage from './pages/Admin/components/pages/ChangePassword/ChangePassword';
-import AdminHomePage from './pages/Admin/components/pages/Home/Home';
-import AdminListStudentPage from './pages/Admin/components/pages/ListStudent/ListStudent';
+import AdminHomePage from './pages/Admin/components/pages/Home';
+import AdminListNewsPage from './pages/Admin/components/pages/ListNewsPage';
+import AdminListStudentPage from './pages/Admin/components/pages/ListStudent';
 import AdminLoginPage from './pages/Admin/components/pages/Login/Login';
-import {
-  default as ATTTSpecialized,
-  default as CNPMSpecialized,
-  default as CNTTSpecialized,
-  default as HTTTSpecialized,
-  default as MMTSpecialized,
-  default as TTNTSpecialized,
-  default as TTSpecialized
-} from './pages/Admin/components/pages/Statistical/specialized/CNTT/CNTTSpecialized';
 import AdminStatisticalPage from './pages/Admin/components/pages/Statistical/Statistical';
 import AdminTraningPointsPage from './pages/Admin/components/pages/TrainingPoints/TrainingPoint';
 import HomePage from './pages/User/pages/HomePage/Home';
 import HomePageStudent from './pages/User/pages/HomePageStudent/HomePageStudent';
+import PersonalInformationStudent from './pages/User/pages/PersonalInformation';
 import LayoutPageStudent from './pages/User/pages/LayoutPageStudent/LayoutPageStudent';
-import PersonalInformationStudent from './pages/User/pages/PersonalInformation/PersonalInformationStudent';
-
 const router = createBrowserRouter([
   {
     path: '/',
@@ -67,36 +57,6 @@ const router = createBrowserRouter([
         path: 'statistical',
         element: <AdminStatisticalPage />,
         errorElement: <ErrorPage />,
-        children: [
-          {
-            path: ':specialized/chart/1',
-            element: <CNTTSpecialized />,
-          },
-          {
-            path: ':specialized/chart/2',
-            element: <CNPMSpecialized />,
-          },
-          {
-            path: ':specialized/chart/3',
-            element: <HTTTSpecialized />,
-          },
-          {
-            path: ':specialized/chart/4',
-            element: <ATTTSpecialized />,
-          },
-          {
-            path: ':specialized/chart/5',
-            element: <MMTSpecialized />,
-          },
-          {
-            path: ':specialized/chart/6',
-            element: <TTSpecialized />,
-          },
-          {
-            path: ':specialized/chart/7',
-            element: <TTNTSpecialized />,
-          },
-        ],
       },
       {
         path: 'trainingpoints',
@@ -104,9 +64,8 @@ const router = createBrowserRouter([
         errorElement: <ErrorPage />,
       },
       {
-        path: 'changepassword',
-        element: <AdminChangePasswordPage />,
-        errorElement: <ErrorPage />,
+        path: 'listnews',
+        element: <AdminListNewsPage />,
       },
     ],
   },
