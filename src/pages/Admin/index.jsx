@@ -11,29 +11,12 @@ import {
 import { PageContainer } from '@ant-design/pro-components';
 import { Avatar, Badge, Button, Layout, Menu, Space, Tooltip, Typography } from 'antd';
 import React from 'react';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 
 function Admin(props) {
   const navigate = useNavigate();
-  const location = useLocation();
   const { Title } = Typography;
   const { Header, Sider, Content } = Layout;
-
-  const newArr = location.pathname.split('/');
-  const pathAdd = newArr[newArr.length - 1];
-  const addIcon = () => {
-    if (pathAdd === 'students') {
-      return '1';
-    } else if (pathAdd === 'classes') {
-      return '2';
-    } else if (pathAdd === 'semesters') {
-      return '3';
-    } else if (pathAdd === 'classification') {
-      return '4';
-    } else if (pathAdd === 'authorization') {
-      return '5';
-    } else return '6';
-  };
   const items = [
     {
       key: '1',
@@ -41,7 +24,7 @@ function Admin(props) {
         navigate('/admin/students');
       },
       icon: <TeamOutlined className='text-lg' />,
-      label: 'Quản lí thông tin sinh viên',
+      label: 'Danh sách sinh viên',
     },
     {
       key: '2',
@@ -62,10 +45,10 @@ function Admin(props) {
     {
       key: '4',
       onClick: () => {
-        navigate('/admin/classification');
+        navigate('/admin/courses');
       },
       icon: <UnlockOutlined className='text-lg' />,
-      label: 'Quản lí xếp loại sinh viên',
+      label: 'Quản lí khóa',
     },
     {
       key: '5',
@@ -83,21 +66,44 @@ function Admin(props) {
       icon: <UnlockOutlined className='text-lg' />,
       label: 'Đổi mật khẩu',
     },
+    {
+      key: '7',
+      onClick: () => {
+        navigate('/admin/major');
+      },
+      icon: <UnlockOutlined className='text-lg' />,
+      label: 'Quản lí chuyên ngành',
+    },
+    {
+      key: '8',
+      onClick: () => {
+        navigate('/admin/points');
+      },
+      icon: <UnlockOutlined className='text-lg' />,
+      label: 'Quản lí điểm',
+    },
   ];
   return (
     <PageContainer className=''>
       <Layout className='min-h-[95vh]'>
         <Sider style={{ borderRadius: '6px' }} width={250}>
           <div className='py-3 px-6 flex justify-center items-center border-b-2 border-stone-50'>
-            <Title style={{ color: '#fff', marginBottom: 0 }} level={4}>
+            <Title
+              onClick={() => navigate('/admin')}
+              style={{ color: '#fff', marginBottom: 0, cursor: 'pointer' }}
+              level={4}
+            >
               Xin chào Admin
             </Title>
           </div>
           <Menu
+            onClick={(i) => {
+              console.log(i);
+            }}
             className='rounded-md mt-1'
             theme='dark'
             mode='inline'
-            defaultSelectedKeys={[addIcon()]}
+            // defaultSelectedKeys={['1']}
             items={items}
           />
         </Sider>
@@ -125,7 +131,7 @@ function Admin(props) {
                   className='flex justify-center items-center text-white text-xl border-none'
                   shape='circle'
                   icon={<PoweroffOutlined />}
-                  onClick={() => navigate('login')}
+                  onClick={() => navigate('/auth/admin')}
                 ></Button>
               </Tooltip>
             </Space>

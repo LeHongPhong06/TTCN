@@ -12,7 +12,8 @@ function HeaderTop(props) {
   const { Title, Text } = Typography;
   const navigate = useNavigate();
   const location = useLocation();
-  const path = location.pathname.includes('student');
+  const path1 = location.pathname.includes('student');
+  const path2 = location.pathname.includes('forgotpassword');
   return (
     <div className='bg-green-600 border-b-2 border-lime-300'>
       <div className='max-w-[1100px] mx-auto px-10 pt-4 pb-6 flex justify-between  '>
@@ -43,8 +44,9 @@ function HeaderTop(props) {
           </Title>
           <div className='relative'>
             <Button
+              onClick={() => navigate('/forgotpassword')}
               size='small'
-              className={path ? 'hidden' : 'flex justify-center items-center absolute right-0 top-10'}
+              className={path1 || path2 ? 'hidden' : 'flex justify-center items-center absolute right-0 top-10'}
               style={{
                 backgroundColor: '#fff',
                 borderRadius: '999px',
@@ -53,13 +55,18 @@ function HeaderTop(props) {
             >
               Quên mật khẩu
             </Button>
-            <div className={path ? 'absolute top-10 right-0 w-[650px]' : 'hidden'}>
+            <div className={path1 ? 'absolute top-10 right-0 w-[650px]' : 'hidden'}>
               <div className='flex justify-between'>
                 <Text italic style={{ fontSize: '16px', color: '#fff' }} level={4}>
                   Xin chào: Anh/chị:...
                 </Text>
                 <Space>
-                  <Button type='link' size='small' onClick={() => navigate('')} style={{ color: '#fff' }}>
+                  <Button
+                    type='link'
+                    size='small'
+                    onClick={() => navigate('/student/changepassword')}
+                    style={{ color: '#fff' }}
+                  >
                     Đổi mật khẩu
                   </Button>
                   <Popconfirm

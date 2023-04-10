@@ -1,5 +1,5 @@
 import { ModalForm, ProForm, ProFormDatePicker, ProFormSelect, ProFormText } from '@ant-design/pro-components';
-import { Button, message } from 'antd';
+import { message } from 'antd';
 import React, { useState } from 'react';
 function ModalFormStudentInfo({ openForm, onChangeClickOpen, dataStudent, onSuccess }) {
   const [loading, setLoading] = useState();
@@ -21,15 +21,14 @@ function ModalFormStudentInfo({ openForm, onChangeClickOpen, dataStudent, onSucc
         initialValues={dataStudent}
         modalProps={{
           destroyOnClose: true,
-          okText: (
-            <Button
-              loading={loading}
-              className='flex justify-center items-center border-none w-full h-full bg-transparent text-black p-auto'
-            >
-              {dataStudent.id ? 'Lưu' : 'Tạo'}
-            </Button>
-          ),
-          cancelText: <Button className='flex justify-center items-center border-none w-full h-full'>Hủy</Button>,
+          okText: dataStudent.id ? 'Lưu' : 'Tạo',
+          okType: 'primary',
+          okButtonProps: {
+            loading,
+            backgroundColor: '#fff',
+            color: '#000',
+          },
+          cancelText: 'Hủy',
         }}
         open={openForm}
         onFinish={(value) => {

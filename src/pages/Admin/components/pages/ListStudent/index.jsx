@@ -2,19 +2,19 @@ import {
   CheckCircleOutlined,
   DeleteOutlined,
   EditOutlined,
-  FileExcelOutlined,
   SearchOutlined,
   SolutionOutlined,
   SyncOutlined,
   UserAddOutlined,
   UsergroupAddOutlined,
 } from '@ant-design/icons';
-import { Button, Drawer, Dropdown, Input, Popconfirm, Space, Table, Tag, Tooltip, Typography, message } from 'antd';
-import React, { useRef, useState } from 'react';
-import Highlighter from 'react-highlight-words';
-import DescriptionInfoStudent from '../../Descriptions/DescriptionInfoStudent';
-import ModalFormStudentInfo from '../../Modal/ModalFormInfo';
-import ProgressCredits from '../../Progress/ProgressCredits';
+import { Button, Drawer, InputNumber, Popconfirm, Space, Table, Tag, Tooltip, Typography, message } from 'antd';
+import React, { useState } from 'react';
+import ColumnDataPoint from './components/ColumnDataPoint';
+import DescriptionInfoStudent from './components/DescriptionInfoStudent';
+import ModalFormStudentInfo from './components/ModalFormInfo';
+import ProgressCredits from './components/ProgressCredits';
+import ColumnPointTraining from './components/ColumnPointTraining';
 
 function AdminListStudentPage(props) {
   const { Title } = Typography;
@@ -22,6 +22,7 @@ function AdminListStudentPage(props) {
   const [openModalFormUser, setOpenModalFormStudent] = useState(false);
   const [openDrawerInfo, setOpenDrawerInfo] = useState(false);
   const [dataStudent, setDataStudent] = useState([]);
+  const [valueSearchStudent, setValueSearchStudent] = useState('');
   // Handle delete student
   const handleConfirmDeleteStudent = () => {
     // Call API
@@ -42,101 +43,35 @@ function AdminListStudentPage(props) {
   };
   const hasSelected = selectedRowKeys.length > 0;
   // items in dropdown export excel
-  const items = [
-    {
-      key: '1',
-      label: (
-        <a target='_blank' rel='noopener noreferrer' href='!#'>
-          Thông tin cơ bản
-        </a>
-      ),
-    },
-    {
-      key: '2',
-      label: (
-        <a target='_blank' rel='noopener noreferrer' href='!#'>
-          Thông tin chi tiết
-        </a>
-      ),
-    },
-  ];
+  // const items = [
+  //   {
+  //     key: '1',
+  //     label: (
+  //       <a target='_blank' rel='noopener noreferrer' href='!#'>
+  //         Thông tin theo bảng danh sách
+  //       </a>
+  //     ),
+  //   },
+  //   {
+  //     key: '2',
+  //     label: (
+  //       <a target='_blank' rel='noopener noreferrer' href='!#'>
+  //         Thông tin cơ bản
+  //       </a>
+  //     ),
+  //   },
+  //   {
+  //     key: '3',
+  //     label: (
+  //       <a target='_blank' rel='noopener noreferrer' href='!#'>
+  //         Thông tin chi tiết
+  //       </a>
+  //     ),
+  //   },
+  // ];
+  // Handle Search Student
+  console.log(valueSearchStudent);
   // Filter student
-  const [searchText, setSearchText] = useState('');
-  const [searchedColumn, setSearchedColumn] = useState('');
-  const searchInput = useRef(null);
-  const handleSearch = (selectedKeys, confirm, dataIndex) => {
-    confirm();
-    setSearchText(selectedKeys[0]);
-    setSearchedColumn(dataIndex);
-  };
-  const handleReset = (clearFilters) => {
-    clearFilters();
-    setSearchText('');
-  };
-  const getColumnSearchProps = (dataIndex) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
-      <div className='p-3' onKeyDown={(e) => e.stopPropagation()}>
-        <Input
-          ref={searchInput}
-          placeholder='Nhập mã sinh viên '
-          value={selectedKeys[0]}
-          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
-          className='mb-3 block'
-        />
-        <Space>
-          <Button
-            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
-            className='w-[90px] flex justify-center items-center'
-            icon={<SearchOutlined />}
-            size='small'
-          >
-            Tìm kiếm
-          </Button>
-          <Button onClick={() => clearFilters && handleReset(clearFilters)} size='small' className='w-[90px]'>
-            Xóa
-          </Button>
-          <Button
-            size='small'
-            onClick={() => {
-              close();
-            }}
-          >
-            Đóng
-          </Button>
-        </Space>
-      </div>
-    ),
-    filterIcon: (filtered) => (
-      <Tooltip title='Tìm kiếm sinh viên'>
-        <Button
-          className='flex justify-center items-center text-xs border-none opacity-40'
-          icon={
-            <SearchOutlined
-              style={{
-                color: filtered ? '#1890ff' : undefined,
-              }}
-            />
-          }
-        ></Button>
-      </Tooltip>
-    ),
-    onFilter: (value, record) => record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
-    render: (text) =>
-      searchedColumn === dataIndex ? (
-        <Highlighter
-          highlightStyle={{
-            backgroundColor: '#ffc069',
-            padding: 0,
-          }}
-          searchWords={[searchText]}
-          autoEscape
-          textToHighlight={text ? text.toString() : ''}
-        />
-      ) : (
-        text
-      ),
-  });
   const dataSource = [
     {
       id: 1,
@@ -298,6 +233,294 @@ function AdminListStudentPage(props) {
       parentNumberPhone: '0983231321',
       status: 'Đã tốt nghiệp',
     },
+    {
+      id: 10,
+      name: 'Trần Giang Thanh',
+      studentId: '655210',
+      phoneNumber: '0987654321',
+      gender: 'Nữ',
+      dateOfBirth: '1990-01-01',
+      email: 'hzdkv@example.com',
+      className: 'K65CNTTA',
+      majorName: 'CNTT',
+      placeOfOrigin: 'HaNoi',
+      accommodation: 'HaNoi',
+      parentName: 'Le Van A',
+      parentNumberPhone: '0983231321',
+      status: 'Đã tốt nghiệp',
+    },
+    {
+      id: 10,
+      name: 'Trần Giang Thanh',
+      studentId: '655210',
+      phoneNumber: '0987654321',
+      gender: 'Nữ',
+      dateOfBirth: '1990-01-01',
+      email: 'hzdkv@example.com',
+      className: 'K65CNTTA',
+      majorName: 'CNTT',
+      placeOfOrigin: 'HaNoi',
+      accommodation: 'HaNoi',
+      parentName: 'Le Van A',
+      parentNumberPhone: '0983231321',
+      status: 'Đã tốt nghiệp',
+    },
+    {
+      id: 10,
+      name: 'Trần Giang Thanh',
+      studentId: '655210',
+      phoneNumber: '0987654321',
+      gender: 'Nữ',
+      dateOfBirth: '1990-01-01',
+      email: 'hzdkv@example.com',
+      className: 'K65CNTTA',
+      majorName: 'CNTT',
+      placeOfOrigin: 'HaNoi',
+      accommodation: 'HaNoi',
+      parentName: 'Le Van A',
+      parentNumberPhone: '0983231321',
+      status: 'Đã tốt nghiệp',
+    },
+    {
+      id: 10,
+      name: 'Trần Giang Thanh',
+      studentId: '655210',
+      phoneNumber: '0987654321',
+      gender: 'Nữ',
+      dateOfBirth: '1990-01-01',
+      email: 'hzdkv@example.com',
+      className: 'K65CNTTA',
+      majorName: 'CNTT',
+      placeOfOrigin: 'HaNoi',
+      accommodation: 'HaNoi',
+      parentName: 'Le Van A',
+      parentNumberPhone: '0983231321',
+      status: 'Đã tốt nghiệp',
+    },
+    {
+      id: 10,
+      name: 'Trần Giang Thanh',
+      studentId: '655210',
+      phoneNumber: '0987654321',
+      gender: 'Nữ',
+      dateOfBirth: '1990-01-01',
+      email: 'hzdkv@example.com',
+      className: 'K65CNTTA',
+      majorName: 'CNTT',
+      placeOfOrigin: 'HaNoi',
+      accommodation: 'HaNoi',
+      parentName: 'Le Van A',
+      parentNumberPhone: '0983231321',
+      status: 'Đã tốt nghiệp',
+    },
+    {
+      id: 10,
+      name: 'Trần Giang Thanh',
+      studentId: '655210',
+      phoneNumber: '0987654321',
+      gender: 'Nữ',
+      dateOfBirth: '1990-01-01',
+      email: 'hzdkv@example.com',
+      className: 'K65CNTTA',
+      majorName: 'CNTT',
+      placeOfOrigin: 'HaNoi',
+      accommodation: 'HaNoi',
+      parentName: 'Le Van A',
+      parentNumberPhone: '0983231321',
+      status: 'Đã tốt nghiệp',
+    },
+    {
+      id: 10,
+      name: 'Trần Giang Thanh',
+      studentId: '655210',
+      phoneNumber: '0987654321',
+      gender: 'Nữ',
+      dateOfBirth: '1990-01-01',
+      email: 'hzdkv@example.com',
+      className: 'K65CNTTA',
+      majorName: 'CNTT',
+      placeOfOrigin: 'HaNoi',
+      accommodation: 'HaNoi',
+      parentName: 'Le Van A',
+      parentNumberPhone: '0983231321',
+      status: 'Đã tốt nghiệp',
+    },
+    {
+      id: 10,
+      name: 'Trần Giang Thanh',
+      studentId: '655210',
+      phoneNumber: '0987654321',
+      gender: 'Nữ',
+      dateOfBirth: '1990-01-01',
+      email: 'hzdkv@example.com',
+      className: 'K65CNTTA',
+      majorName: 'CNTT',
+      placeOfOrigin: 'HaNoi',
+      accommodation: 'HaNoi',
+      parentName: 'Le Van A',
+      parentNumberPhone: '0983231321',
+      status: 'Đã tốt nghiệp',
+    },
+    {
+      id: 10,
+      name: 'Trần Giang Thanh',
+      studentId: '655210',
+      phoneNumber: '0987654321',
+      gender: 'Nữ',
+      dateOfBirth: '1990-01-01',
+      email: 'hzdkv@example.com',
+      className: 'K65CNTTA',
+      majorName: 'CNTT',
+      placeOfOrigin: 'HaNoi',
+      accommodation: 'HaNoi',
+      parentName: 'Le Van A',
+      parentNumberPhone: '0983231321',
+      status: 'Đã tốt nghiệp',
+    },
+    {
+      id: 10,
+      name: 'Trần Giang Thanh',
+      studentId: '655210',
+      phoneNumber: '0987654321',
+      gender: 'Nữ',
+      dateOfBirth: '1990-01-01',
+      email: 'hzdkv@example.com',
+      className: 'K65CNTTA',
+      majorName: 'CNTT',
+      placeOfOrigin: 'HaNoi',
+      accommodation: 'HaNoi',
+      parentName: 'Le Van A',
+      parentNumberPhone: '0983231321',
+      status: 'Đã tốt nghiệp',
+    },
+    {
+      id: 10,
+      name: 'Trần Giang Thanh',
+      studentId: '655210',
+      phoneNumber: '0987654321',
+      gender: 'Nữ',
+      dateOfBirth: '1990-01-01',
+      email: 'hzdkv@example.com',
+      className: 'K65CNTTA',
+      majorName: 'CNTT',
+      placeOfOrigin: 'HaNoi',
+      accommodation: 'HaNoi',
+      parentName: 'Le Van A',
+      parentNumberPhone: '0983231321',
+      status: 'Đã tốt nghiệp',
+    },
+    {
+      id: 10,
+      name: 'Trần Giang Thanh',
+      studentId: '655210',
+      phoneNumber: '0987654321',
+      gender: 'Nữ',
+      dateOfBirth: '1990-01-01',
+      email: 'hzdkv@example.com',
+      className: 'K65CNTTA',
+      majorName: 'CNTT',
+      placeOfOrigin: 'HaNoi',
+      accommodation: 'HaNoi',
+      parentName: 'Le Van A',
+      parentNumberPhone: '0983231321',
+      status: 'Đã tốt nghiệp',
+    },
+    {
+      id: 10,
+      name: 'Trần Giang Thanh',
+      studentId: '655210',
+      phoneNumber: '0987654321',
+      gender: 'Nữ',
+      dateOfBirth: '1990-01-01',
+      email: 'hzdkv@example.com',
+      className: 'K65CNTTA',
+      majorName: 'CNTT',
+      placeOfOrigin: 'HaNoi',
+      accommodation: 'HaNoi',
+      parentName: 'Le Van A',
+      parentNumberPhone: '0983231321',
+      status: 'Đã tốt nghiệp',
+    },
+    {
+      id: 10,
+      name: 'Trần Giang Thanh',
+      studentId: '655210',
+      phoneNumber: '0987654321',
+      gender: 'Nữ',
+      dateOfBirth: '1990-01-01',
+      email: 'hzdkv@example.com',
+      className: 'K65CNTTA',
+      majorName: 'CNTT',
+      placeOfOrigin: 'HaNoi',
+      accommodation: 'HaNoi',
+      parentName: 'Le Van A',
+      parentNumberPhone: '0983231321',
+      status: 'Đã tốt nghiệp',
+    },
+    {
+      id: 10,
+      name: 'Trần Giang Thanh',
+      studentId: '655210',
+      phoneNumber: '0987654321',
+      gender: 'Nữ',
+      dateOfBirth: '1990-01-01',
+      email: 'hzdkv@example.com',
+      className: 'K65CNTTA',
+      majorName: 'CNTT',
+      placeOfOrigin: 'HaNoi',
+      accommodation: 'HaNoi',
+      parentName: 'Le Van A',
+      parentNumberPhone: '0983231321',
+      status: 'Đã tốt nghiệp',
+    },
+    {
+      id: 10,
+      name: 'Trần Giang Thanh',
+      studentId: '655210',
+      phoneNumber: '0987654321',
+      gender: 'Nữ',
+      dateOfBirth: '1990-01-01',
+      email: 'hzdkv@example.com',
+      className: 'K65CNTTA',
+      majorName: 'CNTT',
+      placeOfOrigin: 'HaNoi',
+      accommodation: 'HaNoi',
+      parentName: 'Le Van A',
+      parentNumberPhone: '0983231321',
+      status: 'Đã tốt nghiệp',
+    },
+    {
+      id: 10,
+      name: 'Trần Giang Thanh',
+      studentId: '655210',
+      phoneNumber: '0987654321',
+      gender: 'Nữ',
+      dateOfBirth: '1990-01-01',
+      email: 'hzdkv@example.com',
+      className: 'K65CNTTA',
+      majorName: 'CNTT',
+      placeOfOrigin: 'HaNoi',
+      accommodation: 'HaNoi',
+      parentName: 'Le Van A',
+      parentNumberPhone: '0983231321',
+      status: 'Đã tốt nghiệp',
+    },
+    {
+      id: 10,
+      name: 'Trần Giang Thanh',
+      studentId: '655210',
+      phoneNumber: '0987654321',
+      gender: 'Nữ',
+      dateOfBirth: '1990-01-01',
+      email: 'hzdkv@example.com',
+      className: 'K65CNTTA',
+      majorName: 'CNTT',
+      placeOfOrigin: 'HaNoi',
+      accommodation: 'HaNoi',
+      parentName: 'Le Van A',
+      parentNumberPhone: '0983231321',
+      status: 'Đã tốt nghiệp',
+    },
   ];
   const data = [];
   data.push(dataSource);
@@ -316,7 +539,6 @@ function AdminListStudentPage(props) {
       title: 'MSV',
       dataIndex: 'studentId',
       align: 'center',
-      ...getColumnSearchProps('studentId'),
     },
     {
       title: 'Lớp',
@@ -404,7 +626,6 @@ function AdminListStudentPage(props) {
             <Popconfirm
               title='Bạn có chắc chắn muốn xóa sinh viên này ?'
               icon={<DeleteOutlined />}
-              description=''
               okText='Xóa'
               okType='danger'
               onConfirm={handleConfirmDeleteStudent}
@@ -428,20 +649,34 @@ function AdminListStudentPage(props) {
   ];
   return (
     <>
-      <div className='flex justify-between items-center mb-3'>
+      <div className='flex justify-between items-center mb-1'>
         <Button onClick={handleSelectDeleteStudent} disabled={!hasSelected} loading={loading}>
           Xóa
         </Button>
-        <Title level={3} style={{ textTransform: 'uppercase', marginLeft: '150px' }}>
+        <Space>
+          <Tooltip title='Tìm kiếm sinh viên'>
+            <InputNumber
+              prefix={<SearchOutlined style={{ opacity: 0.6 }} />}
+              placeholder='Nhập mã sinh viên ...'
+              className='shadow-sm w-[230px] placeholder:italic '
+              controls={false}
+              onChange={(value) => setValueSearchStudent(value)}
+              value={valueSearchStudent}
+            />
+          </Tooltip>
+          <Button>Tìm kiếm</Button>
+        </Space>
+        <Title level={3} style={{ textTransform: 'uppercase' }}>
           Danh sách thông tin sinh viên khoa
         </Title>
         <Space size={8}>
-          <Dropdown
+          {/* <Dropdown
             menu={{
               items,
             }}
             placement='bottomLeft'
             arrow
+            trigger={['click']}
           >
             <Button
               icon={<FileExcelOutlined />}
@@ -449,7 +684,7 @@ function AdminListStudentPage(props) {
             >
               Xuất file excel
             </Button>
-          </Dropdown>
+          </Dropdown> */}
           <Button
             className='flex justify-center items-center text-md font-medium shadow-md bg-slate-100'
             icon={<UsergroupAddOutlined />}
@@ -478,6 +713,8 @@ function AdminListStudentPage(props) {
         columns={columns}
         pagination={{
           onChange: {},
+          total: 20,
+          defaultCurrent: 1,
         }}
       />
       <ModalFormStudentInfo
@@ -495,7 +732,9 @@ function AdminListStudentPage(props) {
       />
       <Drawer size='large' open={openDrawerInfo} onClose={() => setOpenDrawerInfo(false)} placement='right'>
         <DescriptionInfoStudent dataStudent={dataStudent} />
-        <ProgressCredits data={dataStudent} />
+        <ColumnDataPoint />
+        <ColumnPointTraining />
+        <ProgressCredits dataStudent={dataStudent} />
       </Drawer>
     </>
   );

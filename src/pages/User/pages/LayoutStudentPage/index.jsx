@@ -18,7 +18,9 @@ function LayoutPageStudent(props) {
       return '3';
     } else if (pathAdd === 'declare') {
       return '4';
-    } else return '1';
+    } else if (pathAdd === 'student') {
+      return '1';
+    } else return '0';
   };
   const items = [
     {
@@ -51,7 +53,7 @@ function LayoutPageStudent(props) {
       },
       key: '4',
       icon: <FormOutlined style={{ fontSize: '16px' }} />,
-      label: 'Khai báo thông tin',
+      label: 'Cập nhật thông tin',
     },
   ];
   return (
