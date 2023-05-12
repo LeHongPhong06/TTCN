@@ -1,7 +1,9 @@
 import { PageContainer } from '@ant-design/pro-components';
-import { Button, Form, Input, InputNumber } from 'antd';
+import { Button, Form, Input, message } from 'antd';
+import Cookies from 'js-cookie';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { login } from '../../../../API/axios';
 import Footer from '../../components/Footer/Footer';
 import AlertBanner from '../../components/Header/AlertBanner';
 import HeaderTop from '../../components/Header/Header';
@@ -11,11 +13,23 @@ import ThumnailSlider from '../../components/Slider/ThumnailSlider';
 function HomePage(props) {
   const navigate = useNavigate();
   const [loadingBtnLogin, setLoadingBtnLogin] = useState(false);
-  const [form] = Form.useForm();
   const onFinish = (values) => {
     setLoadingBtnLogin(true);
-    navigate('/student');
-    setLoadingBtnLogin(false);
+    login(values)
+      .then((res) => {
+        if (res.data?.success === true) {
+          Cookies.set('jwt', res.data?.data?.jwt);
+          setLoadingBtnLogin(false);
+          if (res.data?.data?.roleId === 'STUDENT') {
+            navigate(`/student/${res.data?.data?.id}`);
+          } else {
+            navigate(`${res.data?.data?.id}/manage`);
+          }
+        } else if (res.data?.error?.code === 500) {
+          message.error(res.data.error.message);
+        }
+      })
+      .finally(() => setLoadingBtnLogin(false));
   };
   return (
     <div className='min-h-[100vh]'>
@@ -23,9 +37,9 @@ function HomePage(props) {
         <HeaderTop />
         <div className='bg-orange-400'>
           <div className='max-w-[1100px] mx-auto h-[36px] flex items-center justify-end'>
-            <Form form={form} name='horizontal_login' size='small' layout='inline' onFinish={onFinish}>
+            <Form name='horizontal_login' size='small' layout='inline' onFinish={onFinish}>
               <Form.Item
-                name='username'
+                name='id'
                 label='Tên đăng nhập'
                 rules={[
                   {
@@ -34,7 +48,7 @@ function HomePage(props) {
                   },
                 ]}
               >
-                <InputNumber style={{ width: '100px' }} keyboards={false} controls={false} type='number' />
+                <Input laber='Tên đăng nhập' />
               </Form.Item>
               <Form.Item
                 label='Mật khẩu'

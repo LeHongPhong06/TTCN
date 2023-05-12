@@ -1,34 +1,91 @@
+import { LoadingOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-components';
-import { Descriptions } from 'antd';
-import React from 'react';
+import { Descriptions, Spin } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import { getInfoStudent } from '../../../../../API/axios';
 
 function DescriptionsUser(props) {
+  const location = useLocation();
+  const [loadingPage, setLoadingPage] = useState(false);
+  const [dataStudent, setDataStudent] = useState({});
+
+  // handle set status
+  // const status = (status) => {
+  //   if (status === 'graduated') {
+  //     return 'Đã tốt nghiệp';
+  //   } else if (status === 'stillStudying') {
+  //     return 'Còn đi học';
+  //   } else if (status === 'forcedOut') {
+  //     return 'Bị buộc thôi học';
+  //   } else if (status === 'dropped') {
+  //     return 'Đã bỏ học';
+  //   } else {
+  //     return '[ Không có dữ liệu ]';
+  //   }
+  // };
+
+  // handle get info student
+  const studentId = location.pathname.split('/')[2];
+  const handleGetInfoStudent = (studentId) => {
+    if (studentId !== undefined) {
+      setLoadingPage(true);
+      getInfoStudent(studentId)
+        .then((res) => {
+          if (res.data?.success === true) {
+            setDataStudent(res.data?.data);
+            setLoadingPage(false);
+          }
+        })
+        .finally(() => setLoadingPage(false));
+    }
+  };
+  useEffect(() => {
+    handleGetInfoStudent(studentId);
+  }, [studentId]);
+  const container = (
+    <PageContainer>
+      <Descriptions
+        layout='horizontal'
+        column={1}
+        labelStyle={{ fontSize: '16px', marginBottom: '12px' }}
+        contentStyle={{ fontSize: '16px' }}
+      >
+        <Descriptions.Item span={1} label='Sinh viên'>
+          {dataStudent?.name ? dataStudent?.name : '[ Không có dữ liệu ]'}
+        </Descriptions.Item>
+        <Descriptions.Item span={1} label='Mã sinh viên'>
+          {dataStudent?.id ? dataStudent?.id : '[ Không có dữ liệu ]'}
+        </Descriptions.Item>
+        <Descriptions.Item span={1} label='Lớp'>
+          {dataStudent?.classes?.id ? dataStudent?.classes?.id : '[ Không có dữ liệu ]'}
+        </Descriptions.Item>
+        <Descriptions.Item span={1} label='Chuyên ngành'>
+          {dataStudent?.major?.id ? dataStudent?.major?.id : '[ Không có dữ liệu ]'}
+        </Descriptions.Item>
+        <Descriptions.Item span={1} label='Tình trạng sinh viên'>
+          {/* {status(dataStudent?.status)} */}
+          {dataStudent?.status ? dataStudent?.status : '[ Không có dữ liệu ]'}
+        </Descriptions.Item>
+      </Descriptions>
+    </PageContainer>
+  );
   return (
     <div>
-      <PageContainer>
-        <Descriptions
-          layout='horizontal'
-          column={1}
-          labelStyle={{ fontSize: '16px', marginBottom: '12px' }}
-          contentStyle={{ fontSize: '16px' }}
-        >
-          <Descriptions.Item span={1} label='Sinh viên'>
-            Nguyễn Văn A
-          </Descriptions.Item>
-          <Descriptions.Item span={1} label='Mã sinh viên'>
-            888888
-          </Descriptions.Item>
-          <Descriptions.Item span={1} label='Lớp'>
-            K65CNTTA
-          </Descriptions.Item>
-          <Descriptions.Item span={1} label='Chuyên ngành'>
-            CNTT
-          </Descriptions.Item>
-          <Descriptions.Item span={1} label='Tình trạng sinh viên'>
-            Chưa tốt nghiệp
-          </Descriptions.Item>
-        </Descriptions>
-      </PageContainer>
+      <Spin
+        spinning={loadingPage}
+        indicator={
+          <LoadingOutlined
+            style={{
+              color: 'orange',
+              fontSize: 24,
+            }}
+            spin
+          />
+        }
+      >
+        {container}
+      </Spin>
     </div>
   );
 }

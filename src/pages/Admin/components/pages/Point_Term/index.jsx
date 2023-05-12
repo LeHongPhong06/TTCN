@@ -1,43 +1,85 @@
-import { DeleteOutlined, EditOutlined, PlusCircleOutlined } from '@ant-design/icons';
-import { Button, Popconfirm, Space, Table, Tooltip, Typography } from 'antd';
-import React, { useState } from 'react';
+import { DeleteOutlined, EditOutlined, FilterOutlined, PlusCircleOutlined, SearchOutlined } from '@ant-design/icons';
+import { Button, Input, Popconfirm, Popover, Space, Table, Tooltip, Typography, message } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { useDebounce } from 'use-debounce';
+import { deletePoint, getDataPoint } from '../../../../../API/axios';
+import ContentPopover from './components/ContentPopover';
 import ModalFormPoint from './components/ModalFormPoint';
 
 function AdminPointTermPage(props) {
-  const [openModalFormMajor, setOpenModalFormMajor] = useState(false);
-  const [dataMajor, setDataMajor] = useState({});
-  const handleConfirmDeleteMajor = () => {};
   const { Title } = Typography;
-  const dataSource = [
-    {
-      key: '1',
-      studentId: '654661',
-      termId: '20201',
-      DTBhe10: 9.0,
-      DTBhe4: 3.6,
-      DRL: 92,
-      TCTL: 17,
-      TBTLhe10: 9.0,
-      TBTLhe4: 3.6,
-    },
-    {
-      key: '2',
-      studentId: '654661',
-      termId: '20202',
-      DTBhe10: 8.0,
-      DTBhe4: 3.0,
-      DRL: 80,
-      TCTL: 20,
-      TBTLhe10: 8.5,
-      TBTLhe4: 3.4,
-    },
-  ];
+  const [openModalFormPoint, setOpenModalFormPoint] = useState(false);
+  const [loadingTable, setLoadingTable] = useState(false);
+  const [valueSearchStudentId, setValueSearchStudentId] = useState('');
+  const [valueSearchTermId, setValueSearchTermId] = useState('');
+  const [dataPoint, setDataPoint] = useState({});
+  const [dataSource, setDataSource] = useState([]);
+  const [pageCurrent, setPageCurrent] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalPoints, setTotalPoints] = useState(0);
+  const [disabled, setDisabled] = useState(false);
+  const [valueFilters, setValueFilters] = useState({
+    point: { min: null, max: null },
+    accPoint: { min: null, max: null },
+    trainingPoint: { min: null, max: null },
+  });
+  const debunceValueStudentId = useDebounce(valueSearchStudentId, 750);
+  const debunceValueTermId = useDebounce(valueSearchTermId, 750);
+  const studentId = debunceValueStudentId[0];
+  const termId = debunceValueTermId[0];
+  // Handle click confirm delete major
+  const handleConfirmDeletePoint = async (values) => {
+    setLoadingTable(false);
+    deletePoint(values)
+      .then((res) => {
+        if (res.data?.success === true) {
+          message.success(`Xóa điểm học kỳ ${values.termId} có mã sinh viên ${values.studentId} thành công`, 1);
+          handleGetDataPointList();
+          setLoadingTable(false);
+        }
+      })
+      .finally(() => setLoadingTable(false));
+  };
+
+  // Handle get data points
+  const handleGetDataPointList = async () => {
+    setLoadingTable(true);
+    getDataPoint({
+      studentId: studentId,
+      termId: termId,
+      page: pageCurrent,
+      size: pageSize,
+      filter: valueFilters,
+    })
+      .then((res) => {
+        if (res.data.success === true) {
+          setDataSource(res.data?.data?.items);
+          setTotalPoints(res.data?.data?.total);
+          setLoadingTable(false);
+        } else if (res.data?.error?.message === 'Access is denied') {
+          message.warning('Bạn không có quyền truy cập');
+        }
+      })
+      .finally(() => setLoadingTable(false));
+  };
+
+  useEffect(() => {
+    handleGetDataPointList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pageCurrent, valueFilters, pageSize, studentId, termId]);
+
   const columns = [
     {
       title: 'Mã sinh viên',
       dataIndex: 'studentId',
       align: 'center',
       key: 'studentId',
+    },
+    {
+      title: 'Họ và tên',
+      dataIndex: 'studentName',
+      align: 'center',
+      key: 'studentName',
     },
     {
       title: 'Mã học kì',
@@ -47,33 +89,39 @@ function AdminPointTermPage(props) {
     },
     {
       title: 'Điểm trung bình (hệ 10)',
-      dataIndex: 'DTBhe10',
+      dataIndex: 'medScore10',
       align: 'center',
-      key: 'DTBhe10',
+      key: 'medScore10',
     },
     {
       title: 'Điểm trung bình (hệ 4)',
-      dataIndex: 'DTBhe4',
+      dataIndex: 'medScore4',
       align: 'center',
-      key: 'DTBhe4',
+      key: 'medScore4',
     },
     {
       title: 'Điểm rèn luyện',
-      dataIndex: 'DRL',
+      dataIndex: 'trainingPoint',
       align: 'center',
-      key: 'DRL',
+      key: 'trainingPoint',
+    },
+    {
+      title: 'Tín chỉ tích lũy',
+      dataIndex: 'creditsAccumulated',
+      align: 'center',
+      key: 'creditsAccumulated',
     },
     {
       title: 'Điểm trung bình tích lũy (hệ 10)',
-      dataIndex: 'TBTLhe10',
+      dataIndex: 'scoreAccumulated10',
       align: 'center',
-      key: 'TBTLhe10',
+      key: 'scoreAccumulated10',
     },
     {
       title: 'Điểm trung bình tích lũy (hệ 4)',
-      dataIndex: 'TBTLhe4',
+      dataIndex: 'scoreAccumulated4',
       align: 'center',
-      key: 'TBTLhe4',
+      key: 'scoreAccumulated4',
     },
     {
       title: 'Tùy chọn',
@@ -83,8 +131,9 @@ function AdminPointTermPage(props) {
           <Tooltip title='Chỉnh sửa'>
             <Button
               onClick={() => {
-                setOpenModalFormMajor(true);
-                setDataMajor(record);
+                setDisabled(true);
+                setOpenModalFormPoint(true);
+                setDataPoint(record);
               }}
               icon={<EditOutlined />}
               className='flex justify-center items-center shadow-xl'
@@ -92,11 +141,11 @@ function AdminPointTermPage(props) {
           </Tooltip>
           <Tooltip title='Xóa'>
             <Popconfirm
-              title={`Bạn có chắc chắn muốn xóa chuyên ngành ${record.majorName}`}
+              title={`Bạn có chắc chắn muốn xóa điểm của sinh viên ${record.studentId} trong học kỳ ${record.termId}`}
               icon={<DeleteOutlined />}
               okText='Xóa'
               okType='danger'
-              onConfirm={handleConfirmDeleteMajor}
+              onConfirm={() => handleConfirmDeletePoint({ studentId: record.studentId, termId: record.termId })}
             >
               <Button className='flex justify-center items-center text-md shadow-md' icon={<DeleteOutlined />}></Button>
             </Popconfirm>
@@ -107,31 +156,91 @@ function AdminPointTermPage(props) {
   ];
   return (
     <div>
-      <Button
-        icon={<PlusCircleOutlined />}
-        onClick={() => {
-          setOpenModalFormMajor(true);
+      <div className='flex justify-between items-center mb-3'>
+        <Space>
+          <Input
+            prefix={<SearchOutlined style={{ opacity: 0.6 }} />}
+            placeholder='Nhập mã sinh viên'
+            className='shadow-sm w-[180px]'
+            onChange={(e) => {
+              setPageCurrent(1);
+              setValueSearchStudentId(e.target.value);
+            }}
+            value={valueSearchStudentId}
+          />
+          <Input
+            placeholder='Nhập mã học kì'
+            className='shadow-sm w-[150px]'
+            onChange={(e) => {
+              setPageCurrent(1);
+              setValueSearchTermId(e.target.value);
+            }}
+            value={valueSearchTermId}
+          />
+          <Popover
+            placement='bottom'
+            content={
+              <ContentPopover
+                loadingTable={(loading) => setLoadingTable(loading)}
+                setValueFilters={(values) => setValueFilters(values)}
+              />
+            }
+            trigger='click'
+          >
+            <Button
+              icon={<FilterOutlined />}
+              className='flex justify-center items-center text-md font-medium shadow-md bg-slate-100'
+            >
+              Lọc
+            </Button>
+          </Popover>
+        </Space>
+        <Title style={{ textAlign: 'center', textTransform: 'uppercase', marginBottom: 0 }} level={3}>
+          Danh sách điểm
+        </Title>
+        <Button
+          icon={<PlusCircleOutlined />}
+          onClick={() => {
+            setOpenModalFormPoint(true);
+          }}
+          className='flex justify-center items-center bg-white shadow-lg font-medium'
+        >
+          {'Thêm điểm ( học kì )'}
+        </Button>
+      </div>
+      <Table
+        rowKey='id'
+        bordered={true}
+        loading={loadingTable}
+        dataSource={dataSource}
+        columns={columns}
+        pagination={{
+          onChange: (page, size) => {
+            setPageCurrent(page);
+            setPageSize(size);
+          },
+          defaultCurrent: 1,
+          pageSize: pageSize,
+          total: totalPoints,
+          current: pageCurrent,
+          showSizeChanger: true,
         }}
-        className='flex justify-center items-center absolute bg-white shadow-lg font-medium'
-      >
-        Thêm điểm
-      </Button>
-      <Title style={{ textAlign: 'center', textTransform: 'uppercase' }} level={2}>
-        Danh sách điểm
-      </Title>
-      <Table dataSource={dataSource} columns={columns} />
+      />
       <ModalFormPoint
         onSuccess={() => {
-          setOpenModalFormMajor(false);
+          setOpenModalFormPoint(false);
+          handleGetDataPointList();
         }}
-        openForm={openModalFormMajor}
-        dataMajor={dataMajor}
+        openForm={openModalFormPoint}
+        dataPoint={dataPoint}
         onChangeClickOpen={(open) => {
           if (!open) {
-            setDataMajor({});
-            setOpenModalFormMajor(false);
+            setDataPoint({});
+            setDisabled(false);
+            setOpenModalFormPoint(false);
           }
         }}
+        disabled={disabled}
       />
     </div>
   );

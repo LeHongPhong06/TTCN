@@ -1,13 +1,25 @@
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { Avatar, Button, Checkbox, Form, Input } from 'antd';
-import { useNavigate } from 'react-router-dom';
+import { Avatar, Button, Form, Input, message } from 'antd';
+import Cookies from 'js-cookie';
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { login } from '../../../../../API/axios';
 function AdminLoginPage(props) {
-  const [loadingBtn, setLoadingBtn] = useState(false);
   const navigate = useNavigate();
-  const onSubmitFormSuccess = (values) => {
+  const [loadingBtn, setLoadingBtn] = useState(false);
+  const onSubmitFormSuccess = async (values) => {
     setLoadingBtn(true);
-    navigate('/admin');
+    login(values)
+      .then((res) => {
+        if (res.data?.success === true) {
+          Cookies.set('jwt', res.data?.data?.jwt);
+          navigate(`/admin/${res.data?.data?.id}`);
+          setLoadingBtn(false);
+        } else if (res.data?.error?.code === 500) {
+          message.error(res.data.error.message);
+        }
+      })
+      .finally(() => setLoadingBtn(false));
   };
   return (
     <div className='h-[100vh] flex justify-center items-center flex-col bg-gradient-to-tr from-neutral-900 via-black to-indigo-900'>
@@ -16,17 +28,9 @@ function AdminLoginPage(props) {
         <div className='flex justify-center'>
           <h1 className='mb-12 text-white text-3xl'>Login</h1>
         </div>
-        <Form
-          size='large'
-          name='normal_login'
-          className='w-[400px] '
-          initialValues={{
-            remember: false,
-          }}
-          onFinish={onSubmitFormSuccess}
-        >
+        <Form size='large' className='w-[400px]' onFinish={onSubmitFormSuccess}>
           <Form.Item
-            name='username'
+            name='id'
             rules={[
               {
                 required: true,
@@ -46,11 +50,6 @@ function AdminLoginPage(props) {
             ]}
           >
             <Input prefix={<LockOutlined className='site-form-item-icon' />} type='password' placeholder='Password' />
-          </Form.Item>
-          <Form.Item>
-            <Form.Item name='remember' valuePropName='checked' noStyle>
-              <Checkbox className='text-white text-2xl'>Remember me</Checkbox>
-            </Form.Item>
           </Form.Item>
           <Form.Item>
             <Button loading={loadingBtn} htmlType='submit' className='w-full text-white uppercase mt-8'>

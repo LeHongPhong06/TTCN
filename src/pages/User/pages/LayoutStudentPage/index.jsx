@@ -9,51 +9,53 @@ import HeaderTop from '../../components/Header/Header';
 function LayoutPageStudent(props) {
   const navigate = useNavigate();
   const location = useLocation();
-  const newArr = location.pathname.split('/');
-  const pathAdd = newArr[newArr.length - 1];
+  const studentId = location.pathname.split('/')[2];
   const addIcon = () => {
-    if (pathAdd === 'infor') {
+    if (location.pathname === `/student/${studentId}/infor`) {
       return '2';
-    } else if (pathAdd === 'points') {
+    }
+    if (location.pathname === `/student/${studentId}/points`) {
       return '3';
-    } else if (pathAdd === 'declare') {
+    }
+    if (location.pathname === `/student/${studentId}/declare`) {
       return '4';
-    } else if (pathAdd === 'student') {
+    }
+    if (location.pathname === `/student/${studentId}`) {
       return '1';
     } else return '0';
   };
   const items = [
     {
-      onClick: () => {
-        navigate('/student');
-      },
       key: '1',
       icon: <HomeOutlined style={{ fontSize: '16px' }} />,
       label: 'Trang chủ',
+      onClick: () => {
+        navigate(`/student/${studentId}`);
+      },
     },
     {
-      onClick: () => {
-        navigate('/student/infor');
-      },
       key: '2',
       icon: <SolutionOutlined style={{ fontSize: '16px' }} />,
       label: 'Thông tin cá nhân',
+      onClick: () => {
+        navigate(`/student/${studentId}/infor`);
+      },
     },
     {
-      onClick: () => {
-        navigate('/student/points');
-      },
       key: '3',
       icon: <InfoCircleOutlined style={{ fontSize: '16px' }} />,
       label: 'Điểm',
+      onClick: () => {
+        navigate(`/student/${studentId}/points`);
+      },
     },
     {
-      onClick: () => {
-        navigate('/student/declare');
-      },
       key: '4',
       icon: <FormOutlined style={{ fontSize: '16px' }} />,
       label: 'Cập nhật thông tin',
+      onClick: () => {
+        navigate(`/student/${studentId}/declare`);
+      },
     },
   ];
   return (

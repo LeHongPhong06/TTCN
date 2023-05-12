@@ -1,16 +1,23 @@
 import { ModalForm, ProForm, ProFormText } from '@ant-design/pro-components';
 import { message } from 'antd';
-import React, { useState } from 'react';
+import React from 'react';
+import { createCourse, updateCourse } from '../../../../../../API/axios';
 function ModalFormCourse({ openForm, onChangeClickOpen, dataCourse, onSuccess }) {
-  const [loading, setLoading] = useState();
-  const handleCreateCourse = (value) => {
-    setLoading(true);
-    onSuccess();
-    message.success('Tạo khóa mới thành công');
+  const handleCreateCourse = (values) => {
+    createCourse(values).then((res) => {
+      if (res.data?.success === true) {
+        onSuccess();
+        message.success('Tạo khóa mới thành công');
+      }
+    });
   };
-  const handleUpdateCourse = (value) => {
-    onSuccess();
-    message.success('Sửa thông tin khóa thành công');
+  const handleUpdateCourse = (id, values) => {
+    updateCourse(id, values).then((res) => {
+      if (res.data?.success === true) {
+        onSuccess();
+        message.success('Sửa thông tin khóa thành công');
+      }
+    });
   };
 
   return (
@@ -24,7 +31,6 @@ function ModalFormCourse({ openForm, onChangeClickOpen, dataCourse, onSuccess })
           okText: dataCourse.courseId ? 'Lưu' : 'Tạo',
           okType: 'primary',
           okButtonProps: {
-            loading,
             backgroundColor: '#fff',
             color: '#000',
           },
@@ -32,8 +38,8 @@ function ModalFormCourse({ openForm, onChangeClickOpen, dataCourse, onSuccess })
         }}
         open={openForm}
         onFinish={(value) => {
-          if (dataCourse.courseId) {
-            handleUpdateCourse(value);
+          if (dataCourse.id) {
+            handleUpdateCourse(dataCourse.id, value);
           } else {
             handleCreateCourse(value);
           }
@@ -42,27 +48,19 @@ function ModalFormCourse({ openForm, onChangeClickOpen, dataCourse, onSuccess })
       >
         <ProForm.Group>
           <ProFormText
-            rules={[{ required: true, message: 'Vui lòng nhập đầy đủ Thông tin' }]}
+            rules={[
+              { required: true, message: 'Vui lòng nhập đầy đủ Thông tin' },
+              { pattern: '^K[0-9]+', message: 'Mã khóa bắt đầu bằng chữ K viết hoa' },
+              {
+                min: 1,
+                max: 5,
+                message: 'Vượt quá số kí tự',
+              },
+            ]}
             width='md'
             name='courseId'
             label='Mã khóa'
             placeholder='Nhập mã khóa học, ví dụ: K65'
-          />
-          <ProFormText
-            rules={[{ required: true, message: 'Vui lòng nhập đầy đủ thông tin' }]}
-            width='md'
-            name='courseName'
-            label='Tên khóa'
-            placeholder='Nhâp tên khóa, ví dụ: Khóa 65'
-          />
-        </ProForm.Group>
-        <ProForm.Group>
-          <ProFormText
-            rules={[{ required: true, message: 'Vui lòng nhập đầy đủ Thông tin' }]}
-            width='md'
-            name='quantity'
-            label='Tổng số sinh viên'
-            placeholder='Nhập tổng số sinh viên'
           />
         </ProForm.Group>
       </ModalForm>

@@ -1,8 +1,8 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
-const baseUrl = 'http://139.177.184.45:30581';
-const login_path = '/api/auth/local';
+const baseUrl = 'https://53b9-2405-4802-1ce7-ba00-d5c3-c849-89f2-7c08.ngrok-free.app';
+const login_path = '/client/login';
 
 axios.interceptors.request.use((req) => {
   const jwt = Cookies.get('jwt');
@@ -15,11 +15,12 @@ axios.interceptors.request.use((req) => {
     headers: {
       ...req.headers,
       Authorization,
+      'ngrok-skip-browser-warning': '1',
     },
   };
 });
 
-axios.interceptors.request.use(
+axios.interceptors.response.use(
   (res) => {
     return res;
   },

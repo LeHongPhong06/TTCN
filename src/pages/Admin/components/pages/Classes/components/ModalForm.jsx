@@ -1,64 +1,80 @@
 import { ModalForm, ProForm, ProFormText } from '@ant-design/pro-components';
 import { message } from 'antd';
 import React, { useState } from 'react';
+import { createClass, updateClass } from '../../../../../../API/axios';
 
-function ModalFormClass({ openModalForm, onChangeClickOpen, dataClass, onSuccess }) {
-  const [loading, setLoading] = useState();
-  const handleCreateClass = (value) => {
-    setLoading(true);
-    onSuccess();
-    message.success(`Tạo lớp thành công`);
+function ModalFormClass({ openModalForm, onChangeClickOpen, dataClass, onSuccess, disabledClass }) {
+  const [errorDetailList, setErrorDetailList] = useState([]);
+
+  // handle show error
+  const handleShowError = () => {
+    errorDetailList?.map((e) => message.error(e.message, 8));
   };
-  const handleUpdateClass = (value) => {
-    onSuccess();
-    message.success(`Sửa thông tin lớp ${dataClass.classId} thành công`);
+
+  // handle create class
+  const handleCreateClass = (values) => {
+    createClass(values).then((res) => {
+      if (res.data?.success === true) {
+        onSuccess();
+        message.success(`Tạo lớp thành công`);
+      } else if (res.data?.error?.code === 2) {
+        setErrorDetailList(res.data?.error?.errorDetailList);
+        handleShowError();
+      } else if (res.data?.error?.code === 500) {
+        message.error(res.data?.error?.message);
+      }
+    });
+  };
+
+  // handle update class
+  const handleUpdateClass = (id, values) => {
+    updateClass(id, values).then((res) => {
+      if (res.data?.success === true) {
+        onSuccess();
+        message.success(`Sửa lớp thành công`);
+      } else if (res.data?.error?.code === 2) {
+        setErrorDetailList(res.data?.error?.errorDetailList);
+        handleShowError();
+      }
+    });
   };
   return (
     <div>
       <ModalForm
         width={750}
-        title={dataClass.classId ? 'Sửa thông tin lớp' : 'Thêm lớp'}
+        title={dataClass.id ? 'Sửa thông tin lớp' : 'Thêm lớp'}
         initialValues={dataClass}
         modalProps={{
           destroyOnClose: true,
-          okText: '',
-          okButtonProps: { loading },
+          okText: dataClass.id ? 'Lưu' : 'Tạo',
           okType: 'primary',
           cancelText: 'Hủy',
         }}
         open={openModalForm}
-        onFinish={(value) => {
+        onFinish={(values) => {
           if (dataClass.id) {
-            handleUpdateClass(value);
+            handleUpdateClass(dataClass.id, values);
           } else {
-            handleCreateClass(value);
+            handleCreateClass(values);
           }
         }}
         onOpenChange={onChangeClickOpen}
       >
         <ProForm.Group>
           <ProFormText
-            rules={[{ required: true, message: 'Vui lòng nhập đầy đủ họ và tên !' }]}
+            rules={[{ required: true, message: 'Vui lòng nhập đầy đủ thông tin ' }]}
             width='md'
-            name='className'
-            label='Tên lớp'
-            placeholder='Nhập tên lớp học...'
-          />
-          <ProFormText
-            rules={[{ required: true, message: 'Vui lòng nhập đầy đủ thông tin !' }]}
-            width='md'
-            name='classId'
+            name='id'
             label='Mã lớp'
             placeholder='Nhập mã lớp...'
+            disabled={disabledClass}
           />
-        </ProForm.Group>
-        <ProForm.Group>
           <ProFormText
-            rules={[{ required: true, message: 'Vui lòng nhập đầy đủ họ và tên !' }]}
+            rules={[{ required: '^K[0-9]+-[0-9]+-', message: 'Tất cả chữ cái của mã lớp phải được viết hoa' }]}
             width='md'
-            name='quantity'
-            label='Số sinh viên trong lớp'
-            placeholder='Nhập tổng số sinh viên trong lớp'
+            name='name'
+            label='Tên lớp'
+            placeholder='Nhập tên lớp học...'
           />
         </ProForm.Group>
       </ModalForm>

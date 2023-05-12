@@ -1,16 +1,23 @@
 import { ModalForm, ProForm, ProFormDatePicker, ProFormSelect, ProFormText } from '@ant-design/pro-components';
 import { message } from 'antd';
-import React, { useState } from 'react';
-function ModalFormStudentInfo({ openForm, onChangeClickOpen, dataStudent, onSuccess }) {
-  const [loading, setLoading] = useState();
-  const handleCreateStudent = (value) => {
-    setLoading(true);
-    onSuccess();
-    message.success('Tạo sinh viên thành công');
+import React from 'react';
+import { createStudent, updateStudent } from '../../../../../../API/axios';
+function ModalFormStudentInfo({ openForm, onChangeClickOpen, dataStudent, onSuccess, disabled }) {
+  const handleCreateStudent = (values) => {
+    createStudent(values).then((res) => {
+      if (res.data?.success === true) {
+        onSuccess();
+        message.success('Tạo sinh viên thành công');
+      } else return message.error(res.data?.error?.message);
+    });
   };
-  const handleUpdateStudent = (value) => {
-    onSuccess();
-    message.success('Sửa thông tin sinh viên thành công');
+  const handleUpdateStudent = (dataStudent, values) => {
+    updateStudent(dataStudent.id, values).then((res) => {
+      if (res.data?.success === true) {
+        onSuccess();
+        message.success(`Sửa sinh viên ${dataStudent.name} thành công`);
+      } else return message.error(res.data?.error?.message);
+    });
   };
 
   return (
@@ -22,130 +29,153 @@ function ModalFormStudentInfo({ openForm, onChangeClickOpen, dataStudent, onSucc
         modalProps={{
           destroyOnClose: true,
           okText: dataStudent.id ? 'Lưu' : 'Tạo',
-          okType: 'primary',
-          okButtonProps: {
-            loading,
-            backgroundColor: '#fff',
-            color: '#000',
-          },
           cancelText: 'Hủy',
         }}
         open={openForm}
-        onFinish={(value) => {
+        onFinish={(values) => {
           if (dataStudent.id) {
-            handleUpdateStudent(value);
+            handleUpdateStudent(dataStudent, values);
           } else {
-            handleCreateStudent(value);
+            handleCreateStudent(values);
           }
         }}
         onOpenChange={onChangeClickOpen}
       >
         <ProForm.Group>
           <ProFormText
-            rules={[{ required: true, message: 'Vui lòng nhập đầy đủ họ và tên !' }]}
+            rules={[{ required: true, message: 'Không được để trống' }]}
             width='md'
             name='name'
-            label='Họ và tên:'
-            placeholder='Nhập họ và tên sinh viên...'
+            label='Họ và tên'
+            placeholder='Nhập họ và tên sinh viên'
           />
           <ProFormText
-            rules={[{ required: true, message: 'Vui lòng nhập mã sinh viên !' }]}
+            rules={[{ required: true, message: 'Không được để trống' }]}
             width='md'
-            name='studentId'
-            label='Mã sinh viên:'
-            placeholder='Nhâp mã sinh viên...'
+            name='id'
+            label='Mã sinh viên'
+            placeholder='Nhâp mã sinh viên'
+            disabled={disabled}
           />
         </ProForm.Group>
         <ProForm.Group>
           <ProFormSelect
             width='md'
-            rules={[{ required: true, message: 'Vui lòng chọn đầy đủ thông tin !' }]}
+            rules={[{ required: true, message: 'Không được để trống' }]}
             name='gender'
             label='Giới tính'
             valueEnum={{
-              male: 'Nam',
-              female: 'Nữ',
+              Nam: 'Nam',
+              Nữ: 'Nữ',
             }}
             placeholder='Chọn giới tính'
           />
-          <ProFormDatePicker rules={[{ required: true }]} width='md' name='dateOfBirth' label='Ngày sinh:' />
+          <ProFormText
+            rules={[{ required: true }]}
+            width='md'
+            name='dob'
+            label='Ngày sinh'
+            placeholder='Nhập ngày sinh'
+            // fieldProps={{
+            //   format: ['DD/MM/YYYY'],
+            // }}
+          />
         </ProForm.Group>
         <ProForm.Group>
           <ProFormText
-            rules={[{ required: true, message: 'Vui lòng nhập số điện thoại !' }]}
+            rules={[{ required: true, message: 'Không được để trống' }]}
             width='md'
             name='phoneNumber'
-            label='Số điện thoại:'
-            placeholder='Nhập số điện thoại...'
+            label='Số điện thoại'
+            placeholder='Nhập số điện thoại'
           />
           <ProFormText
-            rules={[{ required: true, message: 'Vui lòng nhập đầy đủ thông tin !' }]}
+            rules={[{ required: true, message: 'Không được để trống' }]}
             width='md'
             name='email'
-            label='Email:'
-            placeholder='Nhập email...'
+            label='Email'
+            placeholder='Nhập email'
           />
         </ProForm.Group>
         <ProForm.Group>
           <ProFormText
-            rules={[{ required: true, message: 'Vui lòng nhập đầy đủ họ và tên !' }]}
+            rules={[{ required: true, message: 'Không được để trống' }]}
             width='md'
-            name='className'
-            label='Lớp:'
-            placeholder='Nhập lớp học...'
+            name={['course', 'id']}
+            label='Khóa'
+            placeholder='Nhập khóa học'
           />
           <ProFormText
-            rules={[{ required: true, message: 'Vui lòng nhập đầy đủ thông tin !' }]}
+            rules={[{ required: true, message: 'Không được để trống' }]}
             width='md'
-            name='majorName'
-            label='Chuyên ngành:'
-            placeholder='Nhập chuyên ngành...'
+            name={['major', 'id']}
+            label='Chuyên ngành'
+            placeholder='Nhập chuyên ngành'
           />
         </ProForm.Group>
         <ProForm.Group>
           <ProFormText
-            rules={[{ required: true, message: 'Vui lòng nhập đầy đủ thông tin !' }]}
+            rules={[{ required: true, message: 'Không được để trống' }]}
             width='md'
-            name='placeOfOrigin'
-            label='Quê quán:'
-            placeholder='Nhập quê quán...'
+            name={['classes', 'id']}
+            label='Lớp'
+            placeholder='Nhập lớp học'
           />
-          <ProFormText
-            rules={[{ required: true, message: 'Vui lòng nhập đầy đủ thông tin !' }]}
-            width='md'
-            name='accommodation'
-            label='Nơi ở hiện tại:'
-            placeholder='Nhập nơi ở hiện tại của sinh viên...'
-          />
-        </ProForm.Group>
-        <ProForm.Group>
-          <ProFormText
-            rules={[{ required: true, message: 'Vui lòng nhập đầy đủ thông tin !' }]}
-            width='md'
-            name='parentName'
-            label='Họ và tên bố ( mẹ ):'
-            placeholder='Nhập họ tên bố ( mẹ )...'
-          />
-          <ProFormText
-            rules={[{ required: true, message: 'Vui lòng nhập đầy đủ thông tin !' }]}
-            width='md'
-            name='parentNumberPhone'
-            label='Nhập số điện thoại bố ( mẹ ):'
-            placeholder='Nhập số điện thoại...'
-          />
-        </ProForm.Group>
-        <ProForm.Group>
           <ProFormSelect
             width='md'
-            rules={[{ required: true, message: 'Vui lòng chọn đầy đủ thông tin !' }]}
             name='status'
             label='Tình trạng'
             valueEnum={{
               graduated: 'Đã tốt nghiệp',
-              notgraduated: 'Chưa tốt nghiệp',
+              stillStudying: 'Còn đi học',
+              forcedOut: 'Bị buộc thôi học',
+              dropped: 'Đã bỏ học',
             }}
+            required={[
+              {
+                require: true,
+                message: 'Không được để trống',
+              },
+            ]}
             placeholder='Tình trạng'
           />
+        </ProForm.Group>
+        <ProForm.Group>
+          <ProFormText
+            rules={[{ required: true, message: 'Không được để trống' }]}
+            width='md'
+            name='homeTown'
+            label='Quê quán'
+            placeholder='Nhập quê quán'
+          />
+          <ProFormText
+            width='md'
+            name='residence'
+            label='Nơi ở hiện tại'
+            placeholder='Nhập nơi ở hiện tại của sinh viên'
+          />
+        </ProForm.Group>
+        <ProForm.Group>
+          <ProFormText width='md' name='fatherName' label='Họ và tên bố' placeholder='Nhập họ tên bố ' />
+          <ProFormText
+            width='md'
+            name='fatherPhoneNumber'
+            label='Nhập số điện thoại bố'
+            placeholder='Nhập số điện thoại bố'
+          />
+        </ProForm.Group>
+        <ProForm.Group>
+          <ProFormText width='md' name='motherName' label='Họ và tên mẹ' placeholder='Nhập họ tên mẹ' />
+          <ProFormText
+            width='md'
+            name='motherPhoneNumber'
+            label='Nhập số điện thoại mẹ'
+            placeholder='Nhập số điện thoại mẹ'
+          />
+          <ProFormDatePicker width='md' name='statusDate' label='Thời gian' />
+          {!dataStudent.id && (
+            <ProFormText width='md' name='password' label='Nhập mật khẩu' placeholder='Nhập mật khẩu' />
+          )}
         </ProForm.Group>
       </ModalForm>
     </div>

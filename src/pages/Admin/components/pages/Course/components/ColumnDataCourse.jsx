@@ -1,5 +1,4 @@
 import { Column } from '@ant-design/plots';
-import { PageContainer } from '@ant-design/pro-components';
 import { Typography } from 'antd';
 import React from 'react';
 
@@ -58,12 +57,12 @@ function ColumnDataCourse({ dataCourse }) {
     },
   };
   return (
-    <PageContainer title='Thống kê số lượng sinh viên'>
+    <div>
       <Column {...config} />
       <Text style={{ display: 'block', translate: '35%', marginTop: '10px', opacity: 0.5 }} italic>
         {`Biểu đồ số lượng sinh viên theo năm ${dataCourse?.courseName}`}
       </Text>
-    </PageContainer>
+    </div>
   );
 }
 

@@ -1,115 +1,183 @@
-import { Descriptions } from 'antd';
-import React from 'react';
+import { LoadingOutlined } from '@ant-design/icons';
+import { Descriptions, Spin, message } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import { getInfoStudent } from '../../../../API/axios';
+
 function PersonalInformationStudent(props) {
+  const location = useLocation();
+  const studentId = location.pathname.split('/')[2];
+  const [dataStudent, setDataStudent] = useState({});
+  const [loadingPage, setLoadingPage] = useState(false);
+
+  // status
+  // const status = (status) => {
+  //   if (status === 'graduated') {
+  //     return 'Đã tốt nghiệp';
+  //   } else if (status === 'stillStudying') {
+  //     return 'Còn đi học';
+  //   } else if (status === 'forcedOut') {
+  //     return 'Bị buộc thôi học';
+  //   } else if (status === 'dropped') {
+  //     return 'Đã bỏ học';
+  //   } else return '[ Không có dữ liệu ]';
+  // };
+  // handle get information student
+  const handleGetInfoStudent = (studentId) => {
+    if (studentId !== undefined) {
+      setLoadingPage(true);
+      getInfoStudent(studentId)
+        .then((res) => {
+          if (res.data?.success === true) {
+            setDataStudent(res.data?.data);
+            setLoadingPage(false);
+          } else {
+            message.error(res.data?.error?.message);
+          }
+        })
+        .finally(() => setLoadingPage(false));
+    }
+  };
+  useEffect(() => {
+    handleGetInfoStudent(studentId);
+  }, [studentId]);
+
+  const container = (
+    <Descriptions
+      column={8}
+      style={{
+        fontSize: 40,
+      }}
+    >
+      <Descriptions.Item
+        span={4}
+        labelStyle={{ fontSize: '18px', marginBottom: '20px' }}
+        contentStyle={{ fontSize: '18px' }}
+        label='Mã sinh viên'
+      >
+        {dataStudent?.id ? dataStudent?.id : '[ Không có dữ liệu ]'}
+      </Descriptions.Item>
+      <Descriptions.Item
+        span={4}
+        labelStyle={{ fontSize: '18px', marginBottom: '20px' }}
+        contentStyle={{ fontSize: '18px' }}
+        label='Họ và tên'
+      >
+        {dataStudent?.name ? dataStudent?.name : '[ Không có dữ liệu ]'}
+      </Descriptions.Item>
+      <Descriptions.Item
+        span={4}
+        labelStyle={{ fontSize: '18px', marginBottom: '20px' }}
+        contentStyle={{ fontSize: '18px' }}
+        label='Số điện thoại'
+      >
+        {dataStudent?.phoneNumber ? dataStudent?.phoneNumber : '[ Không có dữ liệu ]'}
+      </Descriptions.Item>
+      <Descriptions.Item span={4} labelStyle={{ fontSize: '18px', marginBottom: '20px' }} contentStyle={{ fontSize: '18px' }} label='Email'>
+        {dataStudent?.email ? dataStudent?.email : '[ Không có dữ liệu ]'}
+      </Descriptions.Item>
+      <Descriptions.Item
+        span={4}
+        labelStyle={{ fontSize: '18px', marginBottom: '20px' }}
+        contentStyle={{ fontSize: '18px' }}
+        label='Giới tính'
+      >
+        {dataStudent?.gender ? dataStudent?.gender : '[ Không có dữ liệu ]'}
+      </Descriptions.Item>
+      <Descriptions.Item
+        span={4}
+        labelStyle={{ fontSize: '18px', marginBottom: '20px' }}
+        contentStyle={{ fontSize: '18px' }}
+        label='Ngày sinh'
+      >
+        {dataStudent?.dob ? dataStudent?.dob : '[ Không có dữ liệu ]'}
+      </Descriptions.Item>
+
+      <Descriptions.Item span={4} labelStyle={{ fontSize: '18px', marginBottom: '20px' }} contentStyle={{ fontSize: '18px' }} label='Lớp'>
+        {dataStudent?.classes?.id ? dataStudent?.classes?.id : '[ Không có dữ liệu ]'}
+      </Descriptions.Item>
+      <Descriptions.Item
+        span={4}
+        labelStyle={{ fontSize: '18px', marginBottom: '20px' }}
+        contentStyle={{ fontSize: '18px' }}
+        label='Chuyên ngành'
+      >
+        {dataStudent?.major?.id ? dataStudent?.major?.id : '[ Không có dữ liệu ]'}
+      </Descriptions.Item>
+      <Descriptions.Item
+        span={4}
+        labelStyle={{ fontSize: '18px', marginBottom: '20px' }}
+        contentStyle={{ fontSize: '18px' }}
+        label='Nơi ở hiện tại'
+      >
+        {dataStudent?.residence ? dataStudent?.residence : '[ Không có dữ liệu ]'}
+      </Descriptions.Item>
+      <Descriptions.Item
+        span={4}
+        labelStyle={{ fontSize: '18px', marginBottom: '20px' }}
+        contentStyle={{ fontSize: '18px' }}
+        label='Quên quán'
+      >
+        {dataStudent?.homeTown ? dataStudent?.homeTown : '[ Không có dữ liệu ]'}
+      </Descriptions.Item>
+      <Descriptions.Item
+        span={4}
+        labelStyle={{ fontSize: '18px', marginBottom: '20px' }}
+        contentStyle={{ fontSize: '18px' }}
+        label='Họ và tên bố'
+      >
+        {dataStudent?.fatherName ? `ông ${dataStudent?.fatherName}` : '[ Không có dữ liệu ]'}
+      </Descriptions.Item>
+      <Descriptions.Item
+        span={4}
+        labelStyle={{ fontSize: '18px', marginBottom: '20px' }}
+        contentStyle={{ fontSize: '18px' }}
+        label='Thông tin liên hệ bố'
+      >
+        {dataStudent?.fatherPhoneNumber ? dataStudent?.fatherPhoneNumber : '[ Không có dữ liệu ]'}
+      </Descriptions.Item>
+      <Descriptions.Item
+        span={4}
+        labelStyle={{ fontSize: '18px', marginBottom: '20px' }}
+        contentStyle={{ fontSize: '18px' }}
+        label='Họ và tên mẹ'
+      >
+        {dataStudent?.motherName ? `bà ${dataStudent?.motherName}` : '[ Không có dữ liệu ]'}
+      </Descriptions.Item>
+      <Descriptions.Item
+        span={4}
+        labelStyle={{ fontSize: '18px', marginBottom: '20px' }}
+        contentStyle={{ fontSize: '18px' }}
+        label='Thông tin liên hệ mẹ'
+      >
+        {dataStudent?.motherPhoneNumber ? dataStudent?.motherPhoneNumber : '[ Không có dữ liệu ]'}
+      </Descriptions.Item>
+      <Descriptions.Item span={4} labelStyle={{ fontSize: '18px' }} contentStyle={{ fontSize: '18px' }} label='Tình trạng'>
+        {/* {status(dataStudent?.status)} */}
+        {dataStudent?.status ? dataStudent?.status : '[ Không có dữ liệu ]'}
+      </Descriptions.Item>
+      <Descriptions.Item span={4} labelStyle={{ fontSize: '18px' }} contentStyle={{ fontSize: '18px' }} label='Thời gian'>
+        {dataStudent?.statusDate ? dataStudent?.statusDate : '[ Không có dữ liệu ]'}
+      </Descriptions.Item>
+    </Descriptions>
+  );
   return (
     <div className='px-10 py-24'>
       <div className='border-2 border-black rounded-3xl p-12'>
-        <Descriptions column={7}>
-          <Descriptions.Item
-            span={4}
-            labelStyle={{ fontSize: '16px', marginBottom: '32px' }}
-            contentStyle={{ fontSize: '16px' }}
-            label='Họ và tên'
-          >
-            Nguyễn Văn A
-          </Descriptions.Item>
-          <Descriptions.Item
-            span={3}
-            labelStyle={{ fontSize: '16px', marginBottom: '32px' }}
-            contentStyle={{ fontSize: '16px' }}
-            label='Số điện thoại'
-          >
-            0987654321
-          </Descriptions.Item>
-          <Descriptions.Item
-            span={4}
-            labelStyle={{ fontSize: '16px', marginBottom: '32px' }}
-            contentStyle={{ fontSize: '16px' }}
-            label='Email'
-          >
-            example@gmail.com
-          </Descriptions.Item>
-          <Descriptions.Item
-            span={3}
-            labelStyle={{ fontSize: '16px', marginBottom: '32px' }}
-            contentStyle={{ fontSize: '16px' }}
-            label='Giới tính'
-          >
-            Nam
-          </Descriptions.Item>
-          <Descriptions.Item
-            span={4}
-            labelStyle={{ fontSize: '16px', marginBottom: '32px' }}
-            contentStyle={{ fontSize: '16px' }}
-            label='Ngày sinh'
-          >
-            2001-04-24
-          </Descriptions.Item>
-          <Descriptions.Item
-            span={3}
-            labelStyle={{ fontSize: '16px', marginBottom: '32px' }}
-            contentStyle={{ fontSize: '16px' }}
-            label='Mã sinh viên'
-          >
-            652323
-          </Descriptions.Item>
-          <Descriptions.Item
-            span={4}
-            labelStyle={{ fontSize: '16px', marginBottom: '32px' }}
-            contentStyle={{ fontSize: '16px' }}
-            label='Lớp'
-          >
-            K64CNPM
-          </Descriptions.Item>
-          <Descriptions.Item
-            span={3}
-            labelStyle={{ fontSize: '16px', marginBottom: '32px' }}
-            contentStyle={{ fontSize: '16px' }}
-            label='Chuyên ngành'
-          >
-            Công nghệ phần mềm
-          </Descriptions.Item>
-          <Descriptions.Item
-            span={4}
-            labelStyle={{ fontSize: '16px', marginBottom: '32px' }}
-            contentStyle={{ fontSize: '16px' }}
-            label='Nơi ở hiện tại'
-          >
-            Hà Nội
-          </Descriptions.Item>
-          <Descriptions.Item
-            span={3}
-            labelStyle={{ fontSize: '16px', marginBottom: '32px' }}
-            contentStyle={{ fontSize: '16px' }}
-            label='Quên quán'
-          >
-            Hải Phòng
-          </Descriptions.Item>
-          <Descriptions.Item
-            span={4}
-            labelStyle={{ fontSize: '16px', marginBottom: '32px' }}
-            contentStyle={{ fontSize: '16px' }}
-            label='Họ và tên bố ( mẹ )'
-          >
-            Ông: Nguyễn Văn B
-          </Descriptions.Item>
-          <Descriptions.Item
-            span={3}
-            labelStyle={{ fontSize: '16px', marginBottom: '32px' }}
-            contentStyle={{ fontSize: '16px' }}
-            label='Thông tin liên hệ bố ( mẹ )'
-          >
-            0234567790
-          </Descriptions.Item>
-          <Descriptions.Item
-            span={7}
-            labelStyle={{ fontSize: '16px' }}
-            contentStyle={{ fontSize: '16px' }}
-            label='Tình trạng'
-          >
-            Chưa tốt nghiệp
-          </Descriptions.Item>
-        </Descriptions>
+        <Spin
+          spinning={loadingPage}
+          indicator={
+            <LoadingOutlined
+              style={{
+                color: 'orange',
+                fontSize: 24,
+              }}
+              spin
+            />
+          }
+        >
+          {container}
+        </Spin>
       </div>
     </div>
   );

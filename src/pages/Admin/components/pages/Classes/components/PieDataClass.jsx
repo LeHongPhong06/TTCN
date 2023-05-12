@@ -1,10 +1,20 @@
 import { Pie } from '@ant-design/plots';
-import { PageContainer } from '@ant-design/pro-components';
 import { Button, Select, Space, Typography } from 'antd';
 import React, { useState } from 'react';
 
 function PieDataClass(props) {
   const { Text } = Typography;
+  const [loadingBtnSearch, setLoadingBtnSearch] = useState(false);
+  const [loadingChart, setLoadingChart] = useState(false);
+  const [valueSelectYear, setValueSelectYear] = useState('');
+  const [valueSelectTerms, setValueSelectTerms] = useState('');
+
+  // Handle get data Pie
+  const handleGetDataPie = (valueSelectYear, valueSelectTerms) => {
+    setLoadingBtnSearch(true);
+    setLoadingChart(true);
+  };
+
   const data = [
     {
       type: 'Tốt',
@@ -81,44 +91,37 @@ function PieDataClass(props) {
       label: 'Kì 2',
     },
   ];
-  const [valueSelectYear, setValueSelectYear] = useState('');
-  const [valueSelectTerms, setValueSelectTerms] = useState('');
-  const handleGetDataPie = (valueSelectYear, valueSelectTerms) => {
-    console.log(valueSelectYear, valueSelectTerms);
-  };
   return (
     <div>
-      <PageContainer title='Thống kê xếp loại'>
-        <Space>
-          <Select
-            defaultValue='-- Chọn năm học --'
-            style={{
-              width: 220,
-            }}
-            onChange={(value) => setValueSelectYear(value)}
-            options={optionsYears}
-          />
-          <Select
-            defaultValue='-- Chọn kì học --'
-            style={{
-              width: 220,
-            }}
-            onChange={(value) => setValueSelectTerms(value)}
-            options={optionsTerms}
-          />
-          <Button
-            type='primary'
-            onClick={() => handleGetDataPie(valueSelectYear, valueSelectTerms)}
-            className='text-black border-black/20'
-          >
-            Tra cứu
-          </Button>
-        </Space>
-        <Pie {...config} />
-        <Text style={{ display: 'block', translate: '28%', marginTop: '-25px', opacity: 0.5 }} italic>
-          Biểu đồ xếp loại hạnh kiểm
-        </Text>
-      </PageContainer>
+      <Space>
+        <Select
+          placeholder='Chọn năm học'
+          style={{
+            width: 200,
+          }}
+          onChange={(value) => setValueSelectYear(value)}
+          options={optionsYears}
+        />
+        <Select
+          placeholder='Chọn kì học'
+          style={{
+            width: 200,
+          }}
+          onChange={(value) => setValueSelectTerms(value)}
+          options={optionsTerms}
+        />
+        <Button
+          type='primary'
+          loading={loadingBtnSearch}
+          onClick={() => handleGetDataPie(valueSelectYear, valueSelectTerms)}
+        >
+          Tra cứu
+        </Button>
+      </Space>
+      <Pie {...config} loading={loadingChart} />
+      <Text style={{ display: 'block', translate: '30%', marginTop: '-40px', opacity: 0.5 }} italic>
+        Biểu đồ xếp loại hạnh kiểm
+      </Text>
     </div>
   );
 }

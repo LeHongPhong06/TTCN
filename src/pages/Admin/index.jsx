@@ -3,109 +3,142 @@ import {
   BellOutlined,
   FundOutlined,
   PoweroffOutlined,
-  SettingOutlined,
   TeamOutlined,
   UnlockOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import { PageContainer } from '@ant-design/pro-components';
 import { Avatar, Badge, Button, Layout, Menu, Space, Tooltip, Typography } from 'antd';
 import React from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
-function Admin(props) {
+function DefaultLayoutAdmin(props) {
   const navigate = useNavigate();
+  const location = useLocation();
+  const identify = location.pathname.split('/')[1];
   const { Title } = Typography;
   const { Header, Sider, Content } = Layout;
+  const checkPathName = () => {
+    if (location.pathname.includes('/manage/students')) {
+      return '1';
+    }
+    if (location.pathname.includes('/manage/points')) {
+      return '2';
+    }
+    if (location.pathname.includes('/manage/classes')) {
+      return '3';
+    }
+    if (location.pathname.includes('/manage/semesters')) {
+      return '4';
+    }
+    if (location.pathname.includes('/manage/courses')) {
+      return '5';
+    }
+    if (location.pathname.includes('/manage/major')) {
+      return '6';
+    }
+    if (location.pathname.includes('/manage/authorization')) {
+      return '7';
+    }
+    if (location.pathname.includes('/manage/changepassword')) {
+      return '8';
+    }
+  };
   const items = [
     {
       key: '1',
+      label: 'Danh sách sinh viên',
       onClick: () => {
-        navigate('/admin/students');
+        navigate(`/${identify}/manage/students`);
       },
       icon: <TeamOutlined className='text-lg' />,
-      label: 'Danh sách sinh viên',
-    },
-    {
-      key: '2',
-      onClick: () => {
-        navigate('/admin/classes');
-      },
-      icon: <BarChartOutlined className='text-lg' />,
-      label: 'Quản lí lớp',
     },
     {
       key: '3',
+      label: 'Quản lí lớp',
       onClick: () => {
-        navigate('/admin/semesters');
+        navigate(`/${identify}/manage/classes`);
       },
-      icon: <FundOutlined className='text-lg' />,
-      label: 'Quản lí học kì',
-    },
-    {
-      key: '4',
-      onClick: () => {
-        navigate('/admin/courses');
-      },
-      icon: <UnlockOutlined className='text-lg' />,
-      label: 'Quản lí khóa',
-    },
-    {
-      key: '5',
-      onClick: () => {
-        navigate('/admin/authorization');
-      },
-      icon: <UnlockOutlined className='text-lg' />,
-      label: 'Phân quyền',
+      icon: <BarChartOutlined className='text-lg' />,
     },
     {
       key: '6',
+      label: 'Quản lí chuyên ngành',
       onClick: () => {
-        navigate('/admin/changepassword');
+        navigate(`/${identify}/manage/major`);
       },
       icon: <UnlockOutlined className='text-lg' />,
-      label: 'Đổi mật khẩu',
+    },
+    {
+      key: '5',
+      label: 'Quản lí khóa',
+      onClick: () => {
+        navigate(`/${identify}/manage/courses`);
+      },
+      icon: <UnlockOutlined className='text-lg' />,
+    },
+    {
+      key: '2',
+      label: 'Quản lí điểm',
+      onClick: () => {
+        navigate(`/${identify}/manage/points`);
+      },
+      icon: <UnlockOutlined className='text-lg' />,
+    },
+    {
+      label: 'Quản lí xếp loại',
+      icon: <UnlockOutlined className='text-lg' />,
+      children: [
+        {
+          key: '9',
+          label: 'Xếp loại theo lớp',
+          onClick: () => {
+            navigate(`/${identify}/manage/class-classification`);
+          },
+        },
+        {
+          key: '10',
+          label: 'Xếp loại theo khóa',
+          onClick: () => {
+            navigate(`/${identify}/manage/major-classification`);
+          },
+        },
+      ],
+    },
+    {
+      key: '4',
+      label: 'Quản lí học kì',
+      onClick: () => {
+        navigate(`/${identify}/manage/semesters`);
+      },
+      icon: <FundOutlined className='text-lg' />,
     },
     {
       key: '7',
+      label: 'Phân quyền',
       onClick: () => {
-        navigate('/admin/major');
+        navigate(`/${identify}/manage/authorization`);
       },
       icon: <UnlockOutlined className='text-lg' />,
-      label: 'Quản lí chuyên ngành',
     },
     {
       key: '8',
+      label: 'Đổi mật khẩu',
       onClick: () => {
-        navigate('/admin/points');
+        navigate(`/${identify}/manage/changepassword`);
       },
       icon: <UnlockOutlined className='text-lg' />,
-      label: 'Quản lí điểm',
     },
   ];
   return (
-    <PageContainer className=''>
-      <Layout className='min-h-[95vh]'>
+    <div className='p-1'>
+      <Layout className='min-h-[99vh]'>
         <Sider style={{ borderRadius: '6px' }} width={250}>
           <div className='py-3 px-6 flex justify-center items-center border-b-2 border-stone-50'>
-            <Title
-              onClick={() => navigate('/admin')}
-              style={{ color: '#fff', marginBottom: 0, cursor: 'pointer' }}
-              level={4}
-            >
+            <Title style={{ color: '#fff', marginBottom: 0 }} level={4}>
               Xin chào Admin
             </Title>
           </div>
-          <Menu
-            onClick={(i) => {
-              console.log(i);
-            }}
-            className='rounded-md mt-1'
-            theme='dark'
-            mode='inline'
-            // defaultSelectedKeys={['1']}
-            items={items}
-          />
+          <Menu className='rounded-md mt-1' theme='dark' mode='inline' defaultSelectedKeys={[checkPathName()]} items={items} />
         </Sider>
         <Layout className='site-layout ml-2'>
           <Header theme='dark' className='rounded-md flex justify-between items-center p-8 '>
@@ -120,18 +153,13 @@ function Admin(props) {
                   icon={<BellOutlined />}
                 ></Button>
               </Badge>
-              <Button
-                className='flex justify-center items-center text-white text-xl border-none'
-                shape='circle'
-                icon={<SettingOutlined />}
-              ></Button>
               <Avatar shape='circle' size={40} icon={<UserOutlined className='text-2xl' />} />
               <Tooltip title='Đăng xuất'>
                 <Button
                   className='flex justify-center items-center text-white text-xl border-none'
                   shape='circle'
                   icon={<PoweroffOutlined />}
-                  onClick={() => navigate('/auth/admin')}
+                  onClick={() => navigate('/')}
                 ></Button>
               </Tooltip>
             </Space>
@@ -141,8 +169,8 @@ function Admin(props) {
           </Content>
         </Layout>
       </Layout>
-    </PageContainer>
+    </div>
   );
 }
 
-export default Admin;
+export default DefaultLayoutAdmin;

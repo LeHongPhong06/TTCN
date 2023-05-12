@@ -1,48 +1,39 @@
+import { LoadingOutlined } from '@ant-design/icons';
 import { Column } from '@ant-design/plots';
-import { PageContainer } from '@ant-design/pro-components';
-import React from 'react';
-import { Typography } from 'antd';
+import { Spin, Typography } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import { getDataStudentTraningPoint } from '../../../../../API/axios';
 
 function ColumnTrainingPoint(props) {
   const { Text } = Typography;
-  const data = [
-    {
-      time: 'Kì 1',
-      value: 78,
-    },
-    {
-      time: 'Kì 2',
-      value: 85,
-    },
-    {
-      time: 'Kì 3',
-      value: 70,
-    },
-    {
-      time: 'Kì 4',
-      value: 90,
-    },
-    {
-      time: 'Kì 5',
-      value: 80,
-    },
-    {
-      time: 'Kì 6',
-      value: 85,
-    },
-    {
-      time: 'Kì 7',
-      value: 80,
-    },
-    {
-      time: 'Kì 8',
-      value: 80,
-    },
-  ];
+  const location = useLocation();
+  const [data, setData] = useState([]);
+  const [loadingPage, setLoadingPage] = useState(false);
+
+  // handle get data points
+  const studentId = location.pathname.split('/')[2];
+  const handleGetDataTrainingPoints = (studentId) => {
+    setLoadingPage(true);
+    if (studentId !== undefined) {
+      getDataStudentTraningPoint(studentId)
+        .then((res) => {
+          if (res.data?.success === true) {
+            setData(res.data?.data?.items);
+            setLoadingPage(false);
+          }
+        })
+        .finally(() => setLoadingPage(false));
+    }
+  };
+  useEffect(() => {
+    handleGetDataTrainingPoints(studentId);
+  }, [studentId]);
+
   const config = {
     data,
-    xField: 'time',
-    yField: 'value',
+    xField: 'termId',
+    yField: 'trainingPoint',
     label: {
       position: 'middle',
       style: {
@@ -67,12 +58,23 @@ function ColumnTrainingPoint(props) {
   };
   return (
     <div className='mt-12'>
-      <PageContainer title='Điểm rèn luyện'>
+      <Spin
+        spinning={loadingPage}
+        indicator={
+          <LoadingOutlined
+            style={{
+              color: 'orange',
+              fontSize: 24,
+            }}
+            spin
+          />
+        }
+      >
         <Column {...config} />
         <Text style={{ display: 'block', textAlign: 'center', opacity: 0.5, marginTop: '10px' }} italic>
           Biểu đồ điểm rèn luyện theo từng kì học
         </Text>
-      </PageContainer>
+      </Spin>
     </div>
   );
 }

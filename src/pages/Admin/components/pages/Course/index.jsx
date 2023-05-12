@@ -1,68 +1,90 @@
-import { DeleteOutlined, EditOutlined, PlusCircleOutlined, SolutionOutlined } from '@ant-design/icons';
-import { Button, Drawer, Popconfirm, Space, Table, Tooltip, Typography } from 'antd';
-import React, { useState } from 'react';
+import {
+  DeleteOutlined,
+  EditOutlined,
+  PlusCircleOutlined,
+  ReloadOutlined,
+  SearchOutlined,
+  SolutionOutlined,
+} from '@ant-design/icons';
+import { Button, Collapse, Drawer, Input, Popconfirm, Space, Table, Tooltip, Typography, message } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { deleteCourse, getCourseList } from '../../../../../API/axios';
+import ColumnDataCourse from './components/ColumnDataCourse';
 import ModalFormCourse from './components/ModalFormCourse';
 import PieDataCourse from './components/PieDataCourse';
-import ColumnDataCourse from './components/ColumnDataCourse';
-
+import { useDebounce } from 'use-debounce';
 function AdminCoursePage(props) {
+  const { Panel } = Collapse;
+  const { Title } = Typography;
   const [openModalFormCourse, setOpenModalFormCourse] = useState(false);
   const [openDrawer, setOpenDrawer] = useState(false);
+  const [loadingTable, setLoadingTable] = useState(false);
+  const [valueSearchCourse, setValueSearchCourse] = useState('');
   const [dataSource, setDataCourse] = useState({});
-  const { Title } = Typography;
-  const handleConfirmDeleteCourse = () => {};
-  const data = [
-    { key: '1', courseId: 'K63', courseName: 'Khóa 63', quantity: 100 },
-    {
-      key: '2',
-      courseId: 'K64',
-      courseName: 'Khóa 64',
-      quantity: 150,
-    },
-    {
-      key: '3',
-      courseId: 'K65',
-      courseName: 'Khóa 65',
-      quantity: 200,
-    },
-    {
-      key: '4',
-      courseId: 'K66',
-      courseName: 'Khóa 66',
-      quantity: 240,
-    },
-    {
-      key: '5',
-      courseId: 'K67',
-      courseName: 'Khóa 67',
-      quantity: 300,
-    },
-  ];
+  const [data, setData] = useState([]);
+  const [pageCurrent, setPageCurrent] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalCourse, setTotalCourse] = useState(0);
+  const debunceValue = useDebounce(valueSearchCourse, 750);
+
+  // Handle Confirm Delete Course
+  const handleConfirmDeleteCourse = (id) => {
+    setLoadingTable(true);
+    deleteCourse(id)
+      .then((res) => {
+        if (res.data?.success === true) {
+          handleGetCourseData();
+          message.success(`Xóa khóa ${id} thành công`);
+        }
+      })
+      .finally(() => setLoadingTable(false));
+  };
+
+  // Handle get Course Data
+  const courseId = debunceValue[0];
+  const handleGetCourseData = async () => {
+    setLoadingTable(true);
+    getCourseList({ id: courseId, page: pageCurrent, size: pageSize })
+      .then((res) => {
+        if (res.data.success === true) {
+          setData(res.data?.data?.items);
+          setTotalCourse(res.data?.data?.total);
+          setLoadingTable(false);
+        } else if (res.data?.error?.message === 'Access is denied') {
+          message.warning('Bạn không có quyền truy cập');
+        }
+      })
+      .finally(() => setLoadingTable(false));
+  };
+  useEffect(() => {
+    handleGetCourseData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pageCurrent, pageSize, courseId]);
 
   const columns = [
     {
       title: 'Mã khóa',
-      dataIndex: 'courseId',
+      dataIndex: 'id',
       align: 'center',
-      key: 'courseId',
+      key: 'id',
     },
     {
       title: 'Tên khóa',
-      dataIndex: 'courseName',
+      dataIndex: 'name',
       align: 'center',
-      key: 'courseName',
+      key: 'name',
     },
     {
       title: 'Tổng số sinh viên',
-      dataIndex: 'quantity',
+      dataIndex: 'numOfStu',
       align: 'center',
-      key: 'quantity',
+      key: 'numOfStu',
     },
     {
       title: 'Tùy chọn',
       align: 'center',
       render: (e, record, index) => (
-        <Space size={8} key={index}>
+        <Space size={16} key={index}>
           <Tooltip title='Chỉnh sửa'>
             <Button
               className='flex justify-center items-center text-md shadow-md'
@@ -75,7 +97,7 @@ function AdminCoursePage(props) {
           </Tooltip>
           <Tooltip title='Xóa'>
             <Popconfirm
-              title={`Bạn có chắc chắn muốn xóa ${record.courseName} ?`}
+              title={`Bạn có chắc chắn muốn xóa ${record.name} ?`}
               icon={<DeleteOutlined />}
               okText='Xóa'
               okType='danger'
@@ -100,17 +122,57 @@ function AdminCoursePage(props) {
   ];
   return (
     <div>
-      <Button
-        onClick={() => setOpenModalFormCourse(true)}
-        className='flex justify-center items-center bg-white shadow-lg font-medium absolute'
-        icon={<PlusCircleOutlined />}
-      >
-        Thêm khóa
-      </Button>
-      <Title style={{ textAlign: 'center', textTransform: 'uppercase' }} level={3}>
-        Quản lí khóa
-      </Title>
-      <Table key={'id'} dataSource={data} columns={columns} />
+      <div className='flex justify-between items-center mb-3'>
+        <Tooltip title='Tìm kiếm khóa'>
+          <Input
+            prefix={<SearchOutlined style={{ opacity: 0.6 }} />}
+            placeholder='Nhập mã khóa. Ví dụ: 65'
+            className='shadow-sm w-[300px]'
+            onChange={(e) => setValueSearchCourse(e.target.value)}
+            value={valueSearchCourse}
+          />
+        </Tooltip>
+        <Title style={{ textAlign: 'center', textTransform: 'uppercase', marginBottom: 0 }} level={3}>
+          Quản lí khóa
+        </Title>
+        <Space>
+          <Button
+            type='default'
+            icon={<ReloadOutlined />}
+            onClick={() => {
+              setPageCurrent(1);
+            }}
+            className='flex justify-center items-center bg-white shadow-lg font-medium'
+          >
+            Cập nhật
+          </Button>
+          <Button
+            icon={<PlusCircleOutlined />}
+            onClick={() => setOpenModalFormCourse(true)}
+            className='flex justify-center items-center bg-white shadow-lg font-medium'
+          >
+            Thêm khóa
+          </Button>
+        </Space>
+      </div>
+      <Table
+        rowKey={'id'}
+        loading={loadingTable}
+        bordered={true}
+        dataSource={data}
+        columns={columns}
+        pagination={{
+          onChange: (page, size) => {
+            setPageCurrent(page);
+            setPageSize(size);
+          },
+          defaultCurrent: 1,
+          pageSize: pageSize,
+          total: totalCourse,
+          current: pageCurrent,
+          showSizeChanger: true,
+        }}
+      />
       <ModalFormCourse
         onSuccess={() => {
           setOpenModalFormCourse(false);
@@ -125,8 +187,14 @@ function AdminCoursePage(props) {
         }}
       />
       <Drawer open={openDrawer} onClose={() => setOpenDrawer(false)} placement='right' size='large'>
-        <PieDataCourse dataCourse={dataSource} />
-        <ColumnDataCourse dataCourse={dataSource} />
+        <Collapse accordion>
+          <Panel header='Điểm rèn luyện' key='1'>
+            <PieDataCourse dataCourse={dataSource} />
+          </Panel>
+          <Panel header='Số lượng sinh viên' key='2'>
+            <ColumnDataCourse dataCourse={dataSource} />
+          </Panel>
+        </Collapse>
       </Drawer>
     </div>
   );

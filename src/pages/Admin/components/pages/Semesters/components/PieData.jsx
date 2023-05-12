@@ -22,12 +22,12 @@ function PieData({ dataPie }) {
       value: dataPie?.medium,
     },
     {
-      name: 'Kém',
-      value: dataPie?.weak,
-    },
-    {
       name: 'Yếu',
       value: dataPie?.worst,
+    },
+    {
+      name: 'Kém',
+      value: dataPie?.weak,
     },
   ];
   const config = {

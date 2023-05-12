@@ -1,14 +1,13 @@
 import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 import ErrorPage from './components/Error/ErrorPage';
-import Admin from './pages/Admin';
+import DefaultLayoutAdmin from './pages/Admin';
+import Home from './pages/Admin/components/pages/AdminHome/Home';
 import AdminAuthorizationPage from './pages/Admin/components/pages/Authorization';
 import AdminChangePasswordPage from './pages/Admin/components/pages/ChangePassword';
 import AdminClassesPage from './pages/Admin/components/pages/Classes';
 import AdminCoursePage from './pages/Admin/components/pages/Course';
-import AdminHomePage from './pages/Admin/components/pages/Home';
 import AdminListStudentPage from './pages/Admin/components/pages/ListStudent';
-import AdminLoginPage from './pages/Admin/components/pages/Login';
 import AdminMajorPage from './pages/Admin/components/pages/Major';
 import AdminPointTermPage from './pages/Admin/components/pages/Point_Term';
 import AdminSemestersPage from './pages/Admin/components/pages/Semesters';
@@ -20,6 +19,8 @@ import HomePageStudent from './pages/User/pages/HomeStudentPage';
 import LayoutPageStudent from './pages/User/pages/LayoutStudentPage';
 import PersonalInformationStudent from './pages/User/pages/PersonalInformationPage';
 import PointPageStudent from './pages/User/pages/PointPageStudent';
+import Classclassification from './pages/Admin/components/pages/Classification/Class';
+import Majorclassification from './pages/Admin/components/pages/Classification/Major';
 
 const router = createBrowserRouter([
   {
@@ -34,7 +35,7 @@ const router = createBrowserRouter([
   },
   // Student routes
   {
-    path: '/student',
+    path: '/student/:userId',
     element: <LayoutPageStudent />,
     errorElement: <ErrorPage />,
     children: [
@@ -67,18 +68,13 @@ const router = createBrowserRouter([
   },
   // Admin routes
   {
-    path: '/auth/admin',
-    element: <AdminLoginPage />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: '/admin',
-    element: <Admin />,
+    path: '/:userId/manage',
+    element: <DefaultLayoutAdmin />,
     errorElement: <ErrorPage />,
     children: [
       {
         path: '',
-        element: <AdminHomePage />,
+        element: <Home />,
         errorElement: <ErrorPage />,
       },
       {
@@ -119,6 +115,16 @@ const router = createBrowserRouter([
       {
         path: 'changepassword',
         element: <AdminChangePasswordPage />,
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: 'class-classification',
+        element: <Classclassification />,
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: 'major-classification',
+        element: <Majorclassification />,
         errorElement: <ErrorPage />,
       },
     ],

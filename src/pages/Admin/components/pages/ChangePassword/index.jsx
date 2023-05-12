@@ -1,12 +1,26 @@
 import { Button, Form, Input, message } from 'antd';
 import React from 'react';
+import { changePassword } from '../../../../../API/axios';
+import { useLocation } from 'react-router-dom';
+import { useState } from 'react';
 
 function AdminChangePasswordPage(props) {
+  const [loading, setLoading] = useState(false);
+  const location = useLocation();
+  const identify = location.pathname.split('/')[1];
+  
   const onFinish = (values) => {
-    message.success('Đổi mật khẩu thành công');
-  };
-  const onFinishFailed = (errorInfo) => {
-    message.error('Đổi mật khẩu thất bại');
+    setLoading(true);
+    changePassword({ id: identify, values: values })
+      .then((res) => {
+        if (res.data?.success === true) {
+          setLoading(true);
+          message.success('Đổi mật khẩu thành công');
+        } else if (res.data?.success === false) {
+          message.error(res.data?.error.message);
+        }
+      })
+      .finally(() => setLoading(false));
   };
   return (
     <div className='flex justify-center items-center flex-col'>
@@ -25,16 +39,12 @@ function AdminChangePasswordPage(props) {
             style={{
               maxWidth: 600,
             }}
-            initialValues={{
-              remember: true,
-            }}
             onFinish={onFinish}
-            onFinishFailed={onFinishFailed}
             autoComplete='off'
           >
             <Form.Item
               label='Mật khẩu hiện tại'
-              name='password1'
+              name='currentPassword'
               rules={[
                 {
                   required: true,
@@ -46,7 +56,7 @@ function AdminChangePasswordPage(props) {
             </Form.Item>
             <Form.Item
               label='Nhập mật khẩu mới'
-              name='password2'
+              name='newPassword'
               rules={[
                 {
                   required: true,
@@ -57,30 +67,37 @@ function AdminChangePasswordPage(props) {
               <Input.Password />
             </Form.Item>
             <Form.Item
+              hasFeedback
               label='Xác nhận mật khẩu mới'
-              name='password3'
+              name='confirmPassword'
               rules={[
                 {
                   required: true,
                   message: 'Vui lòng nhập mật khẩu mới của bạn !',
                 },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value || getFieldValue('newPassword') === value) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(new Error('Mật khẩu không trùng khớp !'));
+                  },
+                }),
               ]}
             >
               <Input.Password />
             </Form.Item>
+            <Form.Item
+              wrapperCol={{
+                offset: 8,
+                span: 16,
+              }}
+            >
+              <Button type='primary' htmlType='submit' loading={loading}>
+                Submit
+              </Button>
+            </Form.Item>
           </Form>
-        </div>
-        <div className='mt-8'>
-          <Form.Item
-            wrapperCol={{
-              offset: 8,
-              span: 16,
-            }}
-          >
-            <Button className='text-white' htmlType='submit'>
-              Submit
-            </Button>
-          </Form.Item>
         </div>
       </div>
     </div>

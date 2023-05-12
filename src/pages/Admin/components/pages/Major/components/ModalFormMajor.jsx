@@ -1,41 +1,43 @@
 import { ModalForm, ProForm, ProFormText } from '@ant-design/pro-components';
 import { message } from 'antd';
-import React, { useState } from 'react';
+import React from 'react';
+import { createMajor, updateMajor } from '../../../../../../API/axios';
 function ModalFormMajor({ openForm, onChangeClickOpen, dataMajor, onSuccess }) {
-  const [loading, setLoading] = useState();
-  const handleCreateStudent = (value) => {
-    setLoading(true);
-    onSuccess();
-    message.success('Tạo chuyên ngành mới thành công');
+  const handleCreateStudent = (values) => {
+    createMajor(values).then((res) => {
+      if (res.data?.success === true) {
+        onSuccess();
+        message.success('Tạo chuyên ngành mới thành công');
+      }
+    });
   };
-  const handleUpdateStudent = (value) => {
-    onSuccess();
-    message.success(`Sửa thông tin chuyên ngành ${dataMajor.majorName} thành công`);
+  const handleUpdateStudent = (id, values) => {
+    updateMajor(id, values).then((res) => {
+      if (res.data?.success === true) {
+        onSuccess();
+        message.success(`Sửa thông tin chuyên ngành ${dataMajor.id} thành công`);
+      }
+    });
   };
 
   return (
     <div>
       <ModalForm
         width={750}
-        title={dataMajor.majorId ? 'Sửa thông tin chuyên ngành' : 'Thêm chuyên ngành'}
+        title={dataMajor.id ? 'Sửa thông tin chuyên ngành' : 'Thêm chuyên ngành'}
         initialValues={dataMajor}
         modalProps={{
           destroyOnClose: true,
-          okText: dataMajor.majorId ? 'Lưu' : 'Tạo',
+          okText: dataMajor.id ? 'Lưu' : 'Tạo',
           okType: 'primary',
-          okButtonProps: {
-            loading,
-            backgroundColor: '#fff',
-            color: '#000',
-          },
           cancelText: 'Hủy',
         }}
         open={openForm}
-        onFinish={(value) => {
-          if (dataMajor.majorId) {
-            handleUpdateStudent(value);
+        onFinish={(values) => {
+          if (dataMajor.id) {
+            handleUpdateStudent(dataMajor.id, values);
           } else {
-            handleCreateStudent(value);
+            handleCreateStudent(values);
           }
         }}
         onOpenChange={onChangeClickOpen}
@@ -44,25 +46,25 @@ function ModalFormMajor({ openForm, onChangeClickOpen, dataMajor, onSuccess }) {
           <ProFormText
             rules={[{ required: true, message: 'Vui lòng nhập đầy đủ thông tin' }]}
             width='md'
-            name='majorId'
+            name='id'
             label='Mã chuyên ngành'
             placeholder='Nhập mã chuyên ngành. Ví dụ: CNTT'
           />
           <ProFormText
             rules={[{ required: true, message: 'Vui lòng nhập đầy đủ thông tin' }]}
             width='md'
-            name='majorName'
+            name='name'
             label='Tên chuyên ngành:'
             placeholder='Nhập tên chuyên ngành. Ví dụ: Công nghệ thông tin'
           />
         </ProForm.Group>
         <ProForm.Group>
           <ProFormText
+            rules={[{ required: true, message: 'Vui lòng nhập đầy đủ thông tin' }]}
             width='md'
-            rules={[{ required: true, message: 'Vui lòng chọn đầy đủ thông tin !' }]}
-            name='quantity'
-            label='Số lượng sinh viên'
-            placeholder='Nhập số lượng sinh viên'
+            name='totalCredits'
+            label='Tổng số tín chỉ tích lũy'
+            placeholder='Nhập tổng số tín chỉ'
           />
         </ProForm.Group>
       </ModalForm>

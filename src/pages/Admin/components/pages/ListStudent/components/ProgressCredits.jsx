@@ -1,9 +1,30 @@
-import React from 'react';
 import { Liquid } from '@ant-design/plots';
-import { PageContainer } from '@ant-design/pro-components';
-import { Descriptions } from 'antd';
-function ProgressCredits(props) {
-  const number = 78 / 131;
+import { Descriptions, Spin, message } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { getDataAccumulation } from '../../../../../../API/axios';
+function ProgressCredits({ dataStudent }) {
+  const studentId = dataStudent?.id;
+  const [data, setData] = useState({});
+  const [loadingChart, setLoadingChart] = useState(false);
+
+  const handleGetDataAccumulation = () => {
+    setLoadingChart(true);
+    if (studentId !== undefined) {
+      getDataAccumulation(studentId)
+        .then((res) => {
+          if (res.data.success === true) {
+            setData(res.data?.data);
+            setLoadingChart(false);
+          } else return message.error(res.data?.error.message);
+        })
+        .finally(() => setLoadingChart(false));
+    }
+  };
+  useEffect(() => {
+    handleGetDataAccumulation();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [studentId]);
+  const number = data ? data?.creditsAccumulated / data?.totalCredits : 0;
   const config = {
     percent: number,
     outline: {
@@ -16,22 +37,19 @@ function ProgressCredits(props) {
   };
   return (
     <div>
-      <PageContainer title='Tiến độ hoàn thành chương trình học tập'>
+      <Spin spinning={loadingChart}>
         <div className='flex justify-between items-center h-[200px]'>
           <Liquid width={200} height={280} {...config} />
           <Descriptions labelStyle={{ width: '200px' }} bordered={true} layout='horizontal' column={1}>
             <Descriptions.Item span={1} label='Số tín chỉ tích lũy'>
-              78
+              {data?.creditsAccumulated}
             </Descriptions.Item>
             <Descriptions.Item span={1} label='Tổng số tín chỉ của chương trình đào tạo'>
-              131
-            </Descriptions.Item>
-            <Descriptions.Item span={1} label='Tiến độ'>
-              Trung bình
+              {data?.totalCredits}
             </Descriptions.Item>
           </Descriptions>
         </div>
-      </PageContainer>
+      </Spin>
     </div>
   );
 }

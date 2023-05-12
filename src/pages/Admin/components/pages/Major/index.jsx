@@ -1,55 +1,70 @@
-import { Button, Popconfirm, Space, Table, Tooltip, Typography } from 'antd';
-import React, { useState } from 'react';
-import { DeleteOutlined, EditOutlined, PlusCircleOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, PlusCircleOutlined, ReloadOutlined } from '@ant-design/icons';
+import { Button, Popconfirm, Space, Table, Tooltip, Typography, message } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { deleteMajor, getMajorList } from '../../../../../API/axios';
 import ModalFormMajor from './components/ModalFormMajor';
 
 function AdminMajorPage(props) {
-  const [openModalFormMajor, setOpenModalFormMajor] = useState(false);
-  const [dataMajor, setDataMajor] = useState({});
-  const handleConfirmDeleteMajor = () => {};
   const { Title } = Typography;
-  const dataSource = [
-    {
-      key: '1',
-      majorId: 'CNTT',
-      majorName: 'Công nghệ thông tin',
-      quantity: 230,
-    },
-    {
-      key: '2',
-      majorId: 'CNPM',
-      majorName: 'Công nghệ phần mềm',
-      quantity: 200,
-    },
-    {
-      key: '3',
-      majorId: 'HTTT',
-      majorName: 'Hệ thống thông tin',
-      quantity: 60,
-    },
-    {
-      key: '4',
-      majorId: 'ATTT',
-      majorName: 'An toàn thông tin',
-      quantity: 50,
-    },
-  ];
+  const [openModalFormMajor, setOpenModalFormMajor] = useState(false);
+  const [loadingTable, setLoadingTable] = useState(false);
+  const [dataMajor, setDataMajor] = useState({});
+  const [dataSource, setDataSource] = useState([]);
+  const [totalMajor, setTotalMajor] = useState(0);
+  const [pageCurrent, setPageCurrent] = useState(1);
 
+  // handle confirm delete major
+  const handleConfirmDeleteMajor = (id) => {
+    setLoadingTable(true);
+    deleteMajor(id)
+      .then((res) => {
+        if (res.data?.success === true) {
+          handleGetDataMajor();
+          message.success('Xóa thành công');
+        }
+      })
+      .finally(() => setLoadingTable(false));
+  };
+
+  // handle get data major
+  const handleGetDataMajor = async () => {
+    setLoadingTable(true);
+    getMajorList({ page: pageCurrent, size: 10 })
+      .then((res) => {
+        if (res.data?.success === true) {
+          setDataSource(res.data?.data?.items);
+          setTotalMajor(res.data?.page);
+          setLoadingTable(false);
+        } else if (res.data?.error?.message === 'Access is denied') {
+          message.warning('Bạn không có quyền truy cập');
+        }
+      })
+      .finally(() => setLoadingTable(false));
+  };
+  useEffect(() => {
+    handleGetDataMajor();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pageCurrent]);
   const columns = [
     {
       title: 'Mã chuyên ngành',
-      dataIndex: 'majorId',
-      key: 'majorId',
+      dataIndex: 'id',
+      key: 'id',
     },
     {
       title: 'Tên chuyên ngành',
-      dataIndex: 'majorName',
-      key: 'majorName',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: 'Tổng số tín chỉ tích lũy',
+      dataIndex: 'totalCredits',
+      key: 'totalCredits',
     },
     {
       title: 'Số lượng sinh viên',
-      dataIndex: 'quantity',
-      key: 'quantity',
+      dataIndex: 'numOfStu',
+      key: 'numOfStu',
     },
     {
       title: 'Tùy chọn',
@@ -68,7 +83,7 @@ function AdminMajorPage(props) {
           </Tooltip>
           <Tooltip title='Xóa'>
             <Popconfirm
-              title={`Bạn có chắc chắn muốn xóa chuyên ngành ${record.majorName}`}
+              title={`Bạn có chắc chắn muốn xóa chuyên ngành ${record.id}`}
               icon={<DeleteOutlined />}
               okText='Xóa'
               okType='danger'
@@ -83,21 +98,49 @@ function AdminMajorPage(props) {
   ];
   return (
     <div>
-      <Button
-        icon={<PlusCircleOutlined />}
-        onClick={() => {
-          setOpenModalFormMajor(true);
+      <div className='flex justify-between items-center mb-3'>
+        <Button
+          type='default'
+          icon={<ReloadOutlined />}
+          onClick={() => {
+            setPageCurrent(1);
+          }}
+          className='flex justify-center items-center bg-white shadow-lg font-medium'
+        >
+          Cập nhật
+        </Button>
+        <Title style={{ textAlign: 'center', textTransform: 'uppercase', marginBottom: 0 }} level={3}>
+          Danh sách chuyên ngành
+        </Title>
+        <Button
+          icon={<PlusCircleOutlined />}
+          onClick={() => {
+            setOpenModalFormMajor(true);
+          }}
+          className='flex justify-center items-center bg-white shadow-lg font-medium'
+        >
+          Thêm chuyên ngành
+        </Button>
+      </div>
+      <Table
+        rowKey='id'
+        loading={loadingTable}
+        bordered={true}
+        dataSource={dataSource}
+        columns={columns}
+        pagination={{
+          onChange: (page, size) => {
+            setPageCurrent(page);
+          },
+          defaultCurrent: 1,
+          pageSize: 10,
+          total: totalMajor,
+          current: pageCurrent,
         }}
-        className='flex justify-center items-center absolute bg-white shadow-lg font-medium'
-      >
-        Thêm chuyên ngành
-      </Button>
-      <Title style={{ textAlign: 'center', textTransform: 'uppercase' }} level={2}>
-        Danh sách chuyên ngành
-      </Title>
-      <Table dataSource={dataSource} columns={columns} />
+      />
       <ModalFormMajor
         onSuccess={() => {
+          handleGetDataMajor();
           setOpenModalFormMajor(false);
         }}
         openForm={openModalFormMajor}

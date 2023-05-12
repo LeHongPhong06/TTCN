@@ -1,19 +1,37 @@
 import { LogoutOutlined } from '@ant-design/icons';
 import { Button, Image, Popconfirm, Space, Typography } from 'antd';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { getInfoStudent } from '../../../../API/axios';
 import logo from '../../../../assets/img/Logo/Logo.png';
 function HeaderTop(props) {
-  // Handle stundent click btn Logout
-  const handleClickConfirmLogOutStudent = () => {
-    navigate('/');
-  };
-
   const { Title, Text } = Typography;
   const navigate = useNavigate();
   const location = useLocation();
   const path1 = location.pathname.includes('student');
   const path2 = location.pathname.includes('forgotpassword');
+  const studentId = location.pathname.split('/')[2];
+
+  const [dataStudent, setDataStudent] = useState();
+  // Handle stundent click btn Logout
+  const handleClickConfirmLogOutStudent = () => {
+    navigate('/');
+  };
+
+  // handle get information student
+  const handleGetInfoStudent = (studentId) => {
+    if (studentId !== undefined) {
+      getInfoStudent(studentId).then((res) => {
+        if (res.data?.success === true) {
+          setDataStudent(res.data?.data);
+        }
+      });
+    }
+  };
+  useEffect(() => {
+    handleGetInfoStudent(studentId);
+  }, [studentId]);
+
   return (
     <div className='bg-green-600 border-b-2 border-lime-300'>
       <div className='max-w-[1100px] mx-auto px-10 pt-4 pb-6 flex justify-between  '>
@@ -44,7 +62,7 @@ function HeaderTop(props) {
           </Title>
           <div className='relative'>
             <Button
-              onClick={() => navigate('/forgotpassword')}
+              onClick={() => navigate(`/forgotpassword`)}
               size='small'
               className={path1 || path2 ? 'hidden' : 'flex justify-center items-center absolute right-0 top-10'}
               style={{
@@ -58,13 +76,13 @@ function HeaderTop(props) {
             <div className={path1 ? 'absolute top-10 right-0 w-[650px]' : 'hidden'}>
               <div className='flex justify-between'>
                 <Text italic style={{ fontSize: '16px', color: '#fff' }} level={4}>
-                  Xin chào: Anh/chị:...
+                  {`Xin chào: anh/chị: ${dataStudent?.name}`}
                 </Text>
                 <Space>
                   <Button
                     type='link'
                     size='small'
-                    onClick={() => navigate('/student/changepassword')}
+                    onClick={() => navigate(`/student/${studentId}/changepassword`)}
                     style={{ color: '#fff' }}
                   >
                     Đổi mật khẩu
