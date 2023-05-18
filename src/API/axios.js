@@ -1,5 +1,5 @@
 import axios from './request';
-// --------- Authorization -----------------
+// --------- login -----------------
 export const login = (values) => {
   return axios.post(`/client/login`, values);
 };
@@ -24,7 +24,7 @@ export const deleteStudent = (id) => {
 };
 
 export const deleteListStudent = (values) => {
-  return axios.delete(`/admin/student/delete`, values);
+  return axios.post(`/admin/student/delete`, values);
 };
 
 export const getDataMedCore10 = (id) => {
@@ -44,7 +44,7 @@ export const getDataAccumulation = (id) => {
 };
 
 export const exportStudentList = (values) => {
-  return axios.get(`/admin/student/export`, values);
+  return axios.get(`/admin/student`, values);
 };
 
 // ----------- Classes --------------
@@ -164,6 +164,27 @@ export const createClassificationsForCourse = (values) => {
 
 export const deleteClassificationsForCourse = (values) => {
   return axios.post(`/admin/course-classified/delete`, values);
+};
+
+// ----------- Authorization ----------------
+export const getAdminList = (values) => {
+  return axios.post(`/admin/admin/list`, values);
+};
+
+export const createAdmin = (values) => {
+  return axios.post(`/admin/admin/create`, values);
+};
+
+export const updateAdmin = (values) => {
+  return axios.put(`/admin/admin/update`, values);
+};
+
+export const deleteAdmin = (id) => {
+  return axios.delete(`/admin/admin/delete/${id}`);
+};
+
+export const updateAuthorizationAdmin = (values) => {
+  return axios.put(`/admin/role/update`, values);
 };
 
 // ----------- Change Password -----------

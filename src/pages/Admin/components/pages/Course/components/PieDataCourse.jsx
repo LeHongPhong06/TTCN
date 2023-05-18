@@ -1,5 +1,5 @@
 import { Pie } from '@ant-design/plots';
-import { Button, Input, Typography } from 'antd';
+import { Button, Input, Space, Typography } from 'antd';
 import React from 'react';
 import { useState } from 'react';
 
@@ -54,17 +54,19 @@ function PieDataCourse(props) {
 
   return (
     <div>
-      <Input
-        value={valueInput}
-        onChange={(e) => setValueInput(e.target.value)}
-        placeholder='Chọn kì học'
-        style={{
-          width: 220,
-        }}
-      />
-      <Button type='primary' onClick={() => handleSearch(valueInput)}>
-        Tra cứu
-      </Button>
+      <Space>
+        <Input
+          value={valueInput}
+          onChange={(e) => setValueInput(e.target.value)}
+          placeholder='Chọn kì học'
+          style={{
+            width: 220,
+          }}
+        />
+        <Button type='primary' onClick={() => handleSearch(valueInput)}>
+          Tra cứu
+        </Button>
+      </Space>
       <Pie {...config} />
       <Text style={{ display: 'block', translate: '30%', marginTop: '-35px', opacity: 0.5 }} italic>
         Biểu đồ xếp loại hạnh kiểm

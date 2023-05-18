@@ -1,16 +1,9 @@
 import { ModalForm, ProForm, ProFormText } from '@ant-design/pro-components';
 import { message } from 'antd';
-import React, { useState } from 'react';
+import React from 'react';
 import { createClass, updateClass } from '../../../../../../API/axios';
 
 function ModalFormClass({ openModalForm, onChangeClickOpen, dataClass, onSuccess, disabledClass }) {
-  const [errorDetailList, setErrorDetailList] = useState([]);
-
-  // handle show error
-  const handleShowError = () => {
-    errorDetailList?.map((e) => message.error(e.message, 8));
-  };
-
   // handle create class
   const handleCreateClass = (values) => {
     createClass(values).then((res) => {
@@ -18,10 +11,14 @@ function ModalFormClass({ openModalForm, onChangeClickOpen, dataClass, onSuccess
         onSuccess();
         message.success(`Tạo lớp thành công`);
       } else if (res.data?.error?.code === 2) {
-        setErrorDetailList(res.data?.error?.errorDetailList);
-        handleShowError();
+        // eslint-disable-next-line no-lone-blocks
+        {
+          res.data?.error?.errorDetailList.forEach((e) => message.error(e.message));
+        }
       } else if (res.data?.error?.code === 500) {
         message.error(res.data?.error?.message);
+      } else if (res.data?.error?.message === 'Access is denied') {
+        message.warning('Bạn không có quyền truy cập');
       }
     });
   };
@@ -33,8 +30,14 @@ function ModalFormClass({ openModalForm, onChangeClickOpen, dataClass, onSuccess
         onSuccess();
         message.success(`Sửa lớp thành công`);
       } else if (res.data?.error?.code === 2) {
-        setErrorDetailList(res.data?.error?.errorDetailList);
-        handleShowError();
+        // eslint-disable-next-line no-lone-blocks
+        {
+          res.data?.error?.errorDetailList.forEach((e) => message.error(e.message));
+        }
+      } else if (res.data?.error?.code === 500) {
+        message.error(res.data?.error?.message);
+      } else if (res.data?.error?.message === 'Access is denied') {
+        message.warning('Bạn không có quyền truy cập');
       }
     });
   };
@@ -66,15 +69,15 @@ function ModalFormClass({ openModalForm, onChangeClickOpen, dataClass, onSuccess
             width='md'
             name='id'
             label='Mã lớp'
-            placeholder='Nhập mã lớp...'
+            placeholder='Nhập mã lớp'
             disabled={disabledClass}
           />
           <ProFormText
-            rules={[{ required: '^K[0-9]+-[0-9]+-', message: 'Tất cả chữ cái của mã lớp phải được viết hoa' }]}
+            rules={[{ required: '^K[0-9]+-[0-9]+-', message: 'Vui lòng nhập đầy đủ thông tin ' }]}
             width='md'
             name='name'
             label='Tên lớp'
-            placeholder='Nhập tên lớp học...'
+            placeholder='Nhập tên lớp học'
           />
         </ProForm.Group>
       </ModalForm>

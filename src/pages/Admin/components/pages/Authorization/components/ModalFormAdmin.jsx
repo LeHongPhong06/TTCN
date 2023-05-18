@@ -1,17 +1,24 @@
 import { ModalForm, ProForm, ProFormSelect, ProFormText } from '@ant-design/pro-components';
 import { message } from 'antd';
-import React, { useState } from 'react';
+import React from 'react';
+import { createAdmin, updateAdmin } from '../../../../../../API/axios';
 
-function ModalFormAdmin({ openForm, onChangeClickOpen, dataAdmin, onSuccess }) {
-  const [loading, setLoading] = useState();
-  const handleCreateStudent = (value) => {
-    setLoading(true);
-    onSuccess();
-    message.success('Tạo admin thành công');
+function ModalFormAdmin({ openForm, onChangeClickOpen, dataAdmin, onSuccess, required }) {
+  const handleCreateStudent = (values) => {
+    createAdmin(values).then((res) => {
+      if (res.data?.success === true) {
+        onSuccess();
+        message.success('Tạo admin thành công');
+      } else return message.error(res.data?.error?.message);
+    });
   };
-  const handleUpdateStudent = (value) => {
-    onSuccess();
-    message.success('Sửa thông tin admin thành công');
+  const handleUpdateStudent = (values) => {
+    updateAdmin(values).then((res) => {
+      if (res.data?.success === true) {
+        onSuccess();
+        message.success('Sửa thông tin admin thành công');
+      } else return message.error(res.data?.error?.message);
+    });
   };
   return (
     <div>
@@ -22,18 +29,14 @@ function ModalFormAdmin({ openForm, onChangeClickOpen, dataAdmin, onSuccess }) {
         modalProps={{
           destroyOnClose: true,
           okText: dataAdmin.id ? 'Lưu' : 'Tạo',
-          okButtonProps: {
-            loading,
-            type: 'primary',
-          },
           cancelText: 'Hủy',
         }}
         open={openForm}
-        onFinish={(value) => {
+        onFinish={(values) => {
           if (dataAdmin.id) {
-            handleUpdateStudent(value);
+            handleUpdateStudent(values);
           } else {
-            handleCreateStudent(value);
+            handleCreateStudent(values);
           }
         }}
         onOpenChange={onChangeClickOpen}
@@ -43,11 +46,11 @@ function ModalFormAdmin({ openForm, onChangeClickOpen, dataAdmin, onSuccess }) {
             rules={[{ required: true, message: 'Không được để trống' }]}
             width='md'
             name='id'
-            label='Tài khoản'
-            placeholder='Nhập tên tài khoản'
+            label='Tên đăng nhập'
+            placeholder='Nhập tên đăng nhập'
           />
           <ProFormText
-            rules={[{ required: true, message: 'Không được để trống' }]}
+            rules={[{ required: required, message: 'Không được để trống' }]}
             width='md'
             name='password'
             label='Mật khẩu'
@@ -58,19 +61,19 @@ function ModalFormAdmin({ openForm, onChangeClickOpen, dataAdmin, onSuccess }) {
           <ProFormText
             rules={[{ required: true, message: 'Không được để trống' }]}
             width='md'
-            name='user'
-            label='Tên đăng nhập'
-            placeholder='Nhập tên đăng nhập'
+            name='name'
+            label='Tên người dùng'
+            placeholder='Nhập tên người dùng'
           />
           <ProFormSelect
             width='md'
             rules={[{ required: true, message: 'Không được để trống' }]}
-            name='role'
+            name='roleId'
             label='Vai trò'
             valueEnum={{
-              admin: 'Admin',
-              supermode: 'Super mod',
-              mod: 'Mod',
+              ADMIN: 'Admin',
+              SUPERMOD: 'Super mod',
+              MOD: 'Mod',
             }}
             placeholder='Chọn vai trò'
           />

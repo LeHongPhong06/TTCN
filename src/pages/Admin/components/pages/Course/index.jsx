@@ -1,11 +1,4 @@
-import {
-  DeleteOutlined,
-  EditOutlined,
-  PlusCircleOutlined,
-  ReloadOutlined,
-  SearchOutlined,
-  SolutionOutlined,
-} from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, PlusCircleOutlined, ReloadOutlined, SearchOutlined, SolutionOutlined } from '@ant-design/icons';
 import { Button, Collapse, Drawer, Input, Popconfirm, Space, Table, Tooltip, Typography, message } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { deleteCourse, getCourseList } from '../../../../../API/axios';
@@ -125,7 +118,7 @@ function AdminCoursePage(props) {
       <div className='flex justify-between items-center mb-3'>
         <Tooltip title='Tìm kiếm khóa'>
           <Input
-            prefix={<SearchOutlined style={{ opacity: 0.6 }} />}
+            prefix={<SearchOutlined className='opacity-60 mr-1' />}
             placeholder='Nhập mã khóa. Ví dụ: 65'
             className='shadow-sm w-[300px]'
             onChange={(e) => setValueSearchCourse(e.target.value)}

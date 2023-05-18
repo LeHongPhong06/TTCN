@@ -157,7 +157,7 @@ function AdminSemestersPage(props) {
               value={valueSearchTerm}
               placeholder='Nhập mã học kì'
               className='shadow-sm w-[230px]'
-              prefix={<SearchOutlined style={{ opacity: 0.6 }} />}
+              prefix={<SearchOutlined className='opacity-60 mr-1' />}
               onChange={(e) => setValueSearchTerm(e.target.value)}
             />
           </Tooltip>

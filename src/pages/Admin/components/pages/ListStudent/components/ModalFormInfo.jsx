@@ -105,12 +105,21 @@ function ModalFormStudentInfo({ openForm, onChangeClickOpen, dataStudent, onSucc
             label='Khóa'
             placeholder='Nhập khóa học'
           />
-          <ProFormText
+          <ProFormSelect
             rules={[{ required: true, message: 'Không được để trống' }]}
             width='md'
             name={['major', 'id']}
             label='Chuyên ngành'
-            placeholder='Nhập chuyên ngành'
+            placeholder='Chọn chuyên ngành'
+            valueEnum={{
+              CNTT: 'Công nghệ thông tin',
+              CNPM: 'Công nghệ phần mềm',
+              MMT: 'Mạng máy tính',
+              HTTT: 'Hệ thống thông tin',
+              ATTT: 'An toàn thông tin',
+              TT: 'Truyền thông',
+              TTNT: 'Trí tuệ nhân tạo',
+            }}
           />
         </ProForm.Group>
         <ProForm.Group>
@@ -125,19 +134,14 @@ function ModalFormStudentInfo({ openForm, onChangeClickOpen, dataStudent, onSucc
             width='md'
             name='status'
             label='Tình trạng'
+            placeholder='Tình trạng'
             valueEnum={{
               graduated: 'Đã tốt nghiệp',
               stillStudying: 'Còn đi học',
               forcedOut: 'Bị buộc thôi học',
               dropped: 'Đã bỏ học',
             }}
-            required={[
-              {
-                require: true,
-                message: 'Không được để trống',
-              },
-            ]}
-            placeholder='Tình trạng'
+            required={[{ require: true, message: 'Không được để trống' }]}
           />
         </ProForm.Group>
         <ProForm.Group>
@@ -148,34 +152,21 @@ function ModalFormStudentInfo({ openForm, onChangeClickOpen, dataStudent, onSucc
             label='Quê quán'
             placeholder='Nhập quê quán'
           />
-          <ProFormText
-            width='md'
-            name='residence'
-            label='Nơi ở hiện tại'
-            placeholder='Nhập nơi ở hiện tại của sinh viên'
-          />
+          <ProFormText width='md' name='residence' label='Nơi ở hiện tại' placeholder='Nhập nơi ở hiện tại của sinh viên' />
         </ProForm.Group>
         <ProForm.Group>
           <ProFormText width='md' name='fatherName' label='Họ và tên bố' placeholder='Nhập họ tên bố ' />
-          <ProFormText
-            width='md'
-            name='fatherPhoneNumber'
-            label='Nhập số điện thoại bố'
-            placeholder='Nhập số điện thoại bố'
-          />
+          <ProFormText width='md' name='fatherPhoneNumber' label='Nhập số điện thoại bố' placeholder='Nhập số điện thoại bố' />
         </ProForm.Group>
         <ProForm.Group>
           <ProFormText width='md' name='motherName' label='Họ và tên mẹ' placeholder='Nhập họ tên mẹ' />
-          <ProFormText
-            width='md'
-            name='motherPhoneNumber'
-            label='Nhập số điện thoại mẹ'
-            placeholder='Nhập số điện thoại mẹ'
-          />
+          <ProFormText width='md' name='motherPhoneNumber' label='Nhập số điện thoại mẹ' placeholder='Nhập số điện thoại mẹ' />
+          {/* {!dataStudent.id && (
+          )} */}
+        </ProForm.Group>
+        <ProForm.Group>
           <ProFormDatePicker width='md' name='statusDate' label='Thời gian' />
-          {!dataStudent.id && (
-            <ProFormText width='md' name='password' label='Nhập mật khẩu' placeholder='Nhập mật khẩu' />
-          )}
+          <ProFormText width='md' name='password' label='Nhập mật khẩu' placeholder='Nhập mật khẩu' />
         </ProForm.Group>
       </ModalForm>
     </div>

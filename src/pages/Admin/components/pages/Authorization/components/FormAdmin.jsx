@@ -1,12 +1,24 @@
 import { Button, Col, Form, Row, Switch, message } from 'antd';
 import React, { useState } from 'react';
+import { updateAuthorizationAdmin } from '../../../../../../API/axios';
 
 function FormAdmin(props) {
   const [loadingBtn, setLoadingBtn] = useState(false);
-  const onFinish = (values) => {
+  const [valueFinal, setValueFinal] = useState([]);
+
+  // handle get Authorization Admin
+  const getAuthorizationAdmin = () => {};
+  const updateAuthorization = () => {
     setLoadingBtn(true);
-    message.success('Cập nhật quyền ADMIN thành công');
-    console.log(values);
+    updateAuthorizationAdmin({ id: 'ADMIN', name: 'Quản trị viên', permissionIds: valueFinal })
+      .then((res) => {
+        if (res.data?.success === true) {
+          getAuthorizationAdmin();
+          message.success('Cập nhật thành công');
+          setLoadingBtn(false);
+        } else return message.error(res.data?.error.message);
+      })
+      .finally(() => setLoadingBtn(false));
   };
   return (
     <div>
@@ -15,7 +27,11 @@ function FormAdmin(props) {
           width: 800,
           marginLeft: 10,
         }}
-        onFinish={onFinish}
+        onFieldsChange={(a, b) => {
+          const arrValue = b.filter((e) => e.value === true);
+          const value = arrValue.map((e) => e.name[0]);
+          setValueFinal(value);
+        }}
       >
         <Row gutter={[8]}>
           <Col span={8}>
@@ -128,7 +144,7 @@ function FormAdmin(props) {
             <Button
               loading={loadingBtn}
               type='primary'
-              htmlType='submit'
+              onClick={updateAuthorization}
               className='rounded-full px-7 py-4 flex justify-center items-center'
             >
               Lưu

@@ -1,21 +1,12 @@
-import {
-  DeleteOutlined,
-  EditOutlined,
-  PlusCircleOutlined,
-  ReloadOutlined,
-  SearchOutlined,
-  SolutionOutlined,
-} from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, PlusCircleOutlined, ReloadOutlined, SearchOutlined, SolutionOutlined } from '@ant-design/icons';
+import { Button, Drawer, Input, Popconfirm, Space, Table, Tooltip, Typography, message } from 'antd';
+import React, { useEffect, useState } from 'react';
 import { useDebounce } from 'use-debounce';
-import { Button, Collapse, Drawer, Input, Popconfirm, Space, Table, Tooltip, Typography, message } from 'antd';
-import React, { useState, useEffect } from 'react';
-import ModalFormClass from './components/ModalForm';
-import PieDataClass from './components/PieDataClass';
-import TableStudentClass from './components/TableStudentClass';
 import { deleteClass, getClassList } from '../../../../../API/axios';
+import ModalFormClass from './components/ModalForm';
+import TableStudentClass from './components/TableStudentClass';
 
 function AdminClassesPage(props) {
-  const { Panel } = Collapse;
   const { Title } = Typography;
   const [openDrawer, setOpenDrawer] = useState(false);
   const [openModalForm, setOpenModalForm] = useState(false);
@@ -104,7 +95,7 @@ function AdminClassesPage(props) {
               <Button className='flex justify-center items-center text-md shadow-md' icon={<DeleteOutlined />}></Button>
             </Popconfirm>
           </Tooltip>
-          <Tooltip title='Xem chi tiết'>
+          <Tooltip title='Xem danh sách sinh viên lớp'>
             <Button
               className='flex justify-center items-center text-md shadow-md'
               icon={<SolutionOutlined />}
@@ -124,7 +115,7 @@ function AdminClassesPage(props) {
         <Space>
           <Tooltip title='Tìm kiếm lớp'>
             <Input
-              prefix={<SearchOutlined style={{ opacity: 0.6 }} />}
+              prefix={<SearchOutlined className='opacity-60 mr-1' />}
               placeholder='Nhập mã lớp'
               className='shadow-sm w-[350px]'
               onChange={(e) => setValueSearchClass(e.target.value)}
@@ -205,14 +196,7 @@ function AdminClassesPage(props) {
         }}
         placement='right'
       >
-        <Collapse accordion>
-          <Panel header='Danh sách sinh viên' key='1'>
-            <TableStudentClass dataClass={dataClass} />
-          </Panel>
-          <Panel header='Điểm rèn luyện' key='2'>
-            <PieDataClass dataClass={dataClass} />
-          </Panel>
-        </Collapse>
+        <TableStudentClass dataClass={dataClass} />
       </Drawer>
     </div>
   );

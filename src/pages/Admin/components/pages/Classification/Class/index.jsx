@@ -1,9 +1,10 @@
-import { DeleteOutlined, SearchOutlined, SolutionOutlined, UserAddOutlined } from '@ant-design/icons';
-import { Button, Drawer, Input, Popconfirm, Space, Table, Tooltip, Typography, message } from 'antd';
+import { DeleteOutlined, PieChartOutlined, SearchOutlined, UserAddOutlined } from '@ant-design/icons';
+import { Button, Input, Modal, Popconfirm, Space, Table, Tooltip, Typography, message } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useDebounce } from 'use-debounce';
 import { deleteClassificationsForClass, getClassificationsForClass } from '../../../../../../API/axios';
 import ModalFormClassification from './components/ModalFormClassification';
+import PieDataClassified from './components/PieDataClassified';
 
 function Classclassification(props) {
   const { Title } = Typography;
@@ -12,11 +13,12 @@ function Classclassification(props) {
   const [pageCurrent, setPageCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [openFormModal, setOpenFormModal] = useState(false);
-  const [openDrawer, setOpenDrawer] = useState(false);
+  const [openChart, setOpenChart] = useState(false);
   const [dataIndex, setDataIndex] = useState({});
   const [valueClassId, setValueClassId] = useState('');
   const [valueTermId, setValueTermId] = useState('');
   const [dataSource, setDataSource] = useState([]);
+  const [dataPie, setDataPie] = useState({});
 
   //   handle get data table classification
   const debounceClassId = useDebounce(valueClassId, 750);
@@ -126,11 +128,14 @@ function Classclassification(props) {
               <Button className='flex justify-center items-center text-md shadow-md' icon={<DeleteOutlined />}></Button>
             </Popconfirm>
           </Tooltip>
-          <Tooltip title='Xem chi tiết'>
+          <Tooltip title='Xem dưới dạng biểu đồ'>
             <Button
-              onClick={() => setOpenDrawer(true)}
+              onClick={() => {
+                setDataPie(record);
+                setOpenChart(true);
+              }}
               className='flex justify-center items-center text-md shadow-md'
-              icon={<SolutionOutlined />}
+              icon={<PieChartOutlined />}
             ></Button>
           </Tooltip>
         </Space>
@@ -213,7 +218,23 @@ function Classclassification(props) {
         }}
         dataIndex={dataIndex}
       />
-      <Drawer size='large' placement='right' open={openDrawer} onClose={() => setOpenDrawer(false)}></Drawer>
+      <Modal
+        width={800}
+        centered
+        title='Thống kê xếp loại theo kì'
+        open={openChart}
+        okText='Ok'
+        onOk={() => setOpenChart(false)}
+        onCancel={() => {
+          setDataPie({});
+          setOpenChart(false);
+        }}
+        cancelButtonProps={{
+          style: { display: 'none' },
+        }}
+      >
+        <PieDataClassified dataPie={dataPie} />
+      </Modal>
     </div>
   );
 }

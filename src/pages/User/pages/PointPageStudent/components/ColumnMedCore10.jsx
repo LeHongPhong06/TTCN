@@ -70,10 +70,10 @@ function ColumnMedCore10(props) {
             />
           }
         >
-            <Column {...config} />
-            <Text style={{ display: 'block', textAlign: 'center', opacity: 0.5, marginTop: '10px' }} italic>
-              Biểu đồ điểm rèn luyện theo từng kì học
-            </Text>
+          <Column {...config} />
+          <Text style={{ display: 'block', textAlign: 'center', opacity: 0.5, marginTop: '10px' }} italic>
+            Biểu đồ điểm trung bình học tập theo từng kì học
+          </Text>
         </Spin>
       </div>
     </div>

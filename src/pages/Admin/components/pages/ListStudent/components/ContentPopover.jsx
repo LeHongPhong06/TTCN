@@ -13,7 +13,7 @@ function ContentPopover({ setValuesFilter }) {
         }}
         onFinish={onFinish}
       >
-        <Row gutter={[16, 8]}>
+        <Row gutter={[24, 8]}>
           <Col span={12}>
             <Form.Item label='Chuyên ngành' name='majorId'>
               <Select placeholder='Chọn chuyên ngành'>

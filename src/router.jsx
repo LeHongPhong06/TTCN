@@ -103,7 +103,7 @@ const router = createBrowserRouter([
         errorElement: <ErrorPage />,
       },
       {
-        path: 'major',
+        path: 'majors',
         element: <AdminMajorPage />,
         errorElement: <ErrorPage />,
       },

@@ -1,12 +1,4 @@
-import {
-  BarChartOutlined,
-  BellOutlined,
-  FundOutlined,
-  PoweroffOutlined,
-  TeamOutlined,
-  UnlockOutlined,
-  UserOutlined,
-} from '@ant-design/icons';
+import { BellOutlined, PoweroffOutlined, UserOutlined } from '@ant-design/icons';
 import { Avatar, Badge, Button, Layout, Menu, Space, Tooltip, Typography } from 'antd';
 import React from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
@@ -33,7 +25,7 @@ function DefaultLayoutAdmin(props) {
     if (location.pathname.includes('/manage/courses')) {
       return '5';
     }
-    if (location.pathname.includes('/manage/major')) {
+    if (location.pathname.includes('/manage/majors')) {
       return '6';
     }
     if (location.pathname.includes('/manage/authorization')) {
@@ -41,6 +33,12 @@ function DefaultLayoutAdmin(props) {
     }
     if (location.pathname.includes('/manage/changepassword')) {
       return '8';
+    }
+    if (location.pathname.includes('/manage/class-classification')) {
+      return '9';
+    }
+    if (location.pathname.includes('/manage/major-classification')) {
+      return '10';
     }
   };
   const items = [
@@ -50,7 +48,6 @@ function DefaultLayoutAdmin(props) {
       onClick: () => {
         navigate(`/${identify}/manage/students`);
       },
-      icon: <TeamOutlined className='text-lg' />,
     },
     {
       key: '3',
@@ -58,15 +55,13 @@ function DefaultLayoutAdmin(props) {
       onClick: () => {
         navigate(`/${identify}/manage/classes`);
       },
-      icon: <BarChartOutlined className='text-lg' />,
     },
     {
       key: '6',
       label: 'Quản lí chuyên ngành',
       onClick: () => {
-        navigate(`/${identify}/manage/major`);
+        navigate(`/${identify}/manage/majors`);
       },
-      icon: <UnlockOutlined className='text-lg' />,
     },
     {
       key: '5',
@@ -74,7 +69,6 @@ function DefaultLayoutAdmin(props) {
       onClick: () => {
         navigate(`/${identify}/manage/courses`);
       },
-      icon: <UnlockOutlined className='text-lg' />,
     },
     {
       key: '2',
@@ -82,11 +76,9 @@ function DefaultLayoutAdmin(props) {
       onClick: () => {
         navigate(`/${identify}/manage/points`);
       },
-      icon: <UnlockOutlined className='text-lg' />,
     },
     {
       label: 'Quản lí xếp loại',
-      icon: <UnlockOutlined className='text-lg' />,
       children: [
         {
           key: '9',
@@ -110,7 +102,6 @@ function DefaultLayoutAdmin(props) {
       onClick: () => {
         navigate(`/${identify}/manage/semesters`);
       },
-      icon: <FundOutlined className='text-lg' />,
     },
     {
       key: '7',
@@ -118,7 +109,6 @@ function DefaultLayoutAdmin(props) {
       onClick: () => {
         navigate(`/${identify}/manage/authorization`);
       },
-      icon: <UnlockOutlined className='text-lg' />,
     },
     {
       key: '8',
@@ -126,7 +116,6 @@ function DefaultLayoutAdmin(props) {
       onClick: () => {
         navigate(`/${identify}/manage/changepassword`);
       },
-      icon: <UnlockOutlined className='text-lg' />,
     },
   ];
   return (

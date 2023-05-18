@@ -1,9 +1,9 @@
 import { Table, message } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { getListStudent } from '../../../../../../API/axios';
+import { PageContainer } from '@ant-design/pro-components';
 
 function TableStudentClass({ dataClass }) {
-  console.log(dataClass);
   const classId = dataClass.id;
   const [loadingTable, setLoadingTable] = useState(false);
   const [pageCurrent, setPageCurrent] = useState(1);
@@ -41,7 +41,7 @@ function TableStudentClass({ dataClass }) {
     },
   ];
   return (
-    <div>
+    <PageContainer title='Danh sách sinh viên'>
       <Table
         rowKey='id'
         loading={loadingTable}
@@ -60,7 +60,7 @@ function TableStudentClass({ dataClass }) {
           showSizeChanger: true,
         }}
       />
-    </div>
+    </PageContainer>
   );
 }
 

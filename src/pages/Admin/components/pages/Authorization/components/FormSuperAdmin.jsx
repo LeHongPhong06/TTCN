@@ -2,6 +2,7 @@ import { Button, Col, Form, Row, Switch, message } from 'antd';
 import React, { useState } from 'react';
 
 function FormSuperAdmin(props) {
+  const [valueFinal, setValueFinal] = useState([]);
   const [loadingBtn, setLoadingBtn] = useState(false);
   const onFinish = (values) => {
     setLoadingBtn(true);
@@ -16,6 +17,11 @@ function FormSuperAdmin(props) {
           marginLeft: 10,
         }}
         onFinish={onFinish}
+        onFieldsChange={(a, b) => {
+          const arrValue = b.filter((e) => e.value === true);
+          const value = arrValue.map((e) => e.name[0]);
+          setValueFinal(value);
+        }}
       >
         <Row gutter={[8]}>
           <Col span={8}>
@@ -81,7 +87,7 @@ function FormSuperAdmin(props) {
           <Col span={24}>
             <Button
               type='primary'
-              loading={loadingBtn}
+              // loading={loadingBtn}
               htmlType='submit'
               className='rounded-full px-7 py-4 flex justify-center items-center'
             >

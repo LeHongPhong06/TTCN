@@ -14,7 +14,6 @@ function ChangePasswordPage(props) {
   const onFinish = (values) => {
     setLoading(true);
     openNotification();
-    console.log('Success:', values);
   };
   return (
     <div className='pt-12'>
@@ -83,15 +82,17 @@ function ChangePasswordPage(props) {
             />
           </Form.Item>
           {contextHolder}
-          <Button
-            size='large'
-            loading={loading}
-            type='default'
-            htmlType='submit'
-            style={{ borderRadius: 999, backgroundColor: 'white', fontWeight: 500 }}
-          >
-            Cập nhật
-          </Button>
+          <div className='flex justify-center items-center'>
+            <Button
+              size='large'
+              loading={loading}
+              type='default'
+              htmlType='submit'
+              style={{ borderRadius: 999, backgroundColor: 'white', fontWeight: 500 }}
+            >
+              Cập nhật
+            </Button>
+          </div>
         </Form>
       </div>
     </div>

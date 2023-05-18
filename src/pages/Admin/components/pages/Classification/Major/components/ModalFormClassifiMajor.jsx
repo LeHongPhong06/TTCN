@@ -45,16 +45,16 @@ function ModalFormClassifiMajor({ openForm, onChangeClickOpen, dataIndex, onSucc
           <ProFormText
             rules={[{ required: true, message: 'Không được để trống' }]}
             width='md'
-            name='classId'
-            label='Mã lớp'
-            placeholder='Nhập mã lớp'
+            name='courseId'
+            label='Mã khóa'
+            placeholder='Nhâp mã khóa'
           />
           <ProFormText
             rules={[{ required: true, message: 'Không được để trống' }]}
             width='md'
-            name='id'
-            label='Mã khóa'
-            placeholder='Nhâp mã khóa'
+            name='termId'
+            label='Mã học kỳ'
+            placeholder='Nhập mã học kỳ'
           />
         </ProForm.Group>
       </ModalForm>

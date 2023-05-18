@@ -8,7 +8,7 @@ function AdminChangePasswordPage(props) {
   const [loading, setLoading] = useState(false);
   const location = useLocation();
   const identify = location.pathname.split('/')[1];
-  
+
   const onFinish = (values) => {
     setLoading(true);
     changePassword({ id: identify, values: values })
@@ -87,13 +87,8 @@ function AdminChangePasswordPage(props) {
             >
               <Input.Password />
             </Form.Item>
-            <Form.Item
-              wrapperCol={{
-                offset: 8,
-                span: 16,
-              }}
-            >
-              <Button type='primary' htmlType='submit' loading={loading}>
+            <Form.Item className='flex justify-center items-center'>
+              <Button type='primary' htmlType='submit' loading={loading} className='ml-15 w-[150px] flex justify-center items-center'>
                 Submit
               </Button>
             </Form.Item>

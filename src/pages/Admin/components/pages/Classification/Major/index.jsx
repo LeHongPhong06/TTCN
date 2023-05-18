@@ -1,9 +1,10 @@
-import { DeleteOutlined, SearchOutlined, SolutionOutlined, UserAddOutlined } from '@ant-design/icons';
-import { Button, Drawer, Input, Popconfirm, Space, Table, Tooltip, Typography, message } from 'antd';
+import { DeleteOutlined, PieChartOutlined, SearchOutlined, UserAddOutlined } from '@ant-design/icons';
+import { Button, Input, Modal, Popconfirm, Space, Table, Tooltip, Typography, message } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useDebounce } from 'use-debounce';
 import { deleteClassificationsForCourse, getClassificationsForCourse } from '../../../../../../API/axios';
 import ModalFormClassifiMajor from './components/ModalFormClassifiMajor';
+import PieDataMajor from './components/PieDataMajor';
 
 function Majorclassification(props) {
   const { Title } = Typography;
@@ -12,11 +13,12 @@ function Majorclassification(props) {
   const [pageCurrent, setPageCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [openFormModal, setOpenFormModal] = useState(false);
-  const [openDrawer, setOpenDrawer] = useState(false);
   const [dataIndex, setDataIndex] = useState({});
   const [dataSource, setDataSource] = useState([]);
   const [valueCourse, setValueCourse] = useState('');
   const [valueTermId, setValueTermId] = useState('');
+  const [dataPie, setDataPie] = useState({});
+  const [openChart, setOpenChart] = useState(false);
 
   //   handle get data table classification
   const debounceCousreId = useDebounce(valueCourse, 750);
@@ -25,21 +27,21 @@ function Majorclassification(props) {
   const termId = debounceTermId[0];
   const handleGetDataClassification = () => {
     setLoadingTable(true);
-    getClassificationsForCourse({ courseId: courseId, termId: termId, page: pageCurrent, size: pageSize }).then((res) => {
-      if (res.data?.success === true) {
-        setDataSource(res.data?.data?.items);
-        setTotalClassification(res.data?.data?.total);
-        setLoadingTable(false);
-      } else if (res.data?.error?.message === 'Access is denied') {
-        message.warning('Bạn không có quyền truy cập');
-      } else return message.error(res.data?.error?.message);
-    });
-    setLoadingTable();
-    setTotalClassification();
+    getClassificationsForCourse({ courseId: courseId, termId: termId, page: pageCurrent, size: pageSize })
+      .then((res) => {
+        if (res.data?.success === true) {
+          setDataSource(res.data?.data?.items);
+          setTotalClassification(res.data?.data?.total);
+          setLoadingTable(false);
+        } else if (res.data?.error?.message === 'Access is denied') {
+          message.warning('Bạn không có quyền truy cập');
+        } else return message.error(res.data?.error?.message);
+      })
+      .finally(() => setLoadingTable(false));
   };
   const handleConfirmDeleteData = (courseId, termId) => {
     setLoadingTable(true);
-    deleteClassificationsForCourse(courseId, termId)
+    deleteClassificationsForCourse({ courseId: courseId, termId: termId })
       .then((res) => {
         if (res.data?.success === true) {
           handleGetDataClassification();
@@ -57,20 +59,14 @@ function Majorclassification(props) {
     {
       title: 'Mã khóa',
       align: 'center',
-      dataIndex: 'cousreId',
-      key: 'cousreId',
-    },
-    {
-      title: 'Tên khóa',
-      align: 'center',
-      dataIndex: 'courseName',
-      key: 'courseName',
+      dataIndex: 'courseId',
+      key: 'courseId',
     },
     {
       title: 'Mã học kỳ',
       align: 'center',
-      dataIndex: 'classTerm',
-      key: 'classTerm',
+      dataIndex: 'termId',
+      key: 'termId',
     },
     {
       title: 'Hạnh kiểm xuất sắc',
@@ -133,11 +129,14 @@ function Majorclassification(props) {
               <Button className='flex justify-center items-center text-md shadow-md' icon={<DeleteOutlined />}></Button>
             </Popconfirm>
           </Tooltip>
-          <Tooltip title='Xem chi tiết'>
+          <Tooltip title='Xem dưới dạng biểu đồ'>
             <Button
-              onClick={() => setOpenDrawer(true)}
+              onClick={() => {
+                setDataPie(record);
+                setOpenChart(true);
+              }}
               className='flex justify-center items-center text-md shadow-md'
-              icon={<SolutionOutlined />}
+              icon={<PieChartOutlined />}
             ></Button>
           </Tooltip>
         </Space>
@@ -207,7 +206,10 @@ function Majorclassification(props) {
         }}
       />
       <ModalFormClassifiMajor
-        onSuccess={() => {}}
+        onSuccess={() => {
+          handleGetDataClassification();
+          setOpenFormModal(false);
+        }}
         openForm={openFormModal}
         onChangeClickOpen={(open) => {
           if (!open) {
@@ -217,7 +219,23 @@ function Majorclassification(props) {
         }}
         dataIndex={dataIndex}
       />
-      <Drawer size='large' placement='right' open={openDrawer} onClose={() => setOpenDrawer(false)}></Drawer>
+      <Modal
+        width={800}
+        centered
+        title='Thống kê xếp loại theo kì'
+        open={openChart}
+        okText='Ok'
+        onOk={() => setOpenChart(false)}
+        onCancel={() => {
+          setDataPie({});
+          setOpenChart(false);
+        }}
+        cancelButtonProps={{
+          style: { display: 'none' },
+        }}
+      >
+        <PieDataMajor dataPie={dataPie} />
+      </Modal>
     </div>
   );
 }

@@ -16,7 +16,8 @@ import {
 import { Button, Collapse, Drawer, Input, Popconfirm, Popover, Space, Table, Tag, Tooltip, Typography, Upload, message } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useDebounce } from 'use-debounce';
-import { deleteListStudent, deleteStudent, getListStudent } from '../../../../../API/axios';
+import { deleteListStudent, deleteStudent, exportStudentList, getListStudent } from '../../../../../API/axios';
+import { exportExcel } from '../../../../../import-export-data';
 import ColumnDataMedCore10 from './components/ColumnDataMedCore10';
 import ColumnDataMedCore4 from './components/ColumnDataMedCore4';
 import ColumnPointTraining from './components/ColumnPointTraining';
@@ -44,14 +45,36 @@ function AdminListStudentPage(props) {
   const debunceValue = useDebounce(valueSearchStudent, 750);
   const studentId = debunceValue[0];
 
+  // Handle call get dataStudent
+  const handleGetDataStudentList = () => {
+    setLoadingTable(true);
+    getListStudent({ studentId: studentId, page: pageCurrent, size: pageSize, filter: valuesFilter })
+      .then((res) => {
+        if (res.data?.success === true) {
+          setDataSource(res.data?.data?.items);
+          setTotalStudent(res.data?.data?.total);
+          setLoadingTable(false);
+        } else if (res.data?.error?.message === 'Access is denied') {
+          message.warning('Bạn không có quyền truy cập');
+        } else if (res.data?.success === false) {
+          message.warning(res.data?.error?.message);
+        }
+      })
+      .finally(() => setLoadingTable(false));
+  };
+  useEffect(() => {
+    handleGetDataStudentList();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pageCurrent, valuesFilter, pageSize, studentId]);
+
   // Handle onClick confirm btn delete student
   const handleConfirmDeleteStudent = (id) => {
     setLoadingTable(true);
     deleteStudent(id)
       .then((res) => {
         if (res.data?.success === true) {
-          message.success(res.data?.data);
           handleGetDataStudentList();
+          message.success('Xóa sinh viên thành công');
           setLoadingTable(false);
         } else {
           message.error('Xóa sinh viên thất bại');
@@ -62,7 +85,7 @@ function AdminListStudentPage(props) {
 
   // Handle onClick btn delete student list
   const hasSelected = selectedRowKeys.length > 0;
-  const handleDeleteListStudent = () => {
+  const handleDeleteListStudent = async () => {
     setLoadingTable(true);
     setLoadingBtnDeleteListStudent(true);
     deleteListStudent({ ids: selectedRowKeys })
@@ -82,28 +105,14 @@ function AdminListStudentPage(props) {
       });
   };
 
-  // Handle call get dataStudent
-  const handleGetDataStudentList = () => {
-    setLoadingTable(true);
-    getListStudent({ studentId: studentId, page: pageCurrent, size: pageSize, filter: valuesFilter })
-      .then((res) => {
-        if (res.data?.success === true) {
-          setDataSource(res.data?.data?.items);
-          setTotalStudent(res.data?.data?.total);
-          setLoadingTable(false);
-        } else if (res.data?.error?.message === 'Access is denied') {
-          message.warning('Bạn không có quyền truy cập');
-        } else if (res.data?.success === false) {
-          message.warning(res.data?.error?.message);
-        }
-      })
-      .finally(() => setLoadingTable(false));
+  // export file
+  const exportDataFileExcel = () => {
+    exportStudentList().then((res) => {
+      if (res.data?.success === true) {
+        exportExcel(res.data?.data?.items, 'Sheet1', 'danh-sach-sinh-vien');
+      }
+    });
   };
-
-  useEffect(() => {
-    handleGetDataStudentList();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageCurrent, valuesFilter, pageSize, studentId]);
 
   const tagStatus = (status) => {
     if (status === 'Bị buộc thôi học') {
@@ -230,7 +239,7 @@ function AdminListStudentPage(props) {
         <Space className='ml-10'>
           <Tooltip title='Tìm kiếm sinh viên'>
             <Input
-              prefix={<SearchOutlined style={{ opacity: 0.6 }} />}
+              prefix={<SearchOutlined className='opacity-60 mr-1' />}
               placeholder='Nhập mã sinh viên'
               className='shadow-sm w-[230px]'
               onChange={(e) => {
@@ -276,8 +285,8 @@ function AdminListStudentPage(props) {
           columns={columns}
           pagination={{
             onChange: (page, size) => {
-              setPageCurrent(page);
               setPageSize(size);
+              setPageCurrent(page);
             },
             defaultCurrent: 1,
             pageSize: pageSize,
@@ -286,15 +295,13 @@ function AdminListStudentPage(props) {
             showSizeChanger: true,
           }}
         />
-        <Upload onDownload={() => {}}>
-          <Button
-            // onClick={downloadExcel}
-            icon={<DownloadOutlined />}
-            className='flex justify-center items-center absolute bottom-9 text-md font-medium shadow-md bg-slate-100'
-          >
-            Xuất danh sách sinh viên
-          </Button>
-        </Upload>
+        <Button
+          onClick={exportDataFileExcel}
+          icon={<DownloadOutlined />}
+          className='flex justify-center items-center absolute bottom-5 left-0 text-md font-medium shadow-md bg-slate-100'
+        >
+          Xuất danh sách sinh viên
+        </Button>
       </div>
       <ModalFormStudentInfo
         onSuccess={() => {

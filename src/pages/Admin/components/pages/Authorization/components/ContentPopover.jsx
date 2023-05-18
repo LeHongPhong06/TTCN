@@ -16,9 +16,6 @@ function ContentPopover(props) {
           width: 850,
         }}
       >
-        <Panel header='SUPERADMIN' key='1'>
-          <FormSuperAdmin />
-        </Panel>
         <Panel header='ADMIN' key='2'>
           <FormAdmin />
         </Panel>

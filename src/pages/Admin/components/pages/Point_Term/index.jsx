@@ -18,17 +18,13 @@ function AdminPointTermPage(props) {
   const [pageSize, setPageSize] = useState(10);
   const [totalPoints, setTotalPoints] = useState(0);
   const [disabled, setDisabled] = useState(false);
-  const [valueFilters, setValueFilters] = useState({
-    point: { min: null, max: null },
-    accPoint: { min: null, max: null },
-    trainingPoint: { min: null, max: null },
-  });
+  const [valueFilters, setValueFilters] = useState({});
   const debunceValueStudentId = useDebounce(valueSearchStudentId, 750);
   const debunceValueTermId = useDebounce(valueSearchTermId, 750);
   const studentId = debunceValueStudentId[0];
   const termId = debunceValueTermId[0];
   // Handle click confirm delete major
-  const handleConfirmDeletePoint = async (values) => {
+  const handleConfirmDeletePoint = (values) => {
     setLoadingTable(false);
     deletePoint(values)
       .then((res) => {
@@ -42,7 +38,7 @@ function AdminPointTermPage(props) {
   };
 
   // Handle get data points
-  const handleGetDataPointList = async () => {
+  const handleGetDataPointList = () => {
     setLoadingTable(true);
     getDataPoint({
       studentId: studentId,
@@ -58,7 +54,7 @@ function AdminPointTermPage(props) {
           setLoadingTable(false);
         } else if (res.data?.error?.message === 'Access is denied') {
           message.warning('Bạn không có quyền truy cập');
-        }
+        } else return message.error(res.data?.error.message);
       })
       .finally(() => setLoadingTable(false));
   };
@@ -159,9 +155,9 @@ function AdminPointTermPage(props) {
       <div className='flex justify-between items-center mb-3'>
         <Space>
           <Input
-            prefix={<SearchOutlined style={{ opacity: 0.6 }} />}
+            prefix={<SearchOutlined className='opacity-60 mr-1' />}
             placeholder='Nhập mã sinh viên'
-            className='shadow-sm w-[180px]'
+            className='shadow-sm w-[230px]'
             onChange={(e) => {
               setPageCurrent(1);
               setValueSearchStudentId(e.target.value);
@@ -170,7 +166,7 @@ function AdminPointTermPage(props) {
           />
           <Input
             placeholder='Nhập mã học kì'
-            className='shadow-sm w-[150px]'
+            className='shadow-sm w-[230px]'
             onChange={(e) => {
               setPageCurrent(1);
               setValueSearchTermId(e.target.value);
@@ -179,24 +175,16 @@ function AdminPointTermPage(props) {
           />
           <Popover
             placement='bottom'
-            content={
-              <ContentPopover
-                loadingTable={(loading) => setLoadingTable(loading)}
-                setValueFilters={(values) => setValueFilters(values)}
-              />
-            }
+            content={<ContentPopover setPage={(page) => setPageCurrent(page)} setValueFilters={(values) => setValueFilters(values)} />}
             trigger='click'
           >
-            <Button
-              icon={<FilterOutlined />}
-              className='flex justify-center items-center text-md font-medium shadow-md bg-slate-100'
-            >
+            <Button icon={<FilterOutlined />} className='flex justify-center items-center text-md font-medium shadow-md bg-slate-100'>
               Lọc
             </Button>
           </Popover>
         </Space>
         <Title style={{ textAlign: 'center', textTransform: 'uppercase', marginBottom: 0 }} level={3}>
-          Danh sách điểm
+          Danh sách điểm học kỳ
         </Title>
         <Button
           icon={<PlusCircleOutlined />}
