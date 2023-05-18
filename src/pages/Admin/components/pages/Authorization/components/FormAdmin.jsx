@@ -1,19 +1,44 @@
 import { Button, Col, Form, Row, Switch, message } from 'antd';
 import React, { useState } from 'react';
-import { updateAuthorizationAdmin } from '../../../../../../API/axios';
+import { getAuthorizationAdmin, getPermisstionList, updateAuthorizationAdmin } from '../../../../../../API/axios';
+import { useEffect } from 'react';
 
 function FormAdmin(props) {
   const [loadingBtn, setLoadingBtn] = useState(false);
   const [valueFinal, setValueFinal] = useState([]);
-
+  const [initValues, setInitialValues] = useState([]);
+  console.log(initValues);
+  const id = 'ADMIN';
   // handle get Authorization Admin
-  const getAuthorizationAdmin = () => {};
+  const handleGetAuthorization = (id) => {
+    getAuthorizationAdmin(id).then((res) => {
+      if (res.data?.success === true) {
+        setInitialValues(res.data?.data?.permissions);
+        const arrNew = initValues.map((e) => e.id);
+        console.log(arrNew);
+      }
+    });
+  };
+
+  const data = [{ id: 'POST' }, { id: 'PUT' }, { id: 'DELETE' }, { id: 'CREATE' }];
+  const arr = data.map((e) => {
+    let a = e.id;
+    return { [a]: true };
+  });
+  const initValue = {};
+  const arrNew = arr.reduce((a, b) => a + b, initValue);
+  console.log(arrNew);
+
+  useEffect(() => {
+    handleGetAuthorization(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const updateAuthorization = () => {
     setLoadingBtn(true);
-    updateAuthorizationAdmin({ id: 'ADMIN', name: 'Quản trị viên', permissionIds: valueFinal })
+    updateAuthorizationAdmin({ id: id, name: 'Quản trị viên', permissionIds: valueFinal })
       .then((res) => {
         if (res.data?.success === true) {
-          getAuthorizationAdmin();
+          handleGetAuthorization();
           message.success('Cập nhật thành công');
           setLoadingBtn(false);
         } else return message.error(res.data?.error.message);

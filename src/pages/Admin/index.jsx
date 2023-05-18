@@ -131,7 +131,7 @@ function DefaultLayoutAdmin(props) {
         </Sider>
         <Layout className='site-layout ml-2'>
           <Header theme='dark' className='rounded-md flex justify-between items-center p-8 '>
-            <Title style={{ color: '#fff', marginBottom: 0, textTransform: 'uppercase' }} level={3}>
+            <Title style={{ color: '#fff', marginBottom: 0, textTransform: 'uppercase' }} level={2}>
               khoa công nghệ thông tin
             </Title>
             <Space size={24}>

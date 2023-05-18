@@ -10,18 +10,6 @@ function PersonalInformationStudent(props) {
   const [dataStudent, setDataStudent] = useState({});
   const [loadingPage, setLoadingPage] = useState(false);
 
-  // status
-  // const status = (status) => {
-  //   if (status === 'graduated') {
-  //     return 'Đã tốt nghiệp';
-  //   } else if (status === 'stillStudying') {
-  //     return 'Còn đi học';
-  //   } else if (status === 'forcedOut') {
-  //     return 'Bị buộc thôi học';
-  //   } else if (status === 'dropped') {
-  //     return 'Đã bỏ học';
-  //   } else return '[ Không có dữ liệu ]';
-  // };
   // handle get information student
   const handleGetInfoStudent = (studentId) => {
     if (studentId !== undefined) {
@@ -152,12 +140,24 @@ function PersonalInformationStudent(props) {
       >
         {dataStudent?.motherPhoneNumber ? dataStudent?.motherPhoneNumber : '[ Không có dữ liệu ]'}
       </Descriptions.Item>
-      <Descriptions.Item span={4} labelStyle={{ fontSize: '18px' }} contentStyle={{ fontSize: '18px' }} label='Tình trạng'>
-        {/* {status(dataStudent?.status)} */}
+      <Descriptions.Item
+        span={4}
+        labelStyle={{ fontSize: '18px', marginBottom: '20px' }}
+        contentStyle={{ fontSize: '18px' }}
+        label='Tình trạng'
+      >
         {dataStudent?.status ? dataStudent?.status : '[ Không có dữ liệu ]'}
       </Descriptions.Item>
       <Descriptions.Item span={4} labelStyle={{ fontSize: '18px' }} contentStyle={{ fontSize: '18px' }} label='Thời gian'>
         {dataStudent?.statusDate ? dataStudent?.statusDate : '[ Không có dữ liệu ]'}
+      </Descriptions.Item>
+      <Descriptions.Item
+        span={8}
+        labelStyle={{ fontSize: '18px', marginBottom: '20px' }}
+        contentStyle={{ fontSize: '18px', color: 'red' }}
+        label='Diện cảnh cáo'
+      >
+        {'Uống rượu, bia trong giờ học, say rượu, bia khi đến lớp'}
       </Descriptions.Item>
     </Descriptions>
   );

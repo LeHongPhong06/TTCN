@@ -6,7 +6,7 @@ function ContentPopover({ setValueFilters, setPage }) {
     setValueFilters(values);
   };
   return (
-    <div className='w-[600px]'>
+    <div className='w-[580px]'>
       <Form
         layout='vertical'
         style={{
@@ -17,8 +17,7 @@ function ContentPopover({ setValueFilters, setPage }) {
         <Row gutter={[20, 8]}>
           <Col span={10}>
             <Form.Item label='Điểm trung bình học tập ( học kì hệ 4 )' name='point'>
-              <Select placeholder='Chọn khoảng điểm' defaultValue={null}>
-                <Select.Option value={null}>{'Chọn khoảng điểm'}</Select.Option>
+              <Select placeholder='Chọn khoảng điểm'>
                 <Select.Option value={1}>{'Từ 3.6 đến 4.0 ( Xuất sắc )'}</Select.Option>
                 <Select.Option value={2}>{'Từ 3.2 đến cận 3.6 ( Giỏi )'}</Select.Option>
                 <Select.Option value={3}>{'Từ 2.5 đến cận 3.2 ( Khá )'}</Select.Option>

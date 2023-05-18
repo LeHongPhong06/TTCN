@@ -44,7 +44,7 @@ export const getDataAccumulation = (id) => {
 };
 
 export const exportStudentList = (values) => {
-  return axios.get(`/admin/student`, values);
+  return axios.post(`/admin/student/export`, values);
 };
 
 // ----------- Classes --------------
@@ -115,6 +115,10 @@ export const deletePoint = (values) => {
   return axios.post(`/admin/point/delete`, values);
 };
 
+export const exportPointStudent = (values) => {
+  return axios.post(`/admin/point/export`, values);
+};
+
 // --------- Semesters --------------
 export const getDataSemesters = (values) => {
   return axios.post(`/admin/term/list`, values);
@@ -181,6 +185,14 @@ export const updateAdmin = (values) => {
 
 export const deleteAdmin = (id) => {
   return axios.delete(`/admin/admin/delete/${id}`);
+};
+
+export const getAuthorizationAdmin = (id) => {
+  return axios.post(`/admin/role/${id}`);
+};
+
+export const getPermisstionList = (id) => {
+  return axios.get(`/admin/permission/list`);
 };
 
 export const updateAuthorizationAdmin = (values) => {

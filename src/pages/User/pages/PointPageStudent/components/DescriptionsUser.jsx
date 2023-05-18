@@ -10,21 +10,6 @@ function DescriptionsUser(props) {
   const [loadingPage, setLoadingPage] = useState(false);
   const [dataStudent, setDataStudent] = useState({});
 
-  // handle set status
-  // const status = (status) => {
-  //   if (status === 'graduated') {
-  //     return 'Đã tốt nghiệp';
-  //   } else if (status === 'stillStudying') {
-  //     return 'Còn đi học';
-  //   } else if (status === 'forcedOut') {
-  //     return 'Bị buộc thôi học';
-  //   } else if (status === 'dropped') {
-  //     return 'Đã bỏ học';
-  //   } else {
-  //     return '[ Không có dữ liệu ]';
-  //   }
-  // };
-
   // handle get info student
   const studentId = location.pathname.split('/')[2];
   const handleGetInfoStudent = (studentId) => {
@@ -64,7 +49,6 @@ function DescriptionsUser(props) {
           {dataStudent?.major?.id ? dataStudent?.major?.id : '[ Không có dữ liệu ]'}
         </Descriptions.Item>
         <Descriptions.Item span={1} label='Tình trạng sinh viên'>
-          {/* {status(dataStudent?.status)} */}
           {dataStudent?.status ? dataStudent?.status : '[ Không có dữ liệu ]'}
         </Descriptions.Item>
       </Descriptions>

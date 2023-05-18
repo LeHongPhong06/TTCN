@@ -37,7 +37,7 @@ function AdminMajorPage(props) {
           setLoadingTable(false);
         } else if (res.data?.error?.message === 'Access is denied') {
           message.warning('Bạn không có quyền truy cập');
-        }
+        } else return message.error(res.data?.error?.message);
       })
       .finally(() => setLoadingTable(false));
   };

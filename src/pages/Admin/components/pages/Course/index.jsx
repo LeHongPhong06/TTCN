@@ -28,14 +28,14 @@ function AdminCoursePage(props) {
         if (res.data?.success === true) {
           handleGetCourseData();
           message.success(`Xóa khóa ${id} thành công`);
-        }
+        } else return message.error(res.data?.error?.message);
       })
       .finally(() => setLoadingTable(false));
   };
 
   // Handle get Course Data
   const courseId = debunceValue[0];
-  const handleGetCourseData = async () => {
+  const handleGetCourseData = () => {
     setLoadingTable(true);
     getCourseList({ id: courseId, page: pageCurrent, size: pageSize })
       .then((res) => {
@@ -45,7 +45,7 @@ function AdminCoursePage(props) {
           setLoadingTable(false);
         } else if (res.data?.error?.message === 'Access is denied') {
           message.warning('Bạn không có quyền truy cập');
-        }
+        } else return message.error(res.data?.error?.message);
       })
       .finally(() => setLoadingTable(false));
   };

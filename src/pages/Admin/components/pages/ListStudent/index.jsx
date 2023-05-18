@@ -30,6 +30,7 @@ function AdminListStudentPage(props) {
   const { Panel } = Collapse;
   const { Title, Text } = Typography;
   const [loadingTable, setLoadingTable] = useState(false);
+  const [loadingBtnExport, setLoadingBtnExport] = useState(false);
   const [loadingBtnDeleteListStudent, setLoadingBtnDeleteListStudent] = useState(false);
   const [openDrawerInfo, setOpenDrawerInfo] = useState(false);
   const [openModalFormUser, setOpenModalFormStudent] = useState(false);
@@ -56,9 +57,7 @@ function AdminListStudentPage(props) {
           setLoadingTable(false);
         } else if (res.data?.error?.message === 'Access is denied') {
           message.warning('Bạn không có quyền truy cập');
-        } else if (res.data?.success === false) {
-          message.warning(res.data?.error?.message);
-        }
+        } else return message.warning(res.data?.error?.message);
       })
       .finally(() => setLoadingTable(false));
   };
@@ -85,16 +84,16 @@ function AdminListStudentPage(props) {
 
   // Handle onClick btn delete student list
   const hasSelected = selectedRowKeys.length > 0;
-  const handleDeleteListStudent = async () => {
+  const handleDeleteListStudent = () => {
     setLoadingTable(true);
     setLoadingBtnDeleteListStudent(true);
     deleteListStudent({ ids: selectedRowKeys })
       .then((res) => {
         if (res.data?.success === true) {
           handleGetDataStudentList();
-          message.success(res.data?.data);
           setLoadingTable(false);
           setLoadingBtnDeleteListStudent(false);
+          message.success(res.data?.data);
         } else {
           message.error(res.data?.error?.message);
         }
@@ -105,13 +104,17 @@ function AdminListStudentPage(props) {
       });
   };
 
-  // export file
+  // Export File Data List Student
   const exportDataFileExcel = () => {
-    exportStudentList().then((res) => {
-      if (res.data?.success === true) {
-        exportExcel(res.data?.data?.items, 'Sheet1', 'danh-sach-sinh-vien');
-      }
-    });
+    setLoadingBtnExport(true);
+    exportStudentList({ studentId: studentId, filter: valuesFilter })
+      .then((res) => {
+        if (res.data?.success === true) {
+          exportExcel(res.data?.data?.items, 'Sheet1', 'danh-sach-sinh-vien');
+          setLoadingBtnExport(false);
+        } else return message.error(res.data?.error?.message);
+      })
+      .finally(() => setLoadingBtnExport(false));
   };
 
   const tagStatus = (status) => {
@@ -149,7 +152,7 @@ function AdminListStudentPage(props) {
       dataIndex: 'name',
     },
     {
-      title: 'MSV',
+      title: 'Mã sinh viên',
       dataIndex: 'id',
       align: 'center',
     },
@@ -218,7 +221,7 @@ function AdminListStudentPage(props) {
     <div>
       <div className='flex justify-between items-center mb-3 relative'>
         <Button
-          className='flex justify-center items-center'
+          className='flex justify-center items-center text-md'
           icon={<UsergroupDeleteOutlined />}
           type='primary'
           disabled={!hasSelected}
@@ -230,7 +233,7 @@ function AdminListStudentPage(props) {
         <Text
           style={{
             position: 'absolute',
-            left: 120,
+            left: 110,
             opacity: 0.5,
           }}
         >
@@ -296,6 +299,7 @@ function AdminListStudentPage(props) {
           }}
         />
         <Button
+          loading={loadingBtnExport}
           onClick={exportDataFileExcel}
           icon={<DownloadOutlined />}
           className='flex justify-center items-center absolute bottom-5 left-0 text-md font-medium shadow-md bg-slate-100'

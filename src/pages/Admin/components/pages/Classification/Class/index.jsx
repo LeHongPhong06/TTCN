@@ -34,9 +34,7 @@ function Classclassification(props) {
         setLoadingTable(false);
       } else if (res.data?.error?.message === 'Access is denied') {
         message.warning('Bạn không có quyền truy cập');
-      } else if (res.data?.success === false) {
-        message.warning(res.data?.error?.message);
-      }
+      } else return message.warning(res.data?.error?.message);
     });
   };
   const handleConfirmDeleteData = (classId, termId) => {

@@ -1,10 +1,9 @@
 import { Collapse } from 'antd';
 import React from 'react';
-import FormSuperAdmin from './FormSuperAdmin';
 import FormAdmin from './FormAdmin';
-import FormSuperMod from './FormSuperMod';
 import FormMod from './FormMod';
 import FormStudent from './FormStudent';
+import FormSuperMod from './FormSuperMod';
 
 function ContentPopover(props) {
   const { Panel } = Collapse;

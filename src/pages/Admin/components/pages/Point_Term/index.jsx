@@ -1,14 +1,24 @@
-import { DeleteOutlined, EditOutlined, FilterOutlined, PlusCircleOutlined, SearchOutlined } from '@ant-design/icons';
-import { Button, Input, Popconfirm, Popover, Space, Table, Tooltip, Typography, message } from 'antd';
+import {
+  DeleteOutlined,
+  DownloadOutlined,
+  EditOutlined,
+  FilterOutlined,
+  PlusCircleOutlined,
+  SearchOutlined,
+  UploadOutlined,
+} from '@ant-design/icons';
+import { Button, Input, Popconfirm, Popover, Space, Table, Tooltip, Typography, Upload, message } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useDebounce } from 'use-debounce';
-import { deletePoint, getDataPoint } from '../../../../../API/axios';
+import { deletePoint, exportPointStudent, getDataPoint } from '../../../../../API/axios';
+import { exportExcel } from '../../../../../import-export-data';
 import ContentPopover from './components/ContentPopover';
 import ModalFormPoint from './components/ModalFormPoint';
 
 function AdminPointTermPage(props) {
   const { Title } = Typography;
   const [openModalFormPoint, setOpenModalFormPoint] = useState(false);
+  const [loadingBtnExportPoint, setLoadingBtnExportPoint] = useState(false);
   const [loadingTable, setLoadingTable] = useState(false);
   const [valueSearchStudentId, setValueSearchStudentId] = useState('');
   const [valueSearchTermId, setValueSearchTermId] = useState('');
@@ -19,10 +29,7 @@ function AdminPointTermPage(props) {
   const [totalPoints, setTotalPoints] = useState(0);
   const [disabled, setDisabled] = useState(false);
   const [valueFilters, setValueFilters] = useState({});
-  const debunceValueStudentId = useDebounce(valueSearchStudentId, 750);
-  const debunceValueTermId = useDebounce(valueSearchTermId, 750);
-  const studentId = debunceValueStudentId[0];
-  const termId = debunceValueTermId[0];
+
   // Handle click confirm delete major
   const handleConfirmDeletePoint = (values) => {
     setLoadingTable(false);
@@ -38,6 +45,10 @@ function AdminPointTermPage(props) {
   };
 
   // Handle get data points
+  const debunceValueStudentId = useDebounce(valueSearchStudentId, 750);
+  const debunceValueTermId = useDebounce(valueSearchTermId, 750);
+  const studentId = debunceValueStudentId[0];
+  const termId = debunceValueTermId[0];
   const handleGetDataPointList = () => {
     setLoadingTable(true);
     getDataPoint({
@@ -58,12 +69,22 @@ function AdminPointTermPage(props) {
       })
       .finally(() => setLoadingTable(false));
   };
-
   useEffect(() => {
     handleGetDataPointList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageCurrent, valueFilters, pageSize, studentId, termId]);
 
+  // Export File Data Student Points
+  const exportDataFileExcel = () => {
+    setLoadingBtnExportPoint(true);
+    exportPointStudent({ studentId: studentId, termId: termId, filter: valueFilters })
+      .then((res) => {
+        if (res.data?.success === true) {
+          exportExcel(res.data?.data?.items, 'Sheet1', 'danh-sach-diem');
+        } else return message.error(res.data?.error?.message);
+      })
+      .finally(() => setLoadingBtnExportPoint(false));
+  };
   const columns = [
     {
       title: 'Mã sinh viên',
@@ -157,7 +178,7 @@ function AdminPointTermPage(props) {
           <Input
             prefix={<SearchOutlined className='opacity-60 mr-1' />}
             placeholder='Nhập mã sinh viên'
-            className='shadow-sm w-[230px]'
+            className='shadow-sm w-[200px]'
             onChange={(e) => {
               setPageCurrent(1);
               setValueSearchStudentId(e.target.value);
@@ -166,7 +187,7 @@ function AdminPointTermPage(props) {
           />
           <Input
             placeholder='Nhập mã học kì'
-            className='shadow-sm w-[230px]'
+            className='shadow-sm w-[200px]'
             onChange={(e) => {
               setPageCurrent(1);
               setValueSearchTermId(e.target.value);
@@ -186,34 +207,51 @@ function AdminPointTermPage(props) {
         <Title style={{ textAlign: 'center', textTransform: 'uppercase', marginBottom: 0 }} level={3}>
           Danh sách điểm học kỳ
         </Title>
-        <Button
-          icon={<PlusCircleOutlined />}
-          onClick={() => {
-            setOpenModalFormPoint(true);
+        <Space>
+          <Upload>
+            <Button className='flex justify-center items-center text-md font-medium shadow-md bg-slate-100' icon={<UploadOutlined />}>
+              Thêm danh sách điểm
+            </Button>
+          </Upload>
+          <Button
+            icon={<PlusCircleOutlined />}
+            onClick={() => {
+              setOpenModalFormPoint(true);
+            }}
+            className='flex justify-center items-center bg-white shadow-lg font-medium'
+          >
+            {'Thêm điểm ( học kì )'}
+          </Button>
+        </Space>
+      </div>
+      <div className='relative'>
+        <Table
+          rowKey='id'
+          bordered={true}
+          loading={loadingTable}
+          dataSource={dataSource}
+          columns={columns}
+          pagination={{
+            onChange: (page, size) => {
+              setPageCurrent(page);
+              setPageSize(size);
+            },
+            defaultCurrent: 1,
+            pageSize: pageSize,
+            total: totalPoints,
+            current: pageCurrent,
+            showSizeChanger: true,
           }}
-          className='flex justify-center items-center bg-white shadow-lg font-medium'
+        />
+        <Button
+          loading={loadingBtnExportPoint}
+          onClick={exportDataFileExcel}
+          icon={<DownloadOutlined />}
+          className='flex justify-center items-center absolute bottom-5 left-0 text-md font-medium shadow-md bg-slate-100'
         >
-          {'Thêm điểm ( học kì )'}
+          Xuất danh sách điểm
         </Button>
       </div>
-      <Table
-        rowKey='id'
-        bordered={true}
-        loading={loadingTable}
-        dataSource={dataSource}
-        columns={columns}
-        pagination={{
-          onChange: (page, size) => {
-            setPageCurrent(page);
-            setPageSize(size);
-          },
-          defaultCurrent: 1,
-          pageSize: pageSize,
-          total: totalPoints,
-          current: pageCurrent,
-          showSizeChanger: true,
-        }}
-      />
       <ModalFormPoint
         onSuccess={() => {
           setOpenModalFormPoint(false);

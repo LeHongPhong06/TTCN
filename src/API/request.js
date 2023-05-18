@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
-const baseUrl = 'https://1217-1-52-219-7.ngrok-free.app';
+const baseUrl = 'https://710b-118-70-132-104.ngrok-free.app';
 const login_path = '/client/login';
 
 axios.interceptors.request.use((req) => {
