@@ -1,15 +1,15 @@
 import { Button, Col, DatePicker, Form, Input, Row, Select, Skeleton, Typography, message } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { getInfoStudent, updateStudentInfoDetails } from '../../../../API/axios';
 
 function DeclareInformationPage(props) {
   const { Text } = Typography;
-  const location = useLocation();
-  const studentId = location.pathname.split('/')[2];
-  const [loadingBtn, setLoadingBtn] = useState(false);
+  const { studentId } = useParams();
   const [dataStudent, setDataStudent] = useState({});
+  const [loadingBtn, setLoadingBtn] = useState(false);
   const [loadingPage, setLoadingPage] = useState(false);
+
   // handle get information student
   const handleGetInfoStudent = (studentId) => {
     if (studentId !== undefined) {

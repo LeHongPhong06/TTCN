@@ -8,17 +8,17 @@ import PieDataMajor from './components/PieDataMajor';
 
 function Majorclassification(props) {
   const { Title } = Typography;
+  const [openChart, setOpenChart] = useState(false);
   const [loadingTable, setLoadingTable] = useState(false);
-  const [totalClassification, setTotalClassification] = useState(0);
-  const [pageCurrent, setPageCurrent] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
   const [openFormModal, setOpenFormModal] = useState(false);
+  const [dataPie, setDataPie] = useState({});
   const [dataIndex, setDataIndex] = useState({});
   const [dataSource, setDataSource] = useState([]);
+  const [pageSize, setPageSize] = useState(10);
+  const [pageCurrent, setPageCurrent] = useState(1);
+  const [totalClassification, setTotalClassification] = useState(0);
   const [valueCourse, setValueCourse] = useState('');
   const [valueTermId, setValueTermId] = useState('');
-  const [dataPie, setDataPie] = useState({});
-  const [openChart, setOpenChart] = useState(false);
 
   //   handle get data table classification
   const debounceCousreId = useDebounce(valueCourse, 750);
@@ -39,6 +39,12 @@ function Majorclassification(props) {
       })
       .finally(() => setLoadingTable(false));
   };
+  useEffect(() => {
+    handleGetDataClassification();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [courseId, termId, pageCurrent, pageSize]);
+
+  // Handle delete major classifications
   const handleConfirmDeleteData = (courseId, termId) => {
     setLoadingTable(true);
     deleteClassificationsForCourse({ courseId: courseId, termId: termId })
@@ -50,10 +56,6 @@ function Majorclassification(props) {
       })
       .finally(() => setLoadingTable(false));
   };
-  useEffect(() => {
-    handleGetDataClassification();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [courseId, termId, pageCurrent, pageSize]);
 
   const columns = [
     {
@@ -109,15 +111,6 @@ function Majorclassification(props) {
       align: 'center',
       render: (e, record, index) => (
         <Space size={10} key={index}>
-          {/* <Tooltip title='Chỉnh sửa'>
-            <Button
-              onClick={() => {
-                setOpenFormModal(true);
-              }}
-              className='flex justify-center items-center text-md shadow-md'
-              icon={<EditOutlined />}
-            ></Button>
-          </Tooltip> */}
           <Tooltip title='Xóa'>
             <Popconfirm
               title='Bạn có chắc chắn muốn xóa ?'
@@ -187,24 +180,26 @@ function Majorclassification(props) {
           Thêm xếp loại
         </Button>
       </div>
-      <Table
-        rowKey='id'
-        loading={loadingTable}
-        bordered={true}
-        dataSource={dataSource}
-        columns={columns}
-        pagination={{
-          onChange: (page, size) => {
-            setPageCurrent(page);
-            setPageSize(size);
-          },
-          defaultCurrent: 1,
-          pageSize: pageSize,
-          total: totalClassification,
-          current: pageCurrent,
-          showSizeChanger: true,
-        }}
-      />
+      {dataSource && (
+        <Table
+          rowKey='id'
+          loading={loadingTable}
+          bordered={true}
+          dataSource={dataSource}
+          columns={columns}
+          pagination={{
+            onChange: (page, size) => {
+              setPageCurrent(page);
+              setPageSize(size);
+            },
+            defaultCurrent: 1,
+            pageSize: pageSize,
+            total: totalClassification,
+            current: pageCurrent,
+            showSizeChanger: true,
+          }}
+        />
+      )}
       <ModalFormClassifiMajor
         onSuccess={() => {
           handleGetDataClassification();

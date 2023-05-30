@@ -1,13 +1,14 @@
 import { DeleteOutlined, EditOutlined, SearchOutlined, SwapOutlined, UserAddOutlined } from '@ant-design/icons';
-import { Button, Input, Popconfirm, Popover, Space, Table, Tag, Tooltip, Typography, message } from 'antd';
+import { Button, Drawer, Input, Popconfirm, Space, Table, Tag, Tooltip, Typography, message, notification } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useDebounce } from 'use-debounce';
 import { deleteAdmin, getAdminList } from '../../../../../API/axios';
-import ContentPopover from './components/ContentPopover';
+import DrawerAdminAuther from './components/DrawerAdminAuther';
 import ModalFormAdmin from './components/ModalFormAdmin';
 
 function AdminAuthorizationPage(props) {
   const { Title } = Typography;
+  const [openDrawer, setOpenDrawer] = useState(false);
   const [loadingTable, setLoadingTable] = useState(false);
   const [openModalFormAdmin, setOpenModalFormAdmin] = useState(false);
   const [dataAdmin, setDataAdmin] = useState({});
@@ -24,9 +25,13 @@ function AdminAuthorizationPage(props) {
     deleteAdmin(id)
       .then((res) => {
         if (res.data?.success === true) {
+          notification.success({
+            message: 'Thành công',
+            description: 'Xóa admin thành công',
+            duration: 2,
+          });
           handleGetAdminList();
-          message.success('Xóa thành công');
-        }
+        } else return message.error(res.data?.error?.message);
       })
       .finally(() => setLoadingTable(false));
   };
@@ -131,15 +136,15 @@ function AdminAuthorizationPage(props) {
           Danh sách admin
         </Title>
         <Space>
-          <Popover placement='bottom' content={<ContentPopover />} trigger={'click'}>
-            <Button
-              icon={<SwapOutlined />}
-              onClick={() => {}}
-              className='flex justify-center items-center text-md font-medium shadow-md bg-slate-100'
-            >
-              Phân quyền
-            </Button>
-          </Popover>
+          <Button
+            icon={<SwapOutlined />}
+            onClick={() => {
+              setOpenDrawer(true);
+            }}
+            className='flex justify-center items-center text-md font-medium shadow-md bg-slate-100'
+          >
+            Phân quyền
+          </Button>
           <Button
             icon={<UserAddOutlined />}
             onClick={() => {
@@ -167,24 +172,29 @@ function AdminAuthorizationPage(props) {
         }}
         required={required}
       />
-      <Table
-        rowKey='id'
-        loading={loadingTable}
-        bordered={true}
-        dataSource={dataSource}
-        columns={columns}
-        pagination={{
-          onChange: (page, size) => {
-            setPageCurrent(page);
-            setPageSize(size);
-          },
-          defaultCurrent: 1,
-          pageSize: pageSize,
-          total: totalAdmin,
-          current: pageCurrent,
-          showSizeChanger: true,
-        }}
-      />
+      {dataSource && (
+        <Table
+          rowKey='id'
+          loading={loadingTable}
+          bordered={true}
+          dataSource={dataSource}
+          columns={columns}
+          pagination={{
+            onChange: (page, size) => {
+              setPageCurrent(page);
+              setPageSize(size);
+            },
+            defaultCurrent: 1,
+            pageSize: pageSize,
+            total: totalAdmin,
+            current: pageCurrent,
+            showSizeChanger: true,
+          }}
+        />
+      )}
+      <Drawer placement='right' open={openDrawer} onClose={() => setOpenDrawer(false)} width={1300}>
+        <DrawerAdminAuther />
+      </Drawer>
     </div>
   );
 }

@@ -6,12 +6,15 @@ import Home from './pages/Admin/components/pages/AdminHome/Home';
 import AdminAuthorizationPage from './pages/Admin/components/pages/Authorization';
 import AdminChangePasswordPage from './pages/Admin/components/pages/ChangePassword';
 import AdminClassesPage from './pages/Admin/components/pages/Classes';
+import Classclassification from './pages/Admin/components/pages/Classification/Class';
+import Majorclassification from './pages/Admin/components/pages/Classification/Major';
 import AdminCoursePage from './pages/Admin/components/pages/Course';
 import AdminListStudentPage from './pages/Admin/components/pages/ListStudent';
 import AdminMajorPage from './pages/Admin/components/pages/Major';
 import AdminPointTermPage from './pages/Admin/components/pages/Point_Term';
 import AdminSemestersPage from './pages/Admin/components/pages/Semesters';
 import ChangePasswordPage from './pages/User/pages/ChangePasswordPage';
+import ConfirmChangPassword from './pages/User/pages/ConfirmChangePassword';
 import DeclareInformationPage from './pages/User/pages/DeclareInformation';
 import ForgotPasswordPage from './pages/User/pages/ForgotPassword';
 import HomePage from './pages/User/pages/HomePage';
@@ -19,8 +22,6 @@ import HomePageStudent from './pages/User/pages/HomeStudentPage';
 import LayoutPageStudent from './pages/User/pages/LayoutStudentPage';
 import PersonalInformationStudent from './pages/User/pages/PersonalInformationPage';
 import PointPageStudent from './pages/User/pages/PointPageStudent';
-import Classclassification from './pages/Admin/components/pages/Classification/Class';
-import Majorclassification from './pages/Admin/components/pages/Classification/Major';
 
 const router = createBrowserRouter([
   {
@@ -33,9 +34,14 @@ const router = createBrowserRouter([
     element: <ForgotPasswordPage />,
     errorElement: <ErrorPage />,
   },
+  {
+    path: '/confirm-changepassword',
+    element: <ConfirmChangPassword />,
+    errorElement: <ErrorPage />,
+  },
   // Student routes
   {
-    path: '/student/:userId',
+    path: '/student/:studentId',
     element: <LayoutPageStudent />,
     errorElement: <ErrorPage />,
     children: [
@@ -68,7 +74,7 @@ const router = createBrowserRouter([
   },
   // Admin routes
   {
-    path: '/:userId/manage',
+    path: '/:roleId/manage',
     element: <DefaultLayoutAdmin />,
     errorElement: <ErrorPage />,
     children: [

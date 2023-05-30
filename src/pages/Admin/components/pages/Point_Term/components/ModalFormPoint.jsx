@@ -8,6 +8,11 @@ function ModalFormPoint({ openForm, onChangeClickOpen, dataPoint, onSuccess, dis
       if (res.data?.success === true) {
         onSuccess();
         message.success('Tạo điểm học kỳ mới thành công');
+      } else if (res.data?.error?.code === 2) {
+        // eslint-disable-next-line no-lone-blocks
+        {
+          res.data?.error?.errorDetailList.forEach((e) => message.error(e.message));
+        }
       } else if (res.data?.error?.code === 500) {
         message.error(res.data?.error?.message);
       }
@@ -18,6 +23,11 @@ function ModalFormPoint({ openForm, onChangeClickOpen, dataPoint, onSuccess, dis
       if (res.data?.success === true) {
         onSuccess();
         message.success(`Sửa thông tin điểm thành công`);
+      } else if (res.data?.error?.code === 2) {
+        // eslint-disable-next-line no-lone-blocks
+        {
+          res.data?.error?.errorDetailList.forEach((e) => message.error(e.message));
+        }
       } else if (res.data?.error?.code === 500) {
         message.error(res.data?.error?.message);
       }

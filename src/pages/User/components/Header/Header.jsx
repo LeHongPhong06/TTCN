@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getInfoStudent } from '../../../../API/axios';
 import logo from '../../../../assets/img/Logo/Logo.png';
+import Cookies from 'js-cookie';
 function HeaderTop(props) {
   const { Title, Text } = Typography;
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ function HeaderTop(props) {
   const [dataStudent, setDataStudent] = useState();
   // Handle stundent click btn Logout
   const handleClickConfirmLogOutStudent = () => {
+    Cookies.remove('jwt');
     navigate('/');
   };
 

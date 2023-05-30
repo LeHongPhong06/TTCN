@@ -2,16 +2,15 @@ import { LoadingOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-components';
 import { Descriptions, Spin } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { getInfoStudent } from '../../../../../API/axios';
 
 function DescriptionsUser(props) {
-  const location = useLocation();
-  const [loadingPage, setLoadingPage] = useState(false);
+  const { studentId } = useParams();
   const [dataStudent, setDataStudent] = useState({});
+  const [loadingPage, setLoadingPage] = useState(false);
 
   // handle get info student
-  const studentId = location.pathname.split('/')[2];
   const handleGetInfoStudent = (studentId) => {
     if (studentId !== undefined) {
       setLoadingPage(true);

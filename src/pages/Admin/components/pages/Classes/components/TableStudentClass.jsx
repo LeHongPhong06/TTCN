@@ -1,7 +1,7 @@
+import { PageContainer } from '@ant-design/pro-components';
 import { Table, message } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { getListStudent } from '../../../../../../API/axios';
-import { PageContainer } from '@ant-design/pro-components';
 
 function TableStudentClass({ dataClass }) {
   const classId = dataClass.id;
@@ -10,17 +10,21 @@ function TableStudentClass({ dataClass }) {
   const [pageSize, setPageSize] = useState(10);
   const [totalStudent, setTotalStudent] = useState(0);
   const [dataSource, setDataSource] = useState([]);
+
   const handleGetStudentListClass = () => {
-    getListStudent({ studentId: '', page: pageCurrent, size: pageSize, filter: { classId: classId } })
-      .then((res) => {
-        if (res.data.success === true) {
-          setDataSource(res.data?.data?.items);
-          setTotalStudent(res.data?.data?.total);
-          setLoadingTable(false);
-        }
-      })
-      .catch((err) => message.error(err))
-      .finally(() => setLoadingTable(false));
+    if (classId !== undefined) {
+      getListStudent({ studentId: '', page: pageCurrent, size: pageSize, filter: { classId: classId } })
+        .then((res) => {
+          if (res.data.success === true) {
+            setDataSource(res.data?.data?.items);
+            setTotalStudent(res.data?.data?.total);
+            setLoadingTable(false);
+          } else if (res.data?.error?.message === 'Access is denied') {
+            message.warning('Bạn không có quyền truy cập');
+          } else return message.error(res.data?.error?.message);
+        })
+        .finally(() => setLoadingTable(false));
+    }
   };
 
   useEffect(() => {
@@ -42,24 +46,26 @@ function TableStudentClass({ dataClass }) {
   ];
   return (
     <PageContainer title='Danh sách sinh viên'>
-      <Table
-        rowKey='id'
-        loading={loadingTable}
-        bordered={true}
-        dataSource={dataSource}
-        columns={columns}
-        pagination={{
-          onChange: (page, size) => {
-            setPageCurrent(page);
-            setPageSize(size);
-          },
-          defaultCurrent: 1,
-          pageSize: pageSize,
-          total: totalStudent,
-          current: pageCurrent,
-          showSizeChanger: true,
-        }}
-      />
+      {dataSource && (
+        <Table
+          rowKey='id'
+          loading={loadingTable}
+          bordered={true}
+          dataSource={dataSource}
+          columns={columns}
+          pagination={{
+            onChange: (page, size) => {
+              setPageCurrent(page);
+              setPageSize(size);
+            },
+            defaultCurrent: 1,
+            pageSize: pageSize,
+            total: totalStudent,
+            current: pageCurrent,
+            showSizeChanger: true,
+          }}
+        />
+      )}
     </PageContainer>
   );
 }

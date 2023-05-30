@@ -1,12 +1,11 @@
 import { LoadingOutlined } from '@ant-design/icons';
 import { Descriptions, Spin, message } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { getInfoStudent } from '../../../../API/axios';
 
 function PersonalInformationStudent(props) {
-  const location = useLocation();
-  const studentId = location.pathname.split('/')[2];
+  const { studentId } = useParams();
   const [dataStudent, setDataStudent] = useState({});
   const [loadingPage, setLoadingPage] = useState(false);
 

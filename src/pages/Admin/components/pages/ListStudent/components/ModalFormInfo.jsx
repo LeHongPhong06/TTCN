@@ -1,22 +1,58 @@
-import { ModalForm, ProForm, ProFormDatePicker, ProFormSelect, ProFormText } from '@ant-design/pro-components';
-import { message } from 'antd';
-import React from 'react';
-import { createStudent, updateStudent } from '../../../../../../API/axios';
+import { ModalForm, ProForm, ProFormSelect, ProFormText, ProFormTextArea } from '@ant-design/pro-components';
+import { message, notification } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { createStudent, getMajorList, updateStudent } from '../../../../../../API/axios';
 function ModalFormStudentInfo({ openForm, onChangeClickOpen, dataStudent, onSuccess, disabled }) {
+  const [majorList, setMajorList] = useState([]);
+  const handleMajorList = () => {
+    getMajorList({ page: 1, size: 10 }).then((res) => {
+      if (res.data?.success) {
+        setMajorList(res.data?.data?.items);
+      }
+    });
+  };
+  useEffect(() => handleMajorList(), []);
+  const optionMajor = majorList?.map((e) => {
+    return { label: e.name, value: e.id };
+  });
+
   const handleCreateStudent = (values) => {
     createStudent(values).then((res) => {
       if (res.data?.success === true) {
         onSuccess();
-        message.success('Tạo sinh viên thành công');
-      } else return message.error(res.data?.error?.message);
+        notification.success({
+          message: 'Thành công',
+          description: 'Tạo sinh viên thành công',
+          duration: 2,
+        });
+      } else if (res.data?.error?.code === 2) {
+        // eslint-disable-next-line no-lone-blocks
+        {
+          res.data?.error?.errorDetailList.forEach((e) => message.error(e.message, 2));
+        }
+      } else if (res.data?.error?.code === 500) {
+        message.error(res.data?.error?.message);
+      }
     });
   };
+
   const handleUpdateStudent = (dataStudent, values) => {
     updateStudent(dataStudent.id, values).then((res) => {
       if (res.data?.success === true) {
         onSuccess();
-        message.success(`Sửa sinh viên ${dataStudent.name} thành công`);
-      } else return message.error(res.data?.error?.message);
+        notification.success({
+          message: 'Thành công',
+          description: `Sửa sinh viên ${dataStudent.name} thành công`,
+          duration: 2,
+        });
+      } else if (res.data?.error?.code === 2) {
+        // eslint-disable-next-line no-lone-blocks
+        {
+          res.data?.error?.errorDetailList.forEach((e) => message.error(e.message, 2));
+        }
+      } else if (res.data?.error?.code === 500) {
+        message.error(res.data?.error?.message);
+      }
     });
   };
 
@@ -28,7 +64,7 @@ function ModalFormStudentInfo({ openForm, onChangeClickOpen, dataStudent, onSucc
         initialValues={dataStudent}
         modalProps={{
           destroyOnClose: true,
-          okText: dataStudent.id ? 'Lưu' : 'Tạo',
+          okText: dataStudent.id ? 'Cập nhật' : 'Tạo mới',
           cancelText: 'Hủy',
         }}
         open={openForm}
@@ -64,22 +100,13 @@ function ModalFormStudentInfo({ openForm, onChangeClickOpen, dataStudent, onSucc
             rules={[{ required: true, message: 'Không được để trống' }]}
             name='gender'
             label='Giới tính'
-            valueEnum={{
-              Nam: 'Nam',
-              Nữ: 'Nữ',
-            }}
+            options={[
+              { label: 'Nam', value: 'Nam' },
+              { label: 'Nữ', value: 'Nữ' },
+            ]}
             placeholder='Chọn giới tính'
           />
-          <ProFormText
-            rules={[{ required: true }]}
-            width='md'
-            name='dob'
-            label='Ngày sinh'
-            placeholder='Nhập ngày sinh'
-            // fieldProps={{
-            //   format: ['DD/MM/YYYY'],
-            // }}
-          />
+          <ProFormText rules={[{ required: true }]} width='md' name='dob' label='Ngày sinh' placeholder='Nhập ngày sinh' />
         </ProForm.Group>
         <ProForm.Group>
           <ProFormText
@@ -111,15 +138,7 @@ function ModalFormStudentInfo({ openForm, onChangeClickOpen, dataStudent, onSucc
             name={['major', 'id']}
             label='Chuyên ngành'
             placeholder='Chọn chuyên ngành'
-            valueEnum={{
-              CNTT: 'Công nghệ thông tin',
-              CNPM: 'Công nghệ phần mềm',
-              MMT: 'Mạng máy tính',
-              HTTT: 'Hệ thống thông tin',
-              ATTT: 'An toàn thông tin',
-              TT: 'Truyền thông',
-              TTNT: 'Trí tuệ nhân tạo',
-            }}
+            options={optionMajor}
           />
         </ProForm.Group>
         <ProForm.Group>
@@ -135,12 +154,12 @@ function ModalFormStudentInfo({ openForm, onChangeClickOpen, dataStudent, onSucc
             name='status'
             label='Tình trạng'
             placeholder='Tình trạng'
-            valueEnum={{
-              graduated: 'Đã tốt nghiệp',
-              stillStudying: 'Còn đi học',
-              forcedOut: 'Bị buộc thôi học',
-              dropped: 'Đã bỏ học',
-            }}
+            options={[
+              { label: 'Đã tốt nghiệp', value: 'graduated' },
+              { label: 'Còn đi học', value: 'stillStudying' },
+              { label: 'Bị buộc thôi học', value: 'forcedOut' },
+              { label: 'Đã bỏ học', value: 'dropped' },
+            ]}
             required={[{ require: true, message: 'Không được để trống' }]}
           />
         </ProForm.Group>
@@ -161,13 +180,16 @@ function ModalFormStudentInfo({ openForm, onChangeClickOpen, dataStudent, onSucc
         <ProForm.Group>
           <ProFormText width='md' name='motherName' label='Họ và tên mẹ' placeholder='Nhập họ tên mẹ' />
           <ProFormText width='md' name='motherPhoneNumber' label='Nhập số điện thoại mẹ' placeholder='Nhập số điện thoại mẹ' />
-          {/* {!dataStudent.id && (
-          )} */}
         </ProForm.Group>
         <ProForm.Group>
-          <ProFormDatePicker width='md' name='statusDate' label='Thời gian' />
-          <ProFormText width='md' name='password' label='Nhập mật khẩu' placeholder='Nhập mật khẩu' />
+          <ProFormText width='md' name='statusDate' label='Thời gian' placeholder='Nhập thời gian' />
+          <ProFormText width='md' name='password' label='Mật khẩu' placeholder='Nhập mật khẩu' />
         </ProForm.Group>
+        {dataStudent.id && (
+          <ProForm.Group>
+            <ProFormTextArea width='md' name='warning' label='Diện cảnh cáo' placeholder='Tình trạng cảnh cáo' />
+          </ProForm.Group>
+        )}
       </ModalForm>
     </div>
   );

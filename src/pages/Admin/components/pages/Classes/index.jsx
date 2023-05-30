@@ -1,5 +1,5 @@
 import { DeleteOutlined, EditOutlined, PlusCircleOutlined, ReloadOutlined, SearchOutlined, SolutionOutlined } from '@ant-design/icons';
-import { Button, Drawer, Input, Popconfirm, Space, Table, Tooltip, Typography, message } from 'antd';
+import { Button, Drawer, Input, Popconfirm, Space, Table, Tooltip, Typography, message, notification } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useDebounce } from 'use-debounce';
 import { deleteClass, getClassList } from '../../../../../API/axios';
@@ -27,7 +27,11 @@ function AdminClassesPage(props) {
         if (res.data?.success === true) {
           handleGetClassList();
           setLoadingTable(false);
-          message.success('Xóa lớp thành công');
+          notification.success({
+            message: 'Thành công',
+            description: `Xóa lớp ${id} thành công`,
+            duration: 2,
+          });
         }
       })
       .finally(() => setLoadingTable(false));
@@ -117,7 +121,7 @@ function AdminClassesPage(props) {
             <Input
               prefix={<SearchOutlined className='opacity-60 mr-1' />}
               placeholder='Nhập mã lớp'
-              className='shadow-sm w-[350px]'
+              className='shadow-sm w-[230px]'
               onChange={(e) => setValueSearchClass(e.target.value)}
               value={valueSearchClass}
             />
@@ -153,24 +157,26 @@ function AdminClassesPage(props) {
           </Button>
         </Space>
       </div>
-      <Table
-        rowKey='id'
-        bordered={true}
-        loading={loadingTable}
-        columns={columns}
-        dataSource={dataSource}
-        pagination={{
-          onChange: (page, size) => {
-            setPageCurrent(page);
-            setPageSize(size);
-          },
-          defaultCurrent: 1,
-          pageSize: pageSize,
-          total: totalClass,
-          current: pageCurrent,
-          showSizeChanger: true,
-        }}
-      />
+      {dataSource && (
+        <Table
+          rowKey='id'
+          bordered={true}
+          loading={loadingTable}
+          columns={columns}
+          dataSource={dataSource}
+          pagination={{
+            onChange: (page, size) => {
+              setPageCurrent(page);
+              setPageSize(size);
+            },
+            defaultCurrent: 1,
+            pageSize: pageSize,
+            total: totalClass,
+            current: pageCurrent,
+            showSizeChanger: true,
+          }}
+        />
+      )}
       <ModalFormClass
         onSuccess={() => {
           handleGetClassList();

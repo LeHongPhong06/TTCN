@@ -46,12 +46,14 @@ function ColumnPointTraining({ dataStudent }) {
   };
   return (
     <Spin spinning={loading}>
-      <div className='mt-12'>
-        <Column {...config} />
-        <Text style={{ display: 'block', textAlign: 'center', opacity: 0.5, marginTop: '10px' }} italic>
-          Biểu đồ điểm rèn luyện theo từng kì học
-        </Text>
-      </div>
+      {data && (
+        <div className='mt-12'>
+          <Column {...config} />
+          <Text style={{ display: 'block', textAlign: 'center', opacity: 0.5, marginTop: '10px' }} italic>
+            Biểu đồ điểm rèn luyện theo từng kì học
+          </Text>
+        </div>
+      )}
     </Spin>
   );
 }

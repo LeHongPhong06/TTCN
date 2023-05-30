@@ -1,5 +1,5 @@
 import { PageContainer } from '@ant-design/pro-components';
-import { Button, Form, Input, message } from 'antd';
+import { Button, Form, Input, message, notification } from 'antd';
 import Cookies from 'js-cookie';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -10,6 +10,7 @@ import HeaderTop from '../../components/Header/Header';
 import News from '../../components/News/News';
 import Propose from '../../components/Propose/Propose';
 import ThumnailSlider from '../../components/Slider/ThumnailSlider';
+
 function HomePage(props) {
   const navigate = useNavigate();
   const [loadingBtnLogin, setLoadingBtnLogin] = useState(false);
@@ -21,13 +22,19 @@ function HomePage(props) {
           Cookies.set('jwt', res.data?.data?.jwt);
           setLoadingBtnLogin(false);
           if (res.data?.data?.roleId === 'STUDENT') {
+            message.success('Đăng nhập thành công');
             navigate(`/student/${res.data?.data?.id}`);
           } else {
+            message.success('Đăng nhập thành công');
             navigate(`${res.data?.data?.id}/manage`);
           }
-        } else if (res.data?.error?.code === 500) {
-          message.error(res.data.error.message);
-        }
+        } else
+          return notification.error({
+            message: 'Đăng nhập thất bại',
+            duration: 4,
+            description: res.data?.error?.message,
+            placement: 'topRight',
+          });
       })
       .finally(() => setLoadingBtnLogin(false));
   };

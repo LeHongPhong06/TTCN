@@ -4,20 +4,19 @@ import React from 'react';
 import { createClassificationsForClass } from '../../../../../../../API/axios';
 
 function ModalFormClassification({ openForm, onChangeClickOpen, dataIndex, onSuccess }) {
-  // const handleUpdateStudent = (id, values) => {
-  //   updateClassificationsForClass(id, values).then((res) => {
-  //     if (res.data?.success === true) {
-  //       onSuccess();
-  //       message.success(`Cập nhật xếp loại học kỳ lớp ${dataIndex.classId} thành công`);
-  //     } else return message.error(res.data?.error?.message);
-  //   });
-  // };
   const handleCreateStudent = (values) => {
     createClassificationsForClass(values).then((res) => {
       if (res.data?.success === true) {
         onSuccess();
         message.success('Tạo xếp loại học kỳ thành công');
-      } else return message.error(res.data?.error?.message);
+      } else if (res.data?.error?.code === 2) {
+        // eslint-disable-next-line no-lone-blocks
+        {
+          res.data?.error?.errorDetailList.forEach((e) => message.error(e.message));
+        }
+      } else if (res.data?.error?.code === 500) {
+        message.error(res.data?.error?.message);
+      }
     });
   };
   return (

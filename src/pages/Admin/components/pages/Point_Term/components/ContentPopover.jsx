@@ -2,20 +2,31 @@ import { Button, Col, Form, Row, Select, Space } from 'antd';
 import React from 'react';
 
 function ContentPopover({ setValueFilters, setPage }) {
+  const [form] = Form.useForm();
   const onFinish = (values) => {
     setValueFilters(values);
   };
+  const handleReset = () => {
+    setValueFilters({});
+    setPage(1);
+    form.setFieldsValue({
+      point: null,
+      accPoint: null,
+      trainingPoint: null,
+    });
+  };
   return (
-    <div className='w-[580px]'>
+    <div className='w-[290px]'>
       <Form
         layout='vertical'
         style={{
-          width: 700,
+          width: 350,
         }}
         onFinish={onFinish}
+        form={form}
       >
-        <Row gutter={[20, 8]}>
-          <Col span={10}>
+        <Row gutter={[20]}>
+          <Col span={20}>
             <Form.Item label='Điểm trung bình học tập ( học kì hệ 4 )' name='point'>
               <Select placeholder='Chọn khoảng điểm'>
                 <Select.Option value={1}>{'Từ 3.6 đến 4.0 ( Xuất sắc )'}</Select.Option>
@@ -28,7 +39,7 @@ function ContentPopover({ setValueFilters, setPage }) {
               </Select>
             </Form.Item>
           </Col>
-          <Col span={10}>
+          <Col span={20}>
             <Form.Item label='Điểm trung bình học tập ( tích lũy hệ 4 )' name='accPoint'>
               <Select placeholder='Chọn khoảng điểm'>
                 <Select.Option value={1}>{'Từ 3.6 đến 4.0 ( Xuất sắc )'}</Select.Option>
@@ -41,7 +52,7 @@ function ContentPopover({ setValueFilters, setPage }) {
               </Select>
             </Form.Item>
           </Col>
-          <Col span={10}>
+          <Col span={20}>
             <Form.Item label='Điểm rèn luyện' name='trainingPoint'>
               <Select placeholder='Chọn khoảng điểm'>
                 <Select.Option value={1}>{'Từ 90 - 100 ( Xuất sắc )'}</Select.Option>
@@ -56,17 +67,10 @@ function ContentPopover({ setValueFilters, setPage }) {
           </Col>
           <Col span={20} className='flex justify-end'>
             <Space>
-              <Button type='primary' htmlType='submit' className='flex justify-center items-center px-8 py-3 rounded-full'>
+              <Button type='primary' htmlType='submit' className='flex justify-center items-center'>
                 Lọc
               </Button>
-              <Button
-                type='default'
-                onClick={() => {
-                  setValueFilters({});
-                  setPage(1);
-                }}
-                className='flex justify-center items-center px-8 py-3 rounded-full'
-              >
+              <Button type='default' onClick={handleReset} className='flex justify-center items-center'>
                 Reset
               </Button>
             </Space>

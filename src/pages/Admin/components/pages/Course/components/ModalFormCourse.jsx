@@ -8,6 +8,15 @@ function ModalFormCourse({ openForm, onChangeClickOpen, dataCourse, onSuccess })
       if (res.data?.success === true) {
         onSuccess();
         message.success('Tạo khóa mới thành công');
+      } else if (res.data?.error?.code === 2) {
+        // eslint-disable-next-line no-lone-blocks
+        {
+          res.data?.error?.errorDetailList.forEach((e) => message.error(e.message));
+        }
+      } else if (res.data?.error?.code === 500) {
+        message.error(res.data?.error?.message);
+      } else if (res.data?.error?.message === 'Access is denied') {
+        message.warning('Bạn không có quyền truy cập');
       }
     });
   };
@@ -16,6 +25,13 @@ function ModalFormCourse({ openForm, onChangeClickOpen, dataCourse, onSuccess })
       if (res.data?.success === true) {
         onSuccess();
         message.success('Sửa thông tin khóa thành công');
+      } else if (res.data?.error?.code === 2) {
+        // eslint-disable-next-line no-lone-blocks
+        {
+          res.data?.error?.errorDetailList.forEach((e) => message.error(e.message));
+        }
+      } else if (res.data?.error?.code === 500) {
+        message.error(res.data?.error?.message);
       }
     });
   };

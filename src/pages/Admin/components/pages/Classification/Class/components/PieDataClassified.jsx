@@ -51,12 +51,16 @@ function PieDataClassified({ dataPie }) {
     ],
   };
   return (
-    <div>
-      <Pie {...config} />
-      <Text style={{ display: 'block', translate: '32%', marginTop: '-40px', opacity: 0.5 }} italic>
-        Biểu đồ xếp loại hạnh kiểm
-      </Text>
-    </div>
+    <>
+      {data && (
+        <>
+          <Pie {...config} />
+          <Text style={{ display: 'block', translate: '32%', marginTop: '-40px', opacity: 0.5 }} italic>
+            Biểu đồ xếp loại hạnh kiểm
+          </Text>
+        </>
+      )}
+    </>
   );
 }
 

@@ -124,7 +124,7 @@ function DefaultLayoutAdmin(props) {
         <Sider style={{ borderRadius: '6px' }} width={250}>
           <div className='py-3 px-6 flex justify-center items-center border-b-2 border-stone-50'>
             <Title style={{ color: '#fff', marginBottom: 0 }} level={4}>
-              Xin chào Admin
+              {`Xin chào Admin`}
             </Title>
           </div>
           <Menu className='rounded-md mt-1' theme='dark' mode='inline' defaultSelectedKeys={[checkPathName()]} items={items} />

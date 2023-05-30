@@ -1,19 +1,53 @@
-import { Button, Descriptions, Form, Input, Typography, notification } from 'antd';
-import React, { useState } from 'react';
+import { Button, Descriptions, Form, Input, Typography, message, notification } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { changePasswordStudent, getInfoStudent } from '../../../../API/axios';
+import { useLocation } from 'react-router-dom';
 
 function ChangePasswordPage(props) {
   const [loading, setLoading] = useState(false);
+  const location = useLocation();
+  const studentId = location.pathname.split('/')[2];
+  const [dataStudent, setDataStudent] = useState({});
   const { Title } = Typography;
   const [api, contextHolder] = notification.useNotification();
+  const [form] = Form.useForm();
   const openNotification = () => {
     api.success({
       message: 'Thành công',
       description: 'Bạn đã cập nhật mật khẩu thành công !',
     });
   };
+  // handle get information student
+  const handleGetInfoStudent = (studentId) => {
+    if (studentId !== undefined) {
+      getInfoStudent(studentId).then((res) => {
+        if (res.data?.success === true) {
+          setDataStudent(res.data?.data);
+        } else {
+          message.error(res.data?.error?.message);
+        }
+      });
+    }
+  };
+  useEffect(() => {
+    handleGetInfoStudent(studentId);
+  }, [studentId]);
+
   const onFinish = (values) => {
     setLoading(true);
-    openNotification();
+    changePasswordStudent({ id: studentId, values: values })
+      .then((res) => {
+        if (res.data?.success === true) {
+          setLoading(false);
+          form.setFieldsValue({
+            currentPassword: '',
+            newPassword: '',
+            confirmPassword: '',
+          });
+          openNotification();
+        } else return message.error(res.data?.error?.message);
+      })
+      .finally(() => setLoading(false));
   };
   return (
     <div className='pt-12'>
@@ -23,15 +57,15 @@ function ChangePasswordPage(props) {
         </Title>
         <Descriptions title='Thông tin cá nhân' column={2} style={{ maxWidth: 200, marginBottom: 40 }}>
           <Descriptions.Item span={2} label='Họ và tên'>
-            Nguyễn Văn A
+            {dataStudent?.name}
           </Descriptions.Item>
           <Descriptions.Item span={2} label='Mã sinh viên'>
-            655789
+            {dataStudent?.id}
           </Descriptions.Item>
         </Descriptions>
-        <Form name='basic' onFinish={onFinish} autoComplete='off' style={{ width: 400 }} size='middle'>
+        <Form name='basic' onFinish={onFinish} autoComplete='off' style={{ width: 400 }} size='middle' form={form}>
           <Form.Item
-            name='password'
+            name='currentPassword'
             rules={[
               {
                 required: true,
@@ -43,7 +77,7 @@ function ChangePasswordPage(props) {
             <Input placeholder='Nhập mật khẩu cũ' style={{ borderRadius: 999 }} size='large' />
           </Form.Item>
           <Form.Item
-            name='newpassword'
+            name='newPassword'
             rules={[
               {
                 required: true,
@@ -56,7 +90,7 @@ function ChangePasswordPage(props) {
           </Form.Item>
 
           <Form.Item
-            name='confirm'
+            name='confirmPassword'
             dependencies={['password']}
             hasFeedback
             rules={[
@@ -66,7 +100,7 @@ function ChangePasswordPage(props) {
               },
               ({ getFieldValue }) => ({
                 validator(_, value) {
-                  if (!value || getFieldValue('newpassword') === value) {
+                  if (!value || getFieldValue('newPassword') === value) {
                     return Promise.resolve();
                   }
                   return Promise.reject(new Error('Không trùng khớp !'));

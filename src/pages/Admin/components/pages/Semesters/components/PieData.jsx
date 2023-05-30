@@ -52,10 +52,14 @@ function PieData({ dataPie }) {
   };
   return (
     <div>
-      <Pie {...config} />
-      <Text style={{ display: 'block', translate: '32%', marginTop: '-25px', opacity: 0.5 }} italic>
-        Biểu đồ xếp loại hạnh kiểm
-      </Text>
+      {dataPie && (
+        <>
+          <Pie {...config} />
+          <Text style={{ display: 'block', translate: '32%', marginTop: '-25px', opacity: 0.5 }} italic>
+            Biểu đồ xếp loại hạnh kiểm
+          </Text>
+        </>
+      )}
     </div>
   );
 }

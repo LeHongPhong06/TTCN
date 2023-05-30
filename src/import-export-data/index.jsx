@@ -1,7 +1,5 @@
 import * as XLSX from 'xlsx/xlsx.mjs';
 
-export const importData = () => {};
-
 export const exportExcel = (data, nameSheet, nameFile) => {
   return new Promise((resolve, reject) => {
     var wb = XLSX.utils.book_new();

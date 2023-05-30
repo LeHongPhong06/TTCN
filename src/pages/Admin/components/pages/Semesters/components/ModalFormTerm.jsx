@@ -1,5 +1,5 @@
 import { ModalForm, ProForm, ProFormText } from '@ant-design/pro-components';
-import { message } from 'antd';
+import { message, notification } from 'antd';
 import React from 'react';
 import { createSemester, updateSemester } from '../../../../../../API/axios';
 
@@ -8,7 +8,18 @@ function ModalFormTerm({ openForm, onChangeClickOpen, dataTerm, onSuccess }) {
     createSemester(values).then((res) => {
       if (res.data?.success === true) {
         onSuccess();
-        message.success('Tạo kỳ mới thành công');
+        notification.success({
+          message: 'Thành công',
+          description: 'Tạo học kỳ mới thành công',
+          duration: 2,
+        });
+      } else if (res.data?.error?.code === 2) {
+        // eslint-disable-next-line no-lone-blocks
+        {
+          res.data?.error?.errorDetailList.forEach((e) => message.error(e.message));
+        }
+      } else if (res.data?.error?.code === 500) {
+        message.error(res.data?.error?.message);
       }
     });
   };
@@ -16,7 +27,18 @@ function ModalFormTerm({ openForm, onChangeClickOpen, dataTerm, onSuccess }) {
     updateSemester(id, values).then((res) => {
       if (res.data?.success === true) {
         onSuccess();
-        message.success('Sửa thông tin kì thành công');
+        notification.success({
+          message: 'Thành công',
+          description: 'Sửa thông tin học kỳ thành công',
+          duration: 2,
+        });
+      } else if (res.data?.error?.code === 2) {
+        // eslint-disable-next-line no-lone-blocks
+        {
+          res.data?.error?.errorDetailList.forEach((e) => message.error(e.message));
+        }
+      } else if (res.data?.error?.code === 500) {
+        message.error(res.data?.error?.message);
       }
     });
   };
@@ -24,11 +46,11 @@ function ModalFormTerm({ openForm, onChangeClickOpen, dataTerm, onSuccess }) {
     <div>
       <ModalForm
         width={750}
-        title={dataTerm.id ? 'Sửa thông tin kì' : 'Thêm kì học mới'}
+        title={dataTerm.id ? 'Sửa thông tin kỳ học' : 'Thêm kì học mới'}
         initialValues={dataTerm}
         modalProps={{
           destroyOnClose: true,
-          okText: dataTerm.id ? 'Lưu' : 'Tạo',
+          okText: dataTerm.id ? 'Cập nhật' : 'Tạo',
           cancelText: 'Hủy',
         }}
         open={openForm}

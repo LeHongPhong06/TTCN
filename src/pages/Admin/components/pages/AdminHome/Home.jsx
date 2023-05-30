@@ -13,7 +13,7 @@ function Home(props) {
         title='Đăng nhập thành công'
         extra={
           <Button onClick={() => navigate(`/${identify}/manage/students`)} type='primary'>
-            Tiếp túc
+            Tiếp tục
           </Button>
         }
       />

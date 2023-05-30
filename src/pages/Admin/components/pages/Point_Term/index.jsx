@@ -7,28 +7,31 @@ import {
   SearchOutlined,
   UploadOutlined,
 } from '@ant-design/icons';
-import { Button, Input, Popconfirm, Popover, Space, Table, Tooltip, Typography, Upload, message } from 'antd';
+import { Button, Input, Popconfirm, Popover, Space, Table, Tooltip, Typography, Upload, message, notification } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useDebounce } from 'use-debounce';
 import { deletePoint, exportPointStudent, getDataPoint } from '../../../../../API/axios';
 import { exportExcel } from '../../../../../import-export-data';
 import ContentPopover from './components/ContentPopover';
 import ModalFormPoint from './components/ModalFormPoint';
+import Cookies from 'js-cookie';
 
-function AdminPointTermPage(props) {
+function AdminPointTermPage() {
   const { Title } = Typography;
+  const jwt = Cookies.get('jwt');
+  const [disabled, setDisabled] = useState(false);
+  const [loadingTable, setLoadingTable] = useState(false);
   const [openModalFormPoint, setOpenModalFormPoint] = useState(false);
   const [loadingBtnExportPoint, setLoadingBtnExportPoint] = useState(false);
-  const [loadingTable, setLoadingTable] = useState(false);
-  const [valueSearchStudentId, setValueSearchStudentId] = useState('');
-  const [valueSearchTermId, setValueSearchTermId] = useState('');
+  const [loadingBtnImportPoint, setLoadingBtnImportPoint] = useState(false);
   const [dataPoint, setDataPoint] = useState({});
   const [dataSource, setDataSource] = useState([]);
-  const [pageCurrent, setPageCurrent] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
-  const [totalPoints, setTotalPoints] = useState(0);
-  const [disabled, setDisabled] = useState(false);
   const [valueFilters, setValueFilters] = useState({});
+  const [valueSearchTermId, setValueSearchTermId] = useState('');
+  const [valueSearchStudentId, setValueSearchStudentId] = useState('');
+  const [pageSize, setPageSize] = useState(10);
+  const [pageCurrent, setPageCurrent] = useState(1);
+  const [totalPoints, setTotalPoints] = useState(0);
 
   // Handle click confirm delete major
   const handleConfirmDeletePoint = (values) => {
@@ -39,7 +42,7 @@ function AdminPointTermPage(props) {
           message.success(`Xóa điểm học kỳ ${values.termId} có mã sinh viên ${values.studentId} thành công`, 1);
           handleGetDataPointList();
           setLoadingTable(false);
-        }
+        } else return message.error(res.data?.error?.message);
       })
       .finally(() => setLoadingTable(false));
   };
@@ -85,6 +88,62 @@ function AdminPointTermPage(props) {
       })
       .finally(() => setLoadingBtnExportPoint(false));
   };
+
+  const props = {
+    name: 'file',
+    multiple: false,
+    showUploadList: false,
+    action: 'https://a715-118-70-132-104.ngrok-free.app/admin/point/import',
+    headers: {
+      Authorization: jwt ? `Bearer ${jwt}` : undefined,
+    },
+    onChange(info) {
+      const { response } = info.file;
+      setLoadingBtnImportPoint(true);
+      if (response?.success === true) {
+        notification.success({
+          placement: 'topRight',
+          message: 'Thành công',
+          description: `Upload ${info.file.name} thành công`,
+          duration: 4,
+        });
+        handleGetDataPointList();
+        setLoadingBtnImportPoint(true);
+      } else if (response?.success === false) {
+        notification.error({
+          placement: 'topRight',
+          message: 'Thất bại',
+          description: response?.error?.message,
+          duration: 4,
+        });
+        setLoadingBtnImportPoint(false);
+      }
+    },
+    beforeUpload: (file) => {
+      const checkSize = file.size / 1024 / 1024 < 5;
+      const isXLXS = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+      if (!isXLXS) {
+        notification.error({
+          message: 'Thất bại',
+          description: `${file.name} không phải là một file excel`,
+          duration: 2,
+          placement: 'topRight',
+        });
+        return false;
+      }
+      if (!checkSize) {
+        notification.error({
+          message: 'Thất bại',
+          description: `File tải lên không được quá 5MB`,
+          duration: 2,
+          placement: 'topRight',
+        });
+        return false;
+      }
+      return true;
+    },
+  };
+
   const columns = [
     {
       title: 'Mã sinh viên',
@@ -141,6 +200,7 @@ function AdminPointTermPage(props) {
       key: 'scoreAccumulated4',
     },
     {
+      key: 'options',
       title: 'Tùy chọn',
       align: 'center',
       render: (e, record, idx) => (
@@ -208,8 +268,12 @@ function AdminPointTermPage(props) {
           Danh sách điểm học kỳ
         </Title>
         <Space>
-          <Upload>
-            <Button className='flex justify-center items-center text-md font-medium shadow-md bg-slate-100' icon={<UploadOutlined />}>
+          <Upload {...props}>
+            <Button
+              loading={loadingBtnImportPoint}
+              className='flex justify-center items-center text-md font-medium shadow-md bg-slate-100'
+              icon={<UploadOutlined />}
+            >
               Thêm danh sách điểm
             </Button>
           </Upload>
@@ -224,34 +288,36 @@ function AdminPointTermPage(props) {
           </Button>
         </Space>
       </div>
-      <div className='relative'>
-        <Table
-          rowKey='id'
-          bordered={true}
-          loading={loadingTable}
-          dataSource={dataSource}
-          columns={columns}
-          pagination={{
-            onChange: (page, size) => {
-              setPageCurrent(page);
-              setPageSize(size);
-            },
-            defaultCurrent: 1,
-            pageSize: pageSize,
-            total: totalPoints,
-            current: pageCurrent,
-            showSizeChanger: true,
-          }}
-        />
-        <Button
-          loading={loadingBtnExportPoint}
-          onClick={exportDataFileExcel}
-          icon={<DownloadOutlined />}
-          className='flex justify-center items-center absolute bottom-5 left-0 text-md font-medium shadow-md bg-slate-100'
-        >
-          Xuất danh sách điểm
-        </Button>
-      </div>
+      {dataSource && (
+        <div className='relative'>
+          <Table
+            rowKey='id'
+            bordered={true}
+            loading={loadingTable}
+            dataSource={dataSource}
+            columns={columns}
+            pagination={{
+              onChange: (page, size) => {
+                setPageCurrent(page);
+                setPageSize(size);
+              },
+              defaultCurrent: 1,
+              pageSize: pageSize,
+              total: totalPoints,
+              current: pageCurrent,
+              showSizeChanger: true,
+            }}
+          />
+          <Button
+            loading={loadingBtnExportPoint}
+            onClick={exportDataFileExcel}
+            icon={<DownloadOutlined />}
+            className='flex justify-center items-center absolute bottom-5 left-0 text-md font-medium shadow-md bg-slate-100'
+          >
+            Xuất danh sách điểm
+          </Button>
+        </div>
+      )}
       <ModalFormPoint
         onSuccess={() => {
           setOpenModalFormPoint(false);

@@ -1,29 +1,53 @@
 import { Button, Col, Form, Input, Row, Select, Space } from 'antd';
-import React from 'react';
-function ContentPopover({ setValuesFilter }) {
+import React, { useEffect, useState } from 'react';
+import { getMajorList } from '../../../../../../API/axios';
+function ContentPopover({ setValuesFilter, setPageCurrent }) {
+  const [form] = Form.useForm();
+  const [majorList, setMajorList] = useState([]);
+
+  const handleMajorList = () => {
+    getMajorList({ page: 1, size: 10 }).then((res) => {
+      if (res.data?.success) {
+        setMajorList(res.data?.data?.items);
+      }
+    });
+  };
+  useEffect(() => handleMajorList(), []);
+
   const onFinish = (values) => {
     setValuesFilter(values);
   };
+
+  const handleReset = () => {
+    form.setFieldsValue({
+      majorId: null,
+      courseId: '',
+      classId: '',
+      status: null,
+    });
+    setValuesFilter({});
+    setPageCurrent(1);
+  };
+
   return (
-    <div className='w-[450px]'>
+    <div className='w-[400px]'>
       <Form
+        form={form}
         layout='vertical'
         style={{
-          width: 450,
+          width: 400,
         }}
         onFinish={onFinish}
       >
-        <Row gutter={[24, 8]}>
+        <Row gutter={[24]}>
           <Col span={12}>
             <Form.Item label='Chuyên ngành' name='majorId'>
               <Select placeholder='Chọn chuyên ngành'>
-                <Select.Option value='CNTT'>Công nghệ thông tin</Select.Option>
-                <Select.Option value='CNPM'>Công nghệ phần mềm</Select.Option>
-                <Select.Option value='ATTT'>An toàn thông tin</Select.Option>
-                <Select.Option value='MMT'>Mạng máy tính</Select.Option>
-                <Select.Option value='HTTT'>Hệ thống thông tin</Select.Option>
-                <Select.Option value='TT'>Truyền thông</Select.Option>
-                <Select.Option value='TTNT'>Trí tuệ nhân tạo</Select.Option>
+                {majorList?.map((e) => (
+                  <Select.Option key={e.id} value={e.id}>
+                    {e.name}
+                  </Select.Option>
+                ))}
               </Select>
             </Form.Item>
           </Col>
@@ -35,7 +59,7 @@ function ContentPopover({ setValuesFilter }) {
                 {
                   min: 1,
                   max: 10,
-                  message: 'Số khóa quá lớn',
+                  message: 'Mã khóa quá lớn',
                 },
                 {
                   pattern: '^[0-9]+$',
@@ -68,7 +92,7 @@ function ContentPopover({ setValuesFilter }) {
           <Col span={12}>
             <Form.Item label='Tình trạng' name='status'>
               <Select placeholder='Chọn tình trạng'>
-                <Select.Option value='Chưa tốt nghiệp'>Chưa tốt nghiệp</Select.Option>
+                <Select.Option value='Còn đi học'>Còn đi học</Select.Option>
                 <Select.Option value='Đã tốt nghiệp'>Đã tốt nghiệp</Select.Option>
                 <Select.Option value='Đã bỏ học'>Đã bỏ học</Select.Option>
                 <Select.Option value='Bị buộc thôi học'>Bị buộc thôi học</Select.Option>
@@ -77,19 +101,11 @@ function ContentPopover({ setValuesFilter }) {
           </Col>
           <Col span={24} className='flex justify-end'>
             <Space>
-              <Button
-                type='primary'
-                htmlType='submit'
-                className='flex justify-center items-center px-8 py-3 rounded-full'
-              >
-                Lọc
-              </Button>
-              <Button
-                type='default'
-                onClick={() => setValuesFilter({})}
-                className='flex justify-center items-center px-8 py-3 rounded-full'
-              >
+              <Button type='default' onClick={handleReset} className='flex justify-center items-center'>
                 Reset
+              </Button>
+              <Button type='primary' htmlType='submit' className='flex justify-center items-center'>
+                Lọc
               </Button>
             </Space>
           </Col>

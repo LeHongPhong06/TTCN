@@ -2,14 +2,14 @@ import { LoadingOutlined } from '@ant-design/icons';
 import { Liquid } from '@ant-design/plots';
 import { Descriptions, Spin } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { getDataStudentAccumulation } from '../../../../../API/axios';
 
 function ProgressCreditsUser(props) {
+  const { studentId } = useParams();
   const [data, setData] = useState({});
-  const location = useLocation();
-  const studentId = location.pathname.split('/')[2];
   const [loadingPage, setLoadingPage] = useState();
+
   const handleGetDataAcc = () => {
     setLoadingPage(true);
     getDataStudentAccumulation(studentId)

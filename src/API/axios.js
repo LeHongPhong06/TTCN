@@ -20,7 +20,7 @@ export const updateStudent = (id, values) => {
 };
 
 export const deleteStudent = (id) => {
-  return axios.delete(`/admin/student/delete/${id}`);
+  return axios.post(`/admin/student/delete/${id}`);
 };
 
 export const deleteListStudent = (values) => {
@@ -98,6 +98,10 @@ export const deleteCourse = (id) => {
   return axios.delete(`/admin/course/delete/${id}`);
 };
 
+export const getDataPieCourse = (values) => {
+  return axios.post(`/admin/course-classified/statistic`, values);
+};
+
 // ----------- Point ------------
 export const getDataPoint = (values) => {
   return axios.post(`/admin/point/list`, values);
@@ -146,10 +150,6 @@ export const createClassificationsForClass = (values) => {
   return axios.post(`/admin/class-classified/create`, values);
 };
 
-// export const updateClassificationsForClass = (values) => {
-//   return axios.put(`/admin/class-classified/update`, values);
-// };
-
 export const deleteClassificationsForClass = (values) => {
   return axios.post(`/admin/class-classified/delete`, values);
 };
@@ -161,10 +161,6 @@ export const getClassificationsForCourse = (values) => {
 export const createClassificationsForCourse = (values) => {
   return axios.post(`/admin/course-classified/create`, values);
 };
-
-// export const updateClassificationsForCourse = (values) => {
-//   return axios.put(`/admin/course-classified/update`, values);
-// };
 
 export const deleteClassificationsForCourse = (values) => {
   return axios.post(`/admin/course-classified/delete`, values);
@@ -205,6 +201,7 @@ export const changePassword = (values) => {
 };
 
 // ============ Student ==================
+
 export const getInfoStudent = (id) => {
   return axios.get(`/student/detail/${id}`);
 };
@@ -227,4 +224,16 @@ export const getDataStudentAccumulation = (id) => {
 
 export const updateStudentInfoDetails = (id, values) => {
   return axios.put(`/student/update/${id}`, values);
+};
+
+export const changePasswordStudent = (values) => {
+  return axios.post(`/student/change-password/`, values);
+};
+
+export const changeForgotStudent = (values) => {
+  return axios.post(`/student/change-password/`, values);
+};
+
+export const sendRequestForgotStudent = (values) => {
+  return axios.post(`/client/send-request/`, values);
 };

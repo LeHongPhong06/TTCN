@@ -2,17 +2,16 @@ import { LoadingOutlined } from '@ant-design/icons';
 import { Column } from '@ant-design/plots';
 import { Spin, Typography } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { getDataStudentPoint4 } from '../../../../../API/axios';
 
 function ColumnMedCore4(props) {
   const { Text } = Typography;
-  const location = useLocation();
+  const { studentId } = useParams();
   const [data, setData] = useState([]);
   const [loadingPage, setLoadingPage] = useState(false);
 
   // handle get data points
-  const studentId = location.pathname.split('/')[2];
   const handleGetDataTrainingPoints = (studentId) => {
     setLoadingPage(true);
     if (studentId !== undefined) {

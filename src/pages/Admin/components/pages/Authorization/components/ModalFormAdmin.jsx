@@ -1,5 +1,5 @@
 import { ModalForm, ProForm, ProFormSelect, ProFormText } from '@ant-design/pro-components';
-import { message } from 'antd';
+import { message, notification } from 'antd';
 import React from 'react';
 import { createAdmin, updateAdmin } from '../../../../../../API/axios';
 
@@ -8,16 +8,38 @@ function ModalFormAdmin({ openForm, onChangeClickOpen, dataAdmin, onSuccess, req
     createAdmin(values).then((res) => {
       if (res.data?.success === true) {
         onSuccess();
-        message.success('Tạo admin thành công');
-      } else return message.error(res.data?.error?.message);
+        notification.success({
+          message: 'Thành công',
+          description: 'Tạo admin thành công',
+          duration: 2,
+        });
+      } else if (res.data?.error?.code === 2) {
+        // eslint-disable-next-line no-lone-blocks
+        {
+          res.data?.error?.errorDetailList.forEach((e) => message.error(e.message));
+        }
+      } else if (res.data?.error?.code === 500) {
+        message.error(res.data?.error?.message);
+      }
     });
   };
   const handleUpdateStudent = (values) => {
     updateAdmin(values).then((res) => {
       if (res.data?.success === true) {
         onSuccess();
-        message.success('Sửa thông tin admin thành công');
-      } else return message.error(res.data?.error?.message);
+        notification.success({
+          message: 'Thành công',
+          description: 'Sửa thông tin admin thành công',
+          duration: 2,
+        });
+      } else if (res.data?.error?.code === 2) {
+        // eslint-disable-next-line no-lone-blocks
+        {
+          res.data?.error?.errorDetailList.forEach((e) => message.error(e.message));
+        }
+      } else if (res.data?.error?.code === 500) {
+        message.error(res.data?.error?.message);
+      }
     });
   };
   return (

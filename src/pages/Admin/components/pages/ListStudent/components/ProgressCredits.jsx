@@ -15,7 +15,14 @@ function ProgressCredits({ dataStudent }) {
           if (res.data.success === true) {
             setData(res.data?.data);
             setLoadingChart(false);
-          } else return message.error(res.data?.error.message);
+          } else if (res.data?.error?.code === 2) {
+            // eslint-disable-next-line no-lone-blocks
+            {
+              res.data?.error?.errorDetailList.forEach((e) => message.error(e.message));
+            }
+          } else if (res.data?.error?.code === 500) {
+            message.error(res.data?.error?.message);
+          }
         })
         .finally(() => setLoadingChart(false));
     }
@@ -38,17 +45,25 @@ function ProgressCredits({ dataStudent }) {
   return (
     <div>
       <Spin spinning={loadingChart}>
-        <div className='flex justify-between items-center h-[200px]'>
-          <Liquid width={200} height={280} {...config} />
-          <Descriptions labelStyle={{ width: '200px' }} bordered={true} layout='horizontal' column={1}>
-            <Descriptions.Item span={1} label='Số tín chỉ tích lũy'>
-              {data?.creditsAccumulated}
-            </Descriptions.Item>
-            <Descriptions.Item span={1} label='Tổng số tín chỉ của chương trình đào tạo'>
-              {data?.totalCredits}
-            </Descriptions.Item>
-          </Descriptions>
-        </div>
+        {data && (
+          <div className='flex justify-between items-center h-[250px]'>
+            <Liquid width={200} height={280} {...config} />
+            <Descriptions labelStyle={{ width: 300 }} bordered={true} layout='horizontal' column={1}>
+              <Descriptions.Item span={1} label={'Số tín chỉ môn học bắt buộc'}>
+                {'81 / 119'}
+              </Descriptions.Item>
+              <Descriptions.Item span={1} label={'Số tín chỉ môn học tự chọn'}>
+                {'8 / 12'}
+              </Descriptions.Item>
+              <Descriptions.Item span={1} label='Tổng số tín chỉ đã hoàn thành'>
+                {`${data?.creditsAccumulated} / ${data?.totalCredits}`}
+              </Descriptions.Item>
+              <Descriptions.Item span={1} label='Điểm trung bình tích lũy ( hệ 4 )'>
+                {data?.scoreAccumulated4}
+              </Descriptions.Item>
+            </Descriptions>
+          </div>
+        )}
       </Spin>
     </div>
   );

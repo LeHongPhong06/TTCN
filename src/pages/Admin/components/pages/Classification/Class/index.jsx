@@ -3,22 +3,22 @@ import { Button, Input, Modal, Popconfirm, Space, Table, Tooltip, Typography, me
 import React, { useEffect, useState } from 'react';
 import { useDebounce } from 'use-debounce';
 import { deleteClassificationsForClass, getClassificationsForClass } from '../../../../../../API/axios';
+import PieDataCourse from '../../Course/components/PieDataCourse';
 import ModalFormClassification from './components/ModalFormClassification';
-import PieDataClassified from './components/PieDataClassified';
 
 function Classclassification(props) {
   const { Title } = Typography;
-  const [loadingTable, setLoadingTable] = useState(false);
-  const [totalClassification, setTotalClassification] = useState(0);
-  const [pageCurrent, setPageCurrent] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
-  const [openFormModal, setOpenFormModal] = useState(false);
   const [openChart, setOpenChart] = useState(false);
-  const [dataIndex, setDataIndex] = useState({});
-  const [valueClassId, setValueClassId] = useState('');
-  const [valueTermId, setValueTermId] = useState('');
-  const [dataSource, setDataSource] = useState([]);
+  const [loadingTable, setLoadingTable] = useState(false);
+  const [openFormModal, setOpenFormModal] = useState(false);
   const [dataPie, setDataPie] = useState({});
+  const [dataIndex, setDataIndex] = useState({});
+  const [dataSource, setDataSource] = useState([]);
+  const [valueTermId, setValueTermId] = useState('');
+  const [valueClassId, setValueClassId] = useState('');
+  const [pageSize, setPageSize] = useState(10);
+  const [pageCurrent, setPageCurrent] = useState(1);
+  const [totalClassification, setTotalClassification] = useState(0);
 
   //   handle get data table classification
   const debounceClassId = useDebounce(valueClassId, 750);
@@ -37,6 +37,12 @@ function Classclassification(props) {
       } else return message.warning(res.data?.error?.message);
     });
   };
+  useEffect(() => {
+    handleGetDataClassification();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [classId, termId, pageCurrent, pageSize]);
+
+  // Handle delete class classification
   const handleConfirmDeleteData = (classId, termId) => {
     setLoadingTable(true);
     deleteClassificationsForClass(classId, termId).then((res) => {
@@ -46,10 +52,6 @@ function Classclassification(props) {
       } else return message.error(res.data?.error?.message);
     });
   };
-  useEffect(() => {
-    handleGetDataClassification();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [classId, termId, pageCurrent, pageSize]);
 
   const columns = [
     {
@@ -105,16 +107,6 @@ function Classclassification(props) {
       align: 'center',
       render: (e, record, index) => (
         <Space size={10} key={index}>
-          {/* <Tooltip title='Chỉnh sửa'>
-            <Button
-              onClick={() => {
-                setDataIndex(record);
-                setOpenFormModal(true);
-              }}
-              className='flex justify-center items-center text-md shadow-md'
-              icon={<EditOutlined />}
-            ></Button>
-          </Tooltip> */}
           <Tooltip title='Xóa'>
             <Popconfirm
               title='Bạn có chắc chắn muốn xóa ?'
@@ -184,24 +176,26 @@ function Classclassification(props) {
           Thêm xếp loại
         </Button>
       </div>
-      <Table
-        rowKey='id'
-        loading={loadingTable}
-        bordered={true}
-        dataSource={dataSource}
-        columns={columns}
-        pagination={{
-          onChange: (page, size) => {
-            setPageCurrent(page);
-            setPageSize(size);
-          },
-          defaultCurrent: 1,
-          pageSize: pageSize,
-          total: totalClassification,
-          current: pageCurrent,
-          showSizeChanger: true,
-        }}
-      />
+      {dataSource && (
+        <Table
+          rowKey='id'
+          loading={loadingTable}
+          bordered={true}
+          dataSource={dataSource}
+          columns={columns}
+          pagination={{
+            onChange: (page, size) => {
+              setPageCurrent(page);
+              setPageSize(size);
+            },
+            defaultCurrent: 1,
+            pageSize: pageSize,
+            total: totalClassification,
+            current: pageCurrent,
+            showSizeChanger: true,
+          }}
+        />
+      )}
       <ModalFormClassification
         onSuccess={() => {
           setOpenFormModal(false);
@@ -231,7 +225,7 @@ function Classclassification(props) {
           style: { display: 'none' },
         }}
       >
-        <PieDataClassified dataPie={dataPie} />
+        <PieDataCourse dataPie={dataPie} />
       </Modal>
     </div>
   );

@@ -9,31 +9,18 @@ import { useDebounce } from 'use-debounce';
 function AdminCoursePage(props) {
   const { Panel } = Collapse;
   const { Title } = Typography;
-  const [openModalFormCourse, setOpenModalFormCourse] = useState(false);
   const [openDrawer, setOpenDrawer] = useState(false);
   const [loadingTable, setLoadingTable] = useState(false);
+  const [openModalFormCourse, setOpenModalFormCourse] = useState(false);
   const [valueSearchCourse, setValueSearchCourse] = useState('');
-  const [dataSource, setDataCourse] = useState({});
   const [data, setData] = useState([]);
-  const [pageCurrent, setPageCurrent] = useState(1);
+  const [dataSource, setDataCourse] = useState({});
   const [pageSize, setPageSize] = useState(10);
+  const [pageCurrent, setPageCurrent] = useState(1);
   const [totalCourse, setTotalCourse] = useState(0);
-  const debunceValue = useDebounce(valueSearchCourse, 750);
-
-  // Handle Confirm Delete Course
-  const handleConfirmDeleteCourse = (id) => {
-    setLoadingTable(true);
-    deleteCourse(id)
-      .then((res) => {
-        if (res.data?.success === true) {
-          handleGetCourseData();
-          message.success(`Xóa khóa ${id} thành công`);
-        } else return message.error(res.data?.error?.message);
-      })
-      .finally(() => setLoadingTable(false));
-  };
 
   // Handle get Course Data
+  const debunceValue = useDebounce(valueSearchCourse, 750);
   const courseId = debunceValue[0];
   const handleGetCourseData = () => {
     setLoadingTable(true);
@@ -53,6 +40,19 @@ function AdminCoursePage(props) {
     handleGetCourseData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageCurrent, pageSize, courseId]);
+
+  // Handle Confirm Delete Course
+  const handleConfirmDeleteCourse = (id) => {
+    setLoadingTable(true);
+    deleteCourse(id)
+      .then((res) => {
+        if (res.data?.success === true) {
+          handleGetCourseData();
+          message.success(`Xóa khóa ${id} thành công`);
+        } else return message.error(res.data?.error?.message);
+      })
+      .finally(() => setLoadingTable(false));
+  };
 
   const columns = [
     {
@@ -119,8 +119,8 @@ function AdminCoursePage(props) {
         <Tooltip title='Tìm kiếm khóa'>
           <Input
             prefix={<SearchOutlined className='opacity-60 mr-1' />}
-            placeholder='Nhập mã khóa. Ví dụ: 65'
-            className='shadow-sm w-[300px]'
+            placeholder='Nhập mã khóa'
+            className='shadow-sm w-[230px]'
             onChange={(e) => setValueSearchCourse(e.target.value)}
             value={valueSearchCourse}
           />
@@ -148,24 +148,26 @@ function AdminCoursePage(props) {
           </Button>
         </Space>
       </div>
-      <Table
-        rowKey={'id'}
-        loading={loadingTable}
-        bordered={true}
-        dataSource={data}
-        columns={columns}
-        pagination={{
-          onChange: (page, size) => {
-            setPageCurrent(page);
-            setPageSize(size);
-          },
-          defaultCurrent: 1,
-          pageSize: pageSize,
-          total: totalCourse,
-          current: pageCurrent,
-          showSizeChanger: true,
-        }}
-      />
+      {data && (
+        <Table
+          rowKey={'id'}
+          loading={loadingTable}
+          bordered={true}
+          dataSource={data}
+          columns={columns}
+          pagination={{
+            onChange: (page, size) => {
+              setPageCurrent(page);
+              setPageSize(size);
+            },
+            defaultCurrent: 1,
+            pageSize: pageSize,
+            total: totalCourse,
+            current: pageCurrent,
+            showSizeChanger: true,
+          }}
+        />
+      )}
       <ModalFormCourse
         onSuccess={() => {
           setOpenModalFormCourse(false);

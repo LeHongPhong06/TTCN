@@ -8,6 +8,13 @@ function ModalFormMajor({ openForm, onChangeClickOpen, dataMajor, onSuccess }) {
       if (res.data?.success === true) {
         onSuccess();
         message.success('Tạo chuyên ngành mới thành công');
+      } else if (res.data?.error?.code === 2) {
+        // eslint-disable-next-line no-lone-blocks
+        {
+          res.data?.error?.errorDetailList.forEach((e) => message.error(e.message));
+        }
+      } else if (res.data?.error?.code === 500) {
+        message.error(res.data?.error?.message);
       }
     });
   };
@@ -16,6 +23,13 @@ function ModalFormMajor({ openForm, onChangeClickOpen, dataMajor, onSuccess }) {
       if (res.data?.success === true) {
         onSuccess();
         message.success(`Sửa thông tin chuyên ngành ${dataMajor.id} thành công`);
+      } else if (res.data?.error?.code === 2) {
+        // eslint-disable-next-line no-lone-blocks
+        {
+          res.data?.error?.errorDetailList.forEach((e) => message.error(e.message));
+        }
+      } else if (res.data?.error?.code === 500) {
+        message.error(res.data?.error?.message);
       }
     });
   };

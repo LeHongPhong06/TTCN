@@ -9,18 +9,18 @@ import PieData from './components/PieData';
 function AdminSemestersPage(props) {
   const { Title } = Typography;
   const [openModal, setOpenModal] = useState(false);
-  const [openModalTerm, setOpenModalTerm] = useState(false);
   const [loadingTable, setLoadingTable] = useState(false);
-  const [valueSearchTerm, setValueSearchTerm] = useState('');
+  const [openModalTerm, setOpenModalTerm] = useState(false);
   const [dataPie, setDataPie] = useState({});
   const [dataTerm, setDataTerm] = useState({});
   const [dataSource, setDataSource] = useState([]);
-  const [pageCurrent, setPageCurrent] = useState(1);
+  const [valueSearchTerm, setValueSearchTerm] = useState('');
   const [pageSize, setPageSize] = useState(10);
   const [totalTerm, setTotalTerm] = useState(0);
-  const debunceValue = useDebounce(valueSearchTerm, 750);
+  const [pageCurrent, setPageCurrent] = useState(1);
 
   // handle get data terms
+  const debunceValue = useDebounce(valueSearchTerm, 750);
   const termId = debunceValue[0];
   const handleGetDataSemester = () => {
     setLoadingTable(true);
@@ -176,24 +176,26 @@ function AdminSemestersPage(props) {
           Thêm học kì
         </Button>
       </div>
-      <Table
-        rowKey={'id'}
-        dataSource={dataSource}
-        bordered={true}
-        columns={columns}
-        loading={loadingTable}
-        pagination={{
-          onChange: (page, size) => {
-            setPageCurrent(page);
-            setPageSize(size);
-          },
-          defaultCurrent: 1,
-          pageSize: pageSize,
-          total: totalTerm,
-          current: pageCurrent,
-          showSizeChanger: true,
-        }}
-      />
+      {dataSource && (
+        <Table
+          rowKey={'id'}
+          dataSource={dataSource}
+          bordered={true}
+          columns={columns}
+          loading={loadingTable}
+          pagination={{
+            onChange: (page, size) => {
+              setPageCurrent(page);
+              setPageSize(size);
+            },
+            defaultCurrent: 1,
+            pageSize: pageSize,
+            total: totalTerm,
+            current: pageCurrent,
+            showSizeChanger: true,
+          }}
+        />
+      )}
       <Modal
         width={800}
         centered

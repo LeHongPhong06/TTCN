@@ -1,5 +1,5 @@
 import { ModalForm, ProForm, ProFormText } from '@ant-design/pro-components';
-import { message } from 'antd';
+import { message, notification } from 'antd';
 import React from 'react';
 import { createClass, updateClass } from '../../../../../../API/axios';
 
@@ -8,8 +8,12 @@ function ModalFormClass({ openModalForm, onChangeClickOpen, dataClass, onSuccess
   const handleCreateClass = (values) => {
     createClass(values).then((res) => {
       if (res.data?.success === true) {
+        notification.success({
+          message: 'Thành công',
+          description: `Tạo lớp ${values.id} thành công`,
+          duration: 2,
+        });
         onSuccess();
-        message.success(`Tạo lớp thành công`);
       } else if (res.data?.error?.code === 2) {
         // eslint-disable-next-line no-lone-blocks
         {
@@ -17,8 +21,6 @@ function ModalFormClass({ openModalForm, onChangeClickOpen, dataClass, onSuccess
         }
       } else if (res.data?.error?.code === 500) {
         message.error(res.data?.error?.message);
-      } else if (res.data?.error?.message === 'Access is denied') {
-        message.warning('Bạn không có quyền truy cập');
       }
     });
   };
@@ -27,8 +29,12 @@ function ModalFormClass({ openModalForm, onChangeClickOpen, dataClass, onSuccess
   const handleUpdateClass = (id, values) => {
     updateClass(id, values).then((res) => {
       if (res.data?.success === true) {
+        notification.success({
+          message: 'Thành công',
+          description: `Sửa thông tin lớp ${id} thành công`,
+          duration: 2,
+        });
         onSuccess();
-        message.success(`Sửa lớp thành công`);
       } else if (res.data?.error?.code === 2) {
         // eslint-disable-next-line no-lone-blocks
         {
@@ -36,8 +42,6 @@ function ModalFormClass({ openModalForm, onChangeClickOpen, dataClass, onSuccess
         }
       } else if (res.data?.error?.code === 500) {
         message.error(res.data?.error?.message);
-      } else if (res.data?.error?.message === 'Access is denied') {
-        message.warning('Bạn không có quyền truy cập');
       }
     });
   };

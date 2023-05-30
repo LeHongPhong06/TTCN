@@ -1,34 +1,60 @@
 import { Pie } from '@ant-design/plots';
-import { Button, Input, Space, Typography } from 'antd';
-import React from 'react';
-import { useState } from 'react';
+import { Button, Input, Space, Spin, Typography, message } from 'antd';
+import React, { useRef, useState } from 'react';
+import { getDataPieCourse } from '../../../../../../API/axios';
 
-function PieDataCourse(props) {
+function PieDataCourse({ dataCourse }) {
   const { Text } = Typography;
-  const [valueInput, setValueInput] = useState('');
-  const handleSearch = (value) => {};
+  const ref = useRef();
+  const [dataInit, setDataInit] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [valueInputTermId, setValueInputTermId] = useState('');
+
+  // Handle get Data Pie
+  const courseId = dataCourse?.id;
+  const handleGetDataPieCourse = () => {
+    if (courseId !== undefined && valueInputTermId !== '') {
+      setValueInputTermId('');
+      ref.current.focus();
+      setLoading(true);
+      getDataPieCourse({ courseId: courseId, termId: valueInputTermId })
+        .then((res) => {
+          if (res.data?.success === true) {
+            setDataInit(res.data?.data);
+            setLoading(false);
+          } else return message.error(res.data?.error?.message);
+        })
+        .finally(() => setLoading(false));
+    }
+  };
+
   const data = [
     {
+      type: 'Xuất xắc',
+      value: dataInit?.excellent,
+    },
+    {
       type: 'Tốt',
-      value: 40,
+      value: dataInit?.good,
     },
     {
       type: 'Khá',
-      value: 15,
+      value: dataInit?.fair,
     },
     {
-      type: 'Trung Bình',
-      value: 3,
+      type: 'Trung bình',
+      value: dataInit?.medium,
     },
     {
       type: 'Yếu',
-      value: 2,
+      value: dataInit?.weak,
     },
     {
       type: 'Kém',
-      value: 1,
+      value: dataInit?.worst,
     },
   ];
+
   const config = {
     appendPadding: 10,
     data,
@@ -56,21 +82,34 @@ function PieDataCourse(props) {
     <div>
       <Space>
         <Input
-          value={valueInput}
-          onChange={(e) => setValueInput(e.target.value)}
-          placeholder='Chọn kì học'
+          value={valueInputTermId}
+          onChange={(e) => setValueInputTermId(e.target.value)}
+          placeholder='Nhập mã kì học'
           style={{
-            width: 220,
+            width: 250,
           }}
+          ref={ref}
         />
-        <Button type='primary' onClick={() => handleSearch(valueInput)}>
+        <Button
+          type='primary'
+          disabled={valueInputTermId !== '' ? false : true}
+          onClick={() => {
+            handleGetDataPieCourse();
+          }}
+        >
           Tra cứu
         </Button>
       </Space>
-      <Pie {...config} />
-      <Text style={{ display: 'block', translate: '30%', marginTop: '-35px', opacity: 0.5 }} italic>
-        Biểu đồ xếp loại hạnh kiểm
-      </Text>
+      <Spin spinning={loading}>
+        {dataInit && (
+          <div className='ml-20'>
+            <Pie {...config} />
+            <Text style={{ display: 'block', translate: '27%', marginTop: '-35px', opacity: 0.5 }} italic>
+              Biểu đồ xếp loại hạnh kiểm
+            </Text>
+          </div>
+        )}
+      </Spin>
     </div>
   );
 }

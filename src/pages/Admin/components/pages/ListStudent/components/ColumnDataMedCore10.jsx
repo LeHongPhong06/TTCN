@@ -10,17 +10,25 @@ function ColumnDataMedCore10({ dataStudent }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const { Text } = Typography;
+
+  const getDataMedCoreStudent10 = () => {
+    if (studentId !== undefined) {
+      getDataMedCore10(studentId)
+        .then((res) => {
+          setLoading(true);
+          if (res.data.success === true) {
+            setData(res.data?.data?.items);
+            setLoading(false);
+          }
+        })
+        .finally(() => setLoading(false));
+    }
+  };
   useEffect(() => {
-    getDataMedCore10(studentId)
-      .then((res) => {
-        setLoading(true);
-        if (res.data.success === true) {
-          setData(res.data?.data?.items);
-          setLoading(false);
-        }
-      })
-      .finally(() => setLoading(false));
+    getDataMedCoreStudent10();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [studentId]);
+
   const config = {
     data,
     xField: 'termId',
@@ -49,10 +57,14 @@ function ColumnDataMedCore10({ dataStudent }) {
   };
   return (
     <Spin spinning={loading}>
-      <Column {...config} />
-      <Text style={{ display: 'block', textAlign: 'center', opacity: 0.5, marginTop: '10px' }} italic>
-        Biểu đồ điểm trung bình học tập theo từng kì học
-      </Text>
+      {data && (
+        <>
+          <Column {...config} />
+          <Text style={{ display: 'block', textAlign: 'center', opacity: 0.5, marginTop: '10px' }} italic>
+            Biểu đồ điểm trung bình học tập theo từng kì học
+          </Text>
+        </>
+      )}
     </Spin>
   );
 }

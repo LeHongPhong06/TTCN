@@ -1,21 +1,23 @@
-import { Button, Form, Input, message } from 'antd';
-import React from 'react';
+import { Button, Form, Input, message, notification } from 'antd';
+import React, { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { changePassword } from '../../../../../API/axios';
-import { useLocation } from 'react-router-dom';
-import { useState } from 'react';
 
 function AdminChangePasswordPage(props) {
+  const { roleId } = useParams();
   const [loading, setLoading] = useState(false);
-  const location = useLocation();
-  const identify = location.pathname.split('/')[1];
 
   const onFinish = (values) => {
     setLoading(true);
-    changePassword({ id: identify, values: values })
+    changePassword({ id: roleId, values: values })
       .then((res) => {
         if (res.data?.success === true) {
           setLoading(true);
-          message.success('Đổi mật khẩu thành công');
+          notification.success({
+            message: 'Thành công',
+            description: 'Đổi mật khẩu thành công',
+            duration: 2,
+          });
         } else if (res.data?.success === false) {
           message.error(res.data?.error.message);
         }
@@ -89,7 +91,7 @@ function AdminChangePasswordPage(props) {
             </Form.Item>
             <Form.Item className='flex justify-center items-center'>
               <Button type='primary' htmlType='submit' loading={loading} className='ml-15 w-[150px] flex justify-center items-center'>
-                Submit
+                Cập nhật
               </Button>
             </Form.Item>
           </Form>

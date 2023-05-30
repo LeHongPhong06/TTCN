@@ -6,8 +6,8 @@ import ModalFormMajor from './components/ModalFormMajor';
 
 function AdminMajorPage(props) {
   const { Title } = Typography;
-  const [openModalFormMajor, setOpenModalFormMajor] = useState(false);
   const [loadingTable, setLoadingTable] = useState(false);
+  const [openModalFormMajor, setOpenModalFormMajor] = useState(false);
   const [dataMajor, setDataMajor] = useState({});
   const [dataSource, setDataSource] = useState([]);
   const [totalMajor, setTotalMajor] = useState(0);
@@ -27,7 +27,7 @@ function AdminMajorPage(props) {
   };
 
   // handle get data major
-  const handleGetDataMajor = async () => {
+  const handleGetDataMajor = () => {
     setLoadingTable(true);
     getMajorList({ page: pageCurrent, size: 10 })
       .then((res) => {
@@ -45,6 +45,7 @@ function AdminMajorPage(props) {
     handleGetDataMajor();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageCurrent]);
+
   const columns = [
     {
       title: 'Mã chuyên ngành',
@@ -122,22 +123,24 @@ function AdminMajorPage(props) {
           Thêm chuyên ngành
         </Button>
       </div>
-      <Table
-        rowKey='id'
-        loading={loadingTable}
-        bordered={true}
-        dataSource={dataSource}
-        columns={columns}
-        pagination={{
-          onChange: (page, size) => {
-            setPageCurrent(page);
-          },
-          defaultCurrent: 1,
-          pageSize: 10,
-          total: totalMajor,
-          current: pageCurrent,
-        }}
-      />
+      {dataSource && (
+        <Table
+          rowKey='id'
+          loading={loadingTable}
+          bordered={true}
+          dataSource={dataSource}
+          columns={columns}
+          pagination={{
+            onChange: (page, size) => {
+              setPageCurrent(page);
+            },
+            defaultCurrent: 1,
+            pageSize: 10,
+            total: totalMajor,
+            current: pageCurrent,
+          }}
+        />
+      )}
       <ModalFormMajor
         onSuccess={() => {
           handleGetDataMajor();

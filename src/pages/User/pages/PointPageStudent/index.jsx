@@ -1,11 +1,12 @@
+import { PageContainer } from '@ant-design/pro-components';
+import { Collapse } from 'antd';
 import React from 'react';
+import ColumnMedCore10 from './components/ColumnMedCore10';
+import ColumnMedCore4 from './components/ColumnMedCore4';
 import ColumnTrainingPoint from './components/ColumnTrainingPoint';
 import DescriptionsUser from './components/DescriptionsUser';
 import ProgressCreditsUser from './components/ProgressCreditsUser';
-import ColumnMedCore4 from './components/ColumnMedCore4';
-import ColumnMedCore10 from './components/ColumnMedCore10';
-import { Collapse } from 'antd';
-import { PageContainer } from '@ant-design/pro-components';
+
 function PointPageStudent(props) {
   const { Panel } = Collapse;
   return (

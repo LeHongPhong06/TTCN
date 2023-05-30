@@ -1,28 +1,29 @@
 import { Button, Form, Input, Typography, message } from 'antd';
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { sendRequestForgotStudent } from '../../../../API/axios';
+import { useNavigate, useParams } from 'react-router-dom';
+import { changeForgotStudent } from '../../../../API/axios';
 import Footer from '../../components/Footer/Footer';
 import HeaderTop from '../../components/Header/Header';
 
-function ForgotPasswordPage(props) {
+function ConfirmChangPassword(props) {
   const { Text } = Typography;
   const navigate = useNavigate();
+  const { studentId } = useParams();
   const [loadingSubmit, setLoadingSubmit] = useState(false);
 
   const onFinish = (values) => {
-    setLoadingSubmit(true);
-    sendRequestForgotStudent({ values: values, link: `http://localhost:3000/confirm-changepassword` })
-      .then((res) => {
-        if (res.data?.success === true) {
-          navigate(`/`);
-          message.success(res.data?.data);
-          setLoadingSubmit(false);
-        } else return message.error(res.data?.error?.message);
-      })
-      .finally(() => setLoadingSubmit(false));
+    if (studentId !== undefined) {
+      setLoadingSubmit(true);
+      changeForgotStudent({ id: studentId, values: values })
+        .then((res) => {
+          if (res.data?.success === true) {
+            message.success(res.data.message);
+            navigate('/');
+          } else return message.error(res.data.message);
+        })
+        .finally(() => setLoadingSubmit(false));
+    }
   };
-
   return (
     <div>
       <div>
@@ -33,24 +34,16 @@ function ForgotPasswordPage(props) {
           <div className='p-4 mt-20'>
             <Form
               name='basic'
-              labelCol={{
-                span: 8,
-              }}
-              wrapperCol={{
-                span: 16,
-              }}
               style={{
-                maxWidth: 600,
-              }}
-              initialValues={{
-                remember: true,
+                width: 300,
               }}
               onFinish={onFinish}
               autoComplete='off'
+              layout='vertical'
             >
               <Form.Item
-                label={<Text style={{ marginRight: 50 }}>Tên đăng nhập</Text>}
-                name='id'
+                label={<Text>Mật khẩu mới</Text>}
+                name='newPassword'
                 rules={[
                   {
                     required: true,
@@ -62,26 +55,28 @@ function ForgotPasswordPage(props) {
               </Form.Item>
 
               <Form.Item
-                label={<Text>Email</Text>}
-                name='email'
+                label={<Text>Xác nhận mật khẩu</Text>}
+                name='confirmPassword'
                 rules={[
                   {
                     required: true,
                     message: 'Nhập đầy đủ thông tin',
                   },
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      if (!value || getFieldValue('newPassword') === value) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject(new Error('Không trùng khớp !'));
+                    },
+                  }),
                 ]}
               >
                 <Input />
               </Form.Item>
-
-              <Form.Item
-                wrapperCol={{
-                  offset: 8,
-                  span: 16,
-                }}
-              >
-                <Button type='primary' htmlType='submit' loading={loadingSubmit}>
-                  Gửi email
+              <Form.Item>
+                <Button className='flex justify-end items-center px-6' type='primary' htmlType='submit' loading={loadingSubmit}>
+                  Gửi
                 </Button>
               </Form.Item>
             </Form>
@@ -95,4 +90,4 @@ function ForgotPasswordPage(props) {
   );
 }
 
-export default ForgotPasswordPage;
+export default ConfirmChangPassword;
