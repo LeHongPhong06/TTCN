@@ -1,7 +1,7 @@
 import { LogoutOutlined } from '@ant-design/icons';
 import { Button, Image, Popconfirm, Space, Typography } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { getInfoStudent } from '../../../../API/axios';
 import logo from '../../../../assets/img/Logo/Logo.png';
 import Cookies from 'js-cookie';
@@ -9,11 +9,11 @@ function HeaderTop(props) {
   const { Title, Text } = Typography;
   const navigate = useNavigate();
   const location = useLocation();
+  const { studentId } = useParams();
+  const [dataStudent, setDataStudent] = useState();
   const path1 = location.pathname.includes('student');
   const path2 = location.pathname.includes('forgotpassword');
-  const studentId = location.pathname.split('/')[2];
 
-  const [dataStudent, setDataStudent] = useState();
   // Handle stundent click btn Logout
   const handleClickConfirmLogOutStudent = () => {
     Cookies.remove('jwt');

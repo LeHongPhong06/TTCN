@@ -60,7 +60,12 @@ function PersonalInformationStudent(props) {
       >
         {dataStudent?.phoneNumber ? dataStudent?.phoneNumber : '[ Không có dữ liệu ]'}
       </Descriptions.Item>
-      <Descriptions.Item span={4} labelStyle={{ fontSize: '18px', marginBottom: '20px' }} contentStyle={{ fontSize: '18px' }} label='Email'>
+      <Descriptions.Item
+        span={4}
+        labelStyle={{ fontSize: '18px', marginBottom: '20px' }}
+        contentStyle={{ fontSize: '18px' }}
+        label='Email'
+      >
         {dataStudent?.email ? dataStudent?.email : '[ Không có dữ liệu ]'}
       </Descriptions.Item>
       <Descriptions.Item
@@ -80,7 +85,12 @@ function PersonalInformationStudent(props) {
         {dataStudent?.dob ? dataStudent?.dob : '[ Không có dữ liệu ]'}
       </Descriptions.Item>
 
-      <Descriptions.Item span={4} labelStyle={{ fontSize: '18px', marginBottom: '20px' }} contentStyle={{ fontSize: '18px' }} label='Lớp'>
+      <Descriptions.Item
+        span={4}
+        labelStyle={{ fontSize: '18px', marginBottom: '20px' }}
+        contentStyle={{ fontSize: '18px' }}
+        label='Lớp'
+      >
         {dataStudent?.classes?.id ? dataStudent?.classes?.id : '[ Không có dữ liệu ]'}
       </Descriptions.Item>
       <Descriptions.Item
@@ -147,16 +157,21 @@ function PersonalInformationStudent(props) {
       >
         {dataStudent?.status ? dataStudent?.status : '[ Không có dữ liệu ]'}
       </Descriptions.Item>
-      <Descriptions.Item span={4} labelStyle={{ fontSize: '18px' }} contentStyle={{ fontSize: '18px' }} label='Thời gian'>
+      <Descriptions.Item
+        span={4}
+        labelStyle={{ fontSize: '18px' }}
+        contentStyle={{ fontSize: '18px' }}
+        label='Thời gian'
+      >
         {dataStudent?.statusDate ? dataStudent?.statusDate : '[ Không có dữ liệu ]'}
       </Descriptions.Item>
       <Descriptions.Item
         span={8}
         labelStyle={{ fontSize: '18px', marginBottom: '20px' }}
-        contentStyle={{ fontSize: '18px', color: 'red' }}
+        contentStyle={{ fontSize: '18px', color: dataStudent?.warning === 'Không bị cảnh cáo' ? 'green' : 'red' }}
         label='Diện cảnh cáo'
       >
-        {'Uống rượu, bia trong giờ học, say rượu, bia khi đến lớp'}
+        {dataStudent?.warning ? dataStudent?.warning : '[ Không có dữ liệu ]'}
       </Descriptions.Item>
     </Descriptions>
   );

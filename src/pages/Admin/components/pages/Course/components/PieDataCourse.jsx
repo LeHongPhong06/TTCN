@@ -1,5 +1,5 @@
 import { Pie } from '@ant-design/plots';
-import { Button, Input, Space, Spin, Typography, message } from 'antd';
+import { Button, Input, Space, Spin, Typography, notification } from 'antd';
 import React, { useRef, useState } from 'react';
 import { getDataPieCourse } from '../../../../../../API/axios';
 
@@ -22,7 +22,12 @@ function PieDataCourse({ dataCourse }) {
           if (res.data?.success === true) {
             setDataInit(res.data?.data);
             setLoading(false);
-          } else return message.error(res.data?.error?.message);
+          } else
+            return notification.error({
+              message: 'Thất bại',
+              description: res.data?.error?.message,
+              duration: 4,
+            });
         })
         .finally(() => setLoading(false));
     }
@@ -104,7 +109,7 @@ function PieDataCourse({ dataCourse }) {
         {dataInit && (
           <div className='ml-20'>
             <Pie {...config} />
-            <Text style={{ display: 'block', translate: '27%', marginTop: '-35px', opacity: 0.5 }} italic>
+            <Text style={{ display: 'block', translate: '27%', marginTop: '-10px', opacity: 0.5 }} italic>
               Biểu đồ xếp loại hạnh kiểm
             </Text>
           </div>

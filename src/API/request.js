@@ -1,13 +1,16 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
-const baseUrl = 'https://a715-118-70-132-104.ngrok-free.app';
+const baseUrl = 'https://ba7a-118-70-132-104.ngrok-free.app';
 const login_path = '/client/login';
+const sendRequest = '/client/send-request';
+const confirmPassword = '/client/change-password';
 
 axios.interceptors.request.use((req) => {
   const jwt = Cookies.get('jwt');
   const newUrl = baseUrl + req.url;
-  const Authorization = login_path === req.url ? undefined : `Bearer ${jwt}`;
+  const Authorization =
+    login_path === req.url || sendRequest === req.url || confirmPassword === req.url ? undefined : `Bearer ${jwt}`;
 
   return {
     ...req,
@@ -28,5 +31,5 @@ axios.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
+export { baseUrl };
 export default axios;

@@ -31,7 +31,7 @@ function ModalFormClass({ openModalForm, onChangeClickOpen, dataClass, onSuccess
       if (res.data?.success === true) {
         notification.success({
           message: 'Thành công',
-          description: `Sửa thông tin lớp ${id} thành công`,
+          description: `Cập nhật thông tin lớp ${id} thành công`,
           duration: 2,
         });
         onSuccess();
@@ -49,11 +49,11 @@ function ModalFormClass({ openModalForm, onChangeClickOpen, dataClass, onSuccess
     <div>
       <ModalForm
         width={750}
-        title={dataClass.id ? 'Sửa thông tin lớp' : 'Thêm lớp'}
+        title={dataClass.id ? 'Cập nhật thông tin lớp' : 'Thêm lớp'}
         initialValues={dataClass}
         modalProps={{
           destroyOnClose: true,
-          okText: dataClass.id ? 'Lưu' : 'Tạo',
+          okText: dataClass.id ? 'Cập nhật' : 'Tạo',
           okType: 'primary',
           cancelText: 'Hủy',
         }}

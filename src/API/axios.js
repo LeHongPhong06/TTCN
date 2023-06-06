@@ -132,9 +132,9 @@ export const createSemester = (values) => {
   return axios.post(`/admin/term/create`, values);
 };
 
-export const updateSemester = (values) => {
-  return axios.put(`/admin/term/getData`, values);
-};
+// export const updateSemester = (values) => {
+//   return axios.put(`/admin/term/update`, values);
+// };
 
 export const deleteSemester = (id) => {
   return axios.delete(`/admin/term/delete/${id}`);
@@ -195,9 +195,15 @@ export const updateAuthorizationAdmin = (values) => {
   return axios.put(`/admin/role/update`, values);
 };
 
-// ----------- Change Password -----------
+// ----------- Infomation -----------
 export const changePassword = (values) => {
   return axios.post(`/admin/change-password`, values);
+};
+export const getInfoAdmin = (values) => {
+  return axios.post(`/admin/admin/detail/${values}`);
+};
+export const updateInfoAdmin = (values) => {
+  return axios.put(`/admin/admin/edit`, values);
 };
 
 // ============ Student ==================
@@ -231,9 +237,9 @@ export const changePasswordStudent = (values) => {
 };
 
 export const changeForgotStudent = (values) => {
-  return axios.post(`/student/change-password/`, values);
+  return axios.post(`/client/change-password`, values);
 };
 
 export const sendRequestForgotStudent = (values) => {
-  return axios.post(`/client/send-request/`, values);
+  return axios.post(`/client/send-request`, values);
 };

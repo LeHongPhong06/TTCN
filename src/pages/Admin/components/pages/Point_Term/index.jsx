@@ -7,7 +7,19 @@ import {
   SearchOutlined,
   UploadOutlined,
 } from '@ant-design/icons';
-import { Button, Input, Popconfirm, Popover, Space, Table, Tooltip, Typography, Upload, message, notification } from 'antd';
+import {
+  Button,
+  Input,
+  Popconfirm,
+  Popover,
+  Space,
+  Table,
+  Tooltip,
+  Typography,
+  Upload,
+  message,
+  notification,
+} from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useDebounce } from 'use-debounce';
 import { deletePoint, exportPointStudent, getDataPoint } from '../../../../../API/axios';
@@ -15,6 +27,7 @@ import { exportExcel } from '../../../../../import-export-data';
 import ContentPopover from './components/ContentPopover';
 import ModalFormPoint from './components/ModalFormPoint';
 import Cookies from 'js-cookie';
+import { baseUrl } from '../../../../../API/request';
 
 function AdminPointTermPage() {
   const { Title } = Typography;
@@ -92,14 +105,13 @@ function AdminPointTermPage() {
   const props = {
     name: 'file',
     multiple: false,
+    action: `${baseUrl}`,
     showUploadList: false,
-    action: 'https://a715-118-70-132-104.ngrok-free.app/admin/point/import',
     headers: {
       Authorization: jwt ? `Bearer ${jwt}` : undefined,
     },
     onChange(info) {
-      const { response } = info.file;
-      setLoadingBtnImportPoint(true);
+      const { response, status } = info.file;
       if (response?.success === true) {
         notification.success({
           placement: 'topRight',
@@ -108,7 +120,6 @@ function AdminPointTermPage() {
           duration: 4,
         });
         handleGetDataPointList();
-        setLoadingBtnImportPoint(true);
       } else if (response?.success === false) {
         notification.error({
           placement: 'topRight',
@@ -116,7 +127,13 @@ function AdminPointTermPage() {
           description: response?.error?.message,
           duration: 4,
         });
+      }
+      if (status === 'done') {
         setLoadingBtnImportPoint(false);
+        setLoadingTable(false);
+      } else if (status === 'uploading') {
+        setLoadingBtnImportPoint(true);
+        setLoadingTable(true);
       }
     },
     beforeUpload: (file) => {
@@ -126,7 +143,7 @@ function AdminPointTermPage() {
         notification.error({
           message: 'Thất bại',
           description: `${file.name} không phải là một file excel`,
-          duration: 2,
+          duration: 3,
           placement: 'topRight',
         });
         return false;
@@ -135,7 +152,7 @@ function AdminPointTermPage() {
         notification.error({
           message: 'Thất bại',
           description: `File tải lên không được quá 5MB`,
-          duration: 2,
+          duration: 3,
           placement: 'topRight',
         });
         return false;
@@ -164,13 +181,13 @@ function AdminPointTermPage() {
       key: 'termId',
     },
     {
-      title: 'Điểm trung bình (hệ 10)',
+      title: 'Điểm trung bình ( hệ 10 )',
       dataIndex: 'medScore10',
       align: 'center',
       key: 'medScore10',
     },
     {
-      title: 'Điểm trung bình (hệ 4)',
+      title: 'Điểm trung bình ( hệ 4 )',
       dataIndex: 'medScore4',
       align: 'center',
       key: 'medScore4',
@@ -188,13 +205,13 @@ function AdminPointTermPage() {
       key: 'creditsAccumulated',
     },
     {
-      title: 'Điểm trung bình tích lũy (hệ 10)',
+      title: 'Điểm trung bình tích lũy ( hệ 10 )',
       dataIndex: 'scoreAccumulated10',
       align: 'center',
       key: 'scoreAccumulated10',
     },
     {
-      title: 'Điểm trung bình tích lũy (hệ 4)',
+      title: 'Điểm trung bình tích lũy ( hệ 4 )',
       dataIndex: 'scoreAccumulated4',
       align: 'center',
       key: 'scoreAccumulated4',
@@ -256,10 +273,18 @@ function AdminPointTermPage() {
           />
           <Popover
             placement='bottom'
-            content={<ContentPopover setPage={(page) => setPageCurrent(page)} setValueFilters={(values) => setValueFilters(values)} />}
+            content={
+              <ContentPopover
+                setPage={(page) => setPageCurrent(page)}
+                setValueFilters={(values) => setValueFilters(values)}
+              />
+            }
             trigger='click'
           >
-            <Button icon={<FilterOutlined />} className='flex justify-center items-center text-md font-medium shadow-md bg-slate-100'>
+            <Button
+              icon={<FilterOutlined />}
+              className='flex justify-center items-center text-md font-medium shadow-md bg-slate-100'
+            >
               Lọc
             </Button>
           </Popover>

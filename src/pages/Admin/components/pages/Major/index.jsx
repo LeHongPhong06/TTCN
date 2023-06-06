@@ -51,21 +51,25 @@ function AdminMajorPage(props) {
       title: 'Mã chuyên ngành',
       dataIndex: 'id',
       key: 'id',
+      align: 'center',
     },
     {
       title: 'Tên chuyên ngành',
       dataIndex: 'name',
       key: 'name',
+      align: 'center',
     },
     {
       title: 'Tổng số tín chỉ tích lũy',
       dataIndex: 'totalCredits',
       key: 'totalCredits',
+      align: 'center',
     },
     {
       title: 'Số lượng sinh viên',
       dataIndex: 'numOfStu',
       key: 'numOfStu',
+      align: 'center',
     },
     {
       title: 'Tùy chọn',

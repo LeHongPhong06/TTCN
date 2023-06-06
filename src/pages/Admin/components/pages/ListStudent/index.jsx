@@ -41,12 +41,14 @@ import ContentPopover from './components/ContentPopover';
 import DescriptionInfoStudent from './components/DescriptionInfoStudent';
 import ModalFormStudentInfo from './components/ModalFormInfo';
 import ProgressCredits from './components/ProgressCredits';
+import { baseUrl } from '../../../../../API/request';
 
 function AdminListStudentPage() {
   const { Panel } = Collapse;
   const jwt = Cookies.get('jwt');
   const { Title, Text } = Typography;
   const [disabled, setDisabled] = useState(false);
+  const [openPopover, setOpenPopover] = useState(false);
   const [loadingTable, setLoadingTable] = useState(false);
   const [openDrawerInfo, setOpenDrawerInfo] = useState(false);
   const [loadingBtnExport, setLoadingBtnExport] = useState(false);
@@ -141,14 +143,16 @@ function AdminListStudentPage() {
   const props = {
     name: 'file',
     multiple: false,
+    action: `${baseUrl}`,
     showUploadList: false,
-    action: 'https://a715-118-70-132-104.ngrok-free.app/admin/student/import',
     headers: {
       Authorization: jwt ? `Bearer ${jwt}` : undefined,
     },
     onChange(info) {
-      const { response } = info.file;
+      const { response, status } = info.file;
+      console.log(status);
       setLoadingBtnImport(true);
+      setLoadingTable(true);
       if (response?.success === true) {
         notification.success({
           placement: 'topRight',
@@ -157,15 +161,20 @@ function AdminListStudentPage() {
           duration: 4,
         });
         handleGetDataStudentList();
-        setLoadingBtnImport(true);
-      } else if (response?.success === false) {
+      } else {
         notification.error({
           placement: 'topRight',
           message: 'Thất bại',
           description: response?.error?.message,
           duration: 4,
         });
+      }
+      if (status === 'done') {
         setLoadingBtnImport(false);
+        setLoadingTable(false);
+      } else if (status === 'updating') {
+        setLoadingBtnImport(true);
+        setLoadingTable(true);
       }
     },
     beforeUpload: (file) => {
@@ -331,11 +340,19 @@ function AdminListStudentPage() {
           <Popover
             placement='bottom'
             content={
-              <ContentPopover setValuesFilter={(values) => setValuesFilter(values)} setPageCurrent={(page) => setPageCurrent(page)} />
+              <ContentPopover
+                setValuesFilter={(values) => setValuesFilter(values)}
+                setPageCurrent={(page) => setPageCurrent(page)}
+              />
             }
             trigger='click'
+            open={openPopover}
+            onOpenChange={(open) => setOpenPopover(open)}
           >
-            <Button icon={<FilterOutlined />} className='flex justify-center items-center text-md font-medium shadow-md bg-slate-100'>
+            <Button
+              icon={<FilterOutlined />}
+              className='flex justify-center items-center text-md font-medium shadow-md bg-slate-100'
+            >
               Lọc
             </Button>
           </Popover>

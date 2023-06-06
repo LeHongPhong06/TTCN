@@ -1,7 +1,7 @@
 import { PageContainer } from '@ant-design/pro-components';
 import { Button, Form, Input, message, notification } from 'antd';
 import Cookies from 'js-cookie';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../../../../API/axios';
 import Footer from '../../components/Footer/Footer';
@@ -10,14 +10,17 @@ import HeaderTop from '../../components/Header/Header';
 import News from '../../components/News/News';
 import Propose from '../../components/Propose/Propose';
 import ThumnailSlider from '../../components/Slider/ThumnailSlider';
+import { AppContext } from '../../../../store/ProviderContext';
 
 function HomePage(props) {
   const navigate = useNavigate();
+  const { value, dispatch } = useContext(AppContext);
   const [loadingBtnLogin, setLoadingBtnLogin] = useState(false);
   const onFinish = (values) => {
     setLoadingBtnLogin(true);
     login(values)
       .then((res) => {
+        console.log(res);
         if (res.data?.success === true) {
           Cookies.set('jwt', res.data?.data?.jwt);
           setLoadingBtnLogin(false);
@@ -25,6 +28,16 @@ function HomePage(props) {
             message.success('Đăng nhập thành công');
             navigate(`/student/${res.data?.data?.id}`);
           } else {
+            dispatch({
+              type: 'create',
+              id: res.data?.data?.id,
+              email: res.data?.data?.email,
+              roleId: res.data?.data?.roleId,
+              userName: res.data?.data?.username,
+            });
+            sessionStorage.setItem('userName', res.data?.data?.username);
+            // sessionStorage.setItem('infoUser', JSON.stringify(value));
+            sessionStorage.setItem('avatarUser', res.data?.data?.avatar);
             message.success('Đăng nhập thành công');
             navigate(`${res.data?.data?.id}/manage`);
           }

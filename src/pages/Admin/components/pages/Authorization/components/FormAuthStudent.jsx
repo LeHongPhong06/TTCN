@@ -223,37 +223,65 @@ function FormAuthStudent(props) {
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item label='Thêm xếp loại của sinh viên mỗi lớp theo kì' valuePropName='checked' name='CREATE_CLASS_CLASSIFICATION'>
+              <Form.Item
+                label='Thêm xếp loại của sinh viên mỗi lớp theo kì'
+                valuePropName='checked'
+                name='CREATE_CLASS_CLASSIFICATION'
+              >
                 <Switch />
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item label='Sửa xếp loại của sinh viên mỗi lớp theo kì' valuePropName='checked' name='UPDATE_CLASS_CLASSIFICATION'>
+              <Form.Item
+                label='Sửa xếp loại của sinh viên mỗi lớp theo kì'
+                valuePropName='checked'
+                name='UPDATE_CLASS_CLASSIFICATION'
+              >
                 <Switch />
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item label='Xóa xếp loại của sinh viên mỗi lớp theo kì' valuePropName='checked' name='DELETE_CLASS_CLASSIFICATION'>
+              <Form.Item
+                label='Xóa xếp loại của sinh viên mỗi lớp theo kì'
+                valuePropName='checked'
+                name='DELETE_CLASS_CLASSIFICATION'
+              >
                 <Switch />
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item label='Thêm xếp loại sinh viên mỗi khóa theo kì' valuePropName='checked' name='CREATE_COURSE_CLASSIFICATION'>
+              <Form.Item
+                label='Thêm xếp loại sinh viên mỗi khóa theo kì'
+                valuePropName='checked'
+                name='CREATE_COURSE_CLASSIFICATION'
+              >
                 <Switch />
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item label='Sửa xếp loại sinh viên mỗi khóa theo kì' valuePropName='checked' name='UPDATE_COURSE_CLASSIFICATION'>
+              <Form.Item
+                label='Sửa xếp loại sinh viên mỗi khóa theo kì'
+                valuePropName='checked'
+                name='UPDATE_COURSE_CLASSIFICATION'
+              >
                 <Switch />
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item label='Xóa xếp loại sinh viên mỗi khóa theo kì' valuePropName='checked' name='DELETE_COURSE_CLASSIFICATION'>
+              <Form.Item
+                label='Xóa xếp loại sinh viên mỗi khóa theo kì'
+                valuePropName='checked'
+                name='DELETE_COURSE_CLASSIFICATION'
+              >
                 <Switch />
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item label='Lấy danh sách xếp loại sinh viên mỗi lớp theo kỳ' valuePropName='checked' name='GET_CLASS_CLASSIFICATION'>
+              <Form.Item
+                label='Lấy danh sách xếp loại sinh viên mỗi lớp theo kỳ'
+                valuePropName='checked'
+                name='GET_CLASS_CLASSIFICATION'
+              >
                 <Switch />
               </Form.Item>
             </Col>
@@ -263,7 +291,11 @@ function FormAuthStudent(props) {
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item label='Lấy danh sách xếp loại sinh viên mỗi khóa theo kỳ' valuePropName='checked' name='GET_COURSE_CLASSIFICATION'>
+              <Form.Item
+                label='Lấy danh sách xếp loại sinh viên mỗi khóa theo kỳ'
+                valuePropName='checked'
+                name='GET_COURSE_CLASSIFICATION'
+              >
                 <Switch />
               </Form.Item>
             </Col>
@@ -310,7 +342,6 @@ function FormAuthStudent(props) {
           </Row>
         </Form>
       </Spin>
-      ;
     </div>
   );
 }

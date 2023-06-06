@@ -1,7 +1,7 @@
 import { ModalForm, ProForm, ProFormText } from '@ant-design/pro-components';
 import { message, notification } from 'antd';
 import React from 'react';
-import { createSemester, updateSemester } from '../../../../../../API/axios';
+import { createSemester } from '../../../../../../API/axios';
 
 function ModalFormTerm({ openForm, onChangeClickOpen, dataTerm, onSuccess }) {
   const handleCreateTerm = (values) => {
@@ -23,25 +23,25 @@ function ModalFormTerm({ openForm, onChangeClickOpen, dataTerm, onSuccess }) {
       }
     });
   };
-  const handleUpdateTerm = (id, values) => {
-    updateSemester(id, values).then((res) => {
-      if (res.data?.success === true) {
-        onSuccess();
-        notification.success({
-          message: 'Thành công',
-          description: 'Sửa thông tin học kỳ thành công',
-          duration: 2,
-        });
-      } else if (res.data?.error?.code === 2) {
-        // eslint-disable-next-line no-lone-blocks
-        {
-          res.data?.error?.errorDetailList.forEach((e) => message.error(e.message));
-        }
-      } else if (res.data?.error?.code === 500) {
-        message.error(res.data?.error?.message);
-      }
-    });
-  };
+  // const handleUpdateTerm = (id, values) => {
+  //   updateSemester(id, values).then((res) => {
+  //     if (res.data?.success === true) {
+  //       onSuccess();
+  //       notification.success({
+  //         message: 'Thành công',
+  //         description: 'Sửa thông tin học kỳ thành công',
+  //         duration: 2,
+  //       });
+  //     } else if (res.data?.error?.code === 2) {
+  //       // eslint-disable-next-line no-lone-blocks
+  //       {
+  //         res.data?.error?.errorDetailList.forEach((e) => message.error(e.message));
+  //       }
+  //     } else if (res.data?.error?.code === 500) {
+  //       message.error(res.data?.error?.message);
+  //     }
+  //   });
+  // };
   return (
     <div>
       <ModalForm
@@ -56,7 +56,7 @@ function ModalFormTerm({ openForm, onChangeClickOpen, dataTerm, onSuccess }) {
         open={openForm}
         onFinish={(value) => {
           if (dataTerm.id) {
-            handleUpdateTerm(dataTerm.id, value);
+            // handleUpdateTerm(dataTerm.id, value);
           } else {
             handleCreateTerm(value);
           }

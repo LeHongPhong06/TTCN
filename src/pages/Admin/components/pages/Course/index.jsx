@@ -83,8 +83,8 @@ function AdminCoursePage(props) {
               className='flex justify-center items-center text-md shadow-md'
               icon={<EditOutlined />}
               onClick={() => {
-                setOpenModalFormCourse(true);
                 setDataCourse(record);
+                setOpenModalFormCourse(true);
               }}
             ></Button>
           </Tooltip>
@@ -170,6 +170,7 @@ function AdminCoursePage(props) {
       )}
       <ModalFormCourse
         onSuccess={() => {
+          handleGetCourseData();
           setOpenModalFormCourse(false);
         }}
         dataCourse={dataSource}

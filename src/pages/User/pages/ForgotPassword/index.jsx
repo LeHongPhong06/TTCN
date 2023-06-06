@@ -12,7 +12,7 @@ function ForgotPasswordPage(props) {
 
   const onFinish = (values) => {
     setLoadingSubmit(true);
-    sendRequestForgotStudent({ values: values, link: `http://localhost:3000/confirm-changepassword` })
+    sendRequestForgotStudent({ values: values, link: `http://localhost:3000/confirm-changepassword/${values.id}` })
       .then((res) => {
         if (res.data?.success === true) {
           navigate(`/`);

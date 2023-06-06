@@ -6,20 +6,20 @@ import Footer from '../../components/Footer/Footer';
 import HeaderTop from '../../components/Header/Header';
 
 function ConfirmChangPassword(props) {
+  const { id } = useParams();
   const { Text } = Typography;
   const navigate = useNavigate();
-  const { studentId } = useParams();
   const [loadingSubmit, setLoadingSubmit] = useState(false);
 
   const onFinish = (values) => {
-    if (studentId !== undefined) {
+    if (id !== undefined) {
       setLoadingSubmit(true);
-      changeForgotStudent({ id: studentId, values: values })
+      changeForgotStudent({ id: id, values: values })
         .then((res) => {
           if (res.data?.success === true) {
-            message.success(res.data.message);
+            message.success(res.data?.data);
             navigate('/');
-          } else return message.error(res.data.message);
+          } else return message.error(res.data?.error?.message);
         })
         .finally(() => setLoadingSubmit(false));
     }
@@ -75,7 +75,12 @@ function ConfirmChangPassword(props) {
                 <Input />
               </Form.Item>
               <Form.Item>
-                <Button className='flex justify-end items-center px-6' type='primary' htmlType='submit' loading={loadingSubmit}>
+                <Button
+                  className='flex justify-end items-center px-6'
+                  type='primary'
+                  htmlType='submit'
+                  loading={loadingSubmit}
+                >
                   Gửi
                 </Button>
               </Form.Item>

@@ -4,11 +4,11 @@ import ErrorPage from './components/Error/ErrorPage';
 import DefaultLayoutAdmin from './pages/Admin';
 import Home from './pages/Admin/components/pages/AdminHome/Home';
 import AdminAuthorizationPage from './pages/Admin/components/pages/Authorization';
-import AdminChangePasswordPage from './pages/Admin/components/pages/ChangePassword';
 import AdminClassesPage from './pages/Admin/components/pages/Classes';
 import Classclassification from './pages/Admin/components/pages/Classification/Class';
 import Majorclassification from './pages/Admin/components/pages/Classification/Major';
 import AdminCoursePage from './pages/Admin/components/pages/Course';
+import AdminChangeInfomation from './pages/Admin/components/pages/InfoAdmin';
 import AdminListStudentPage from './pages/Admin/components/pages/ListStudent';
 import AdminMajorPage from './pages/Admin/components/pages/Major';
 import AdminPointTermPage from './pages/Admin/components/pages/Point_Term';
@@ -35,7 +35,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
-    path: '/confirm-changepassword',
+    path: '/confirm-changepassword/:id',
     element: <ConfirmChangPassword />,
     errorElement: <ErrorPage />,
   },
@@ -119,11 +119,6 @@ const router = createBrowserRouter([
         errorElement: <ErrorPage />,
       },
       {
-        path: 'changepassword',
-        element: <AdminChangePasswordPage />,
-        errorElement: <ErrorPage />,
-      },
-      {
         path: 'class-classification',
         element: <Classclassification />,
         errorElement: <ErrorPage />,
@@ -131,6 +126,11 @@ const router = createBrowserRouter([
       {
         path: 'major-classification',
         element: <Majorclassification />,
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: 'infomation',
+        element: <AdminChangeInfomation />,
         errorElement: <ErrorPage />,
       },
     ],

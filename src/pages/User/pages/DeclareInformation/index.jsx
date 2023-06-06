@@ -1,4 +1,4 @@
-import { Button, Col, DatePicker, Form, Input, Row, Select, Skeleton, Typography, message } from 'antd';
+import { Button, Col, Form, Input, Row, Select, Skeleton, Typography, message } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getInfoStudent, updateStudentInfoDetails } from '../../../../API/axios';
@@ -74,7 +74,10 @@ function DeclareInformationPage(props) {
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item label={<Text style={{ fontSize: 16, fontWeight: 500 }}>Chuyên ngành</Text>} name={['major', 'id']}>
+              <Form.Item
+                label={<Text style={{ fontSize: 16, fontWeight: 500 }}>Chuyên ngành</Text>}
+                name={['major', 'id']}
+              >
                 <Input size='large' disabled={true} style={{ backgroundColor: '#fff' }} />
               </Form.Item>
             </Col>
@@ -107,12 +110,18 @@ function DeclareInformationPage(props) {
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item label={<Text style={{ fontSize: 16, fontWeight: 500 }}>Địa chỉ nơi ở hiện tại</Text>} name='residence'>
+              <Form.Item
+                label={<Text style={{ fontSize: 16, fontWeight: 500 }}>Địa chỉ nơi ở hiện tại</Text>}
+                name='residence'
+              >
                 <Input size='large' />
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item label={<Text style={{ fontSize: 16, fontWeight: 500 }}>Địa chỉ quê quán</Text>} name='homeTown'>
+              <Form.Item
+                label={<Text style={{ fontSize: 16, fontWeight: 500 }}>Địa chỉ quê quán</Text>}
+                name='homeTown'
+              >
                 <Input size='large' disabled={true} style={{ backgroundColor: '#fff' }} />
               </Form.Item>
             </Col>
@@ -122,7 +131,10 @@ function DeclareInformationPage(props) {
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item label={<Text style={{ fontSize: 16, fontWeight: 500 }}>Số điện thoại bố</Text>} name='fatherPhoneNumber'>
+              <Form.Item
+                label={<Text style={{ fontSize: 16, fontWeight: 500 }}>Số điện thoại bố</Text>}
+                name='fatherPhoneNumber'
+              >
                 <Input size='large' />
               </Form.Item>
             </Col>
@@ -132,7 +144,10 @@ function DeclareInformationPage(props) {
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item label={<Text style={{ fontSize: 16, fontWeight: 500 }}>Số điện thoại mẹ</Text>} name='motherPhoneNumber'>
+              <Form.Item
+                label={<Text style={{ fontSize: 16, fontWeight: 500 }}>Số điện thoại mẹ</Text>}
+                name='motherPhoneNumber'
+              >
                 <Input size='large' />
               </Form.Item>
             </Col>
@@ -148,7 +163,7 @@ function DeclareInformationPage(props) {
             </Col>
             <Col span={12}>
               <Form.Item label={<Text style={{ fontSize: 16, fontWeight: 500 }}>Thời gian</Text>} name='statusDate'>
-                <DatePicker format={'DD/MM/YYYY'} size='large' style={{ width: '100%' }} />
+                <Input />
               </Form.Item>
             </Col>
             <Col span={24} className='flex justify-center'>

@@ -1,4 +1,10 @@
-import { DeleteOutlined, EditOutlined, PlusCircleOutlined, ReloadOutlined, SearchOutlined, SolutionOutlined } from '@ant-design/icons';
+import {
+  DeleteOutlined,
+  EditOutlined,
+  PlusCircleOutlined,
+  SearchOutlined,
+  SolutionOutlined
+} from '@ant-design/icons';
 import { Button, Drawer, Input, Popconfirm, Space, Table, Tooltip, Typography, message, notification } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useDebounce } from 'use-debounce';
@@ -137,25 +143,13 @@ function AdminClassesPage(props) {
         >
           Danh sách các lớp trong khoa
         </Title>
-        <Space>
-          <Button
-            type='default'
-            icon={<ReloadOutlined />}
-            onClick={() => {
-              setPageCurrent(1);
-            }}
-            className='flex justify-center items-center bg-white shadow-lg font-medium'
-          >
-            Cập nhật
-          </Button>
-          <Button
-            icon={<PlusCircleOutlined />}
-            className='flex justify-center items-center bg-white shadow-lg font-medium'
-            onClick={() => setOpenModalForm(true)}
-          >
-            Thêm lớp
-          </Button>
-        </Space>
+        <Button
+          icon={<PlusCircleOutlined />}
+          className='flex justify-center items-center bg-white shadow-lg font-medium'
+          onClick={() => setOpenModalForm(true)}
+        >
+          Thêm lớp
+        </Button>
       </div>
       {dataSource && (
         <Table

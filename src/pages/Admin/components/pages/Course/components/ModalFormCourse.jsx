@@ -1,5 +1,5 @@
 import { ModalForm, ProForm, ProFormText } from '@ant-design/pro-components';
-import { message } from 'antd';
+import { message, notification } from 'antd';
 import React from 'react';
 import { createCourse, updateCourse } from '../../../../../../API/axios';
 function ModalFormCourse({ openForm, onChangeClickOpen, dataCourse, onSuccess }) {
@@ -7,7 +7,11 @@ function ModalFormCourse({ openForm, onChangeClickOpen, dataCourse, onSuccess })
     createCourse(values).then((res) => {
       if (res.data?.success === true) {
         onSuccess();
-        message.success('Tạo khóa mới thành công');
+        message.success({
+          message: 'Thành công',
+          duration: 2,
+          description: `Tạo khóa ${values.id} thành công`,
+        });
       } else if (res.data?.error?.code === 2) {
         // eslint-disable-next-line no-lone-blocks
         {
@@ -24,7 +28,11 @@ function ModalFormCourse({ openForm, onChangeClickOpen, dataCourse, onSuccess })
     updateCourse(id, values).then((res) => {
       if (res.data?.success === true) {
         onSuccess();
-        message.success('Sửa thông tin khóa thành công');
+        notification.success({
+          message: 'Thành công',
+          description: `Sửa thông tin khóa ${id} thành công`,
+          duration: 2,
+        });
       } else if (res.data?.error?.code === 2) {
         // eslint-disable-next-line no-lone-blocks
         {
@@ -40,16 +48,12 @@ function ModalFormCourse({ openForm, onChangeClickOpen, dataCourse, onSuccess })
     <div>
       <ModalForm
         width={750}
-        title={dataCourse.courseId ? 'Sửa thông tin khóa' : 'Thêm khóa'}
+        title={dataCourse.id ? 'Cập nhật thông tin khóa' : 'Thêm khóa'}
         initialValues={dataCourse}
         modalProps={{
           destroyOnClose: true,
-          okText: dataCourse.courseId ? 'Lưu' : 'Tạo',
+          okText: dataCourse.id ? 'Cập nhật' : 'Tạo',
           okType: 'primary',
-          okButtonProps: {
-            backgroundColor: '#fff',
-            color: '#000',
-          },
           cancelText: 'Hủy',
         }}
         open={openForm}
@@ -74,7 +78,7 @@ function ModalFormCourse({ openForm, onChangeClickOpen, dataCourse, onSuccess })
               },
             ]}
             width='md'
-            name='courseId'
+            name='id'
             label='Mã khóa'
             placeholder='Nhập mã khóa học, ví dụ: K65'
           />

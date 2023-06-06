@@ -1,4 +1,4 @@
-import { DeleteOutlined, EditOutlined, PieChartOutlined, PlusCircleOutlined, SearchOutlined } from '@ant-design/icons';
+import { DeleteOutlined, PieChartOutlined, PlusCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import { Button, Input, Modal, Popconfirm, Space, Table, Tooltip, Typography, message } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useDebounce } from 'use-debounce';
@@ -113,14 +113,14 @@ function AdminSemestersPage(props) {
       render: (e, record, idx) => (
         <Space key={idx}>
           <Tooltip title='Chỉnh sửa'>
-            <Button
+            {/* <Button
               onClick={() => {
                 setOpenModalTerm(true);
                 setDataTerm(record);
               }}
               icon={<EditOutlined />}
               className='flex justify-center items-center shadow-xl'
-            ></Button>
+            ></Button> */}
           </Tooltip>
           <Tooltip title='Xóa'>
             <Popconfirm

@@ -49,12 +49,12 @@ function ProgressCredits({ dataStudent }) {
           <div className='flex justify-between items-center h-[250px]'>
             <Liquid width={200} height={280} {...config} />
             <Descriptions labelStyle={{ width: 300 }} bordered={true} layout='horizontal' column={1}>
-              <Descriptions.Item span={1} label={'Số tín chỉ môn học bắt buộc'}>
+              {/* <Descriptions.Item span={1} label={'Số tín chỉ môn học bắt buộc'}>
                 {'81 / 119'}
               </Descriptions.Item>
               <Descriptions.Item span={1} label={'Số tín chỉ môn học tự chọn'}>
                 {'8 / 12'}
-              </Descriptions.Item>
+              </Descriptions.Item> */}
               <Descriptions.Item span={1} label='Tổng số tín chỉ đã hoàn thành'>
                 {`${data?.creditsAccumulated} / ${data?.totalCredits}`}
               </Descriptions.Item>

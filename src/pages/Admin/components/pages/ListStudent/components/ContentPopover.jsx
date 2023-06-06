@@ -99,6 +99,14 @@ function ContentPopover({ setValuesFilter, setPageCurrent }) {
               </Select>
             </Form.Item>
           </Col>
+          <Col span={15}>
+            <Form.Item label='Diện cảnh cáo' name='warning'>
+              <Select placeholder='Chọn diện cảnh cáo'>
+                <Select.Option value={true}>Có trong diện cảnh cáo</Select.Option>
+                <Select.Option value={false}>Không có trong diện cảnh cáo</Select.Option>
+              </Select>
+            </Form.Item>
+          </Col>
           <Col span={24} className='flex justify-end'>
             <Space>
               <Button type='default' onClick={handleReset} className='flex justify-center items-center'>

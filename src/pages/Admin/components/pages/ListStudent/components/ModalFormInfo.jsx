@@ -3,7 +3,12 @@ import { message, notification } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { createStudent, getMajorList, updateStudent } from '../../../../../../API/axios';
 function ModalFormStudentInfo({ openForm, onChangeClickOpen, dataStudent, onSuccess, disabled }) {
+
   const [majorList, setMajorList] = useState([]);
+  const optionMajor = majorList?.map((e) => {
+    return { label: e.name, value: e.id };
+  });
+
   const handleMajorList = () => {
     getMajorList({ page: 1, size: 10 }).then((res) => {
       if (res.data?.success) {
@@ -12,9 +17,6 @@ function ModalFormStudentInfo({ openForm, onChangeClickOpen, dataStudent, onSucc
     });
   };
   useEffect(() => handleMajorList(), []);
-  const optionMajor = majorList?.map((e) => {
-    return { label: e.name, value: e.id };
-  });
 
   const handleCreateStudent = (values) => {
     createStudent(values).then((res) => {
