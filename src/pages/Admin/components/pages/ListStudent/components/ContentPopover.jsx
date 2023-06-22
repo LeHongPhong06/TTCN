@@ -24,6 +24,7 @@ function ContentPopover({ setValuesFilter, setPageCurrent }) {
       courseId: '',
       classId: '',
       status: null,
+      warning: null,
     });
     setValuesFilter({});
     setPageCurrent(1);

@@ -5,6 +5,7 @@ import { useDebounce } from 'use-debounce';
 import { deleteClassificationsForClass, getClassificationsForClass } from '../../../../../../API/axios';
 import PieDataCourse from '../../Course/components/PieDataCourse';
 import ModalFormClassification from './components/ModalFormClassification';
+import PieDataClassified from './components/PieDataClassified';
 
 function Classclassification(props) {
   const { Title } = Typography;
@@ -225,7 +226,7 @@ function Classclassification(props) {
           style: { display: 'none' },
         }}
       >
-        <PieDataCourse dataPie={dataPie} />
+        <PieDataClassified dataPie={dataPie} />
       </Modal>
     </div>
   );

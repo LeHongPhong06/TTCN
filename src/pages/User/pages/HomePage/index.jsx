@@ -20,7 +20,6 @@ function HomePage(props) {
     setLoadingBtnLogin(true);
     login(values)
       .then((res) => {
-        console.log(res);
         if (res.data?.success === true) {
           Cookies.set('jwt', res.data?.data?.jwt);
           setLoadingBtnLogin(false);
@@ -82,19 +81,17 @@ function HomePage(props) {
               >
                 <Input laber='Mật khẩu' type='password' />
               </Form.Item>
-              <Form.Item shouldUpdate>
-                {() => (
-                  <Button
-                    loading={loadingBtnLogin}
-                    style={{
-                      border: '1px solid black',
-                      color: 'black',
-                    }}
-                    htmlType='submit'
-                  >
-                    Đăng nhập
-                  </Button>
-                )}
+              <Form.Item>
+                <Button
+                  loading={loadingBtnLogin}
+                  style={{
+                    border: '1px solid black',
+                    color: 'black',
+                  }}
+                  htmlType='submit'
+                >
+                  Đăng nhập
+                </Button>
               </Form.Item>
             </Form>
           </div>

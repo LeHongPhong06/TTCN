@@ -105,7 +105,7 @@ function AdminPointTermPage() {
   const props = {
     name: 'file',
     multiple: false,
-    action: `${baseUrl}`,
+    action: `${baseUrl}/admin/point/import`,
     showUploadList: false,
     headers: {
       Authorization: jwt ? `Bearer ${jwt}` : undefined,

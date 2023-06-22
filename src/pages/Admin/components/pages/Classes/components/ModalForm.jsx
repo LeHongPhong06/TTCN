@@ -4,6 +4,7 @@ import React from 'react';
 import { createClass, updateClass } from '../../../../../../API/axios';
 
 function ModalFormClass({ openModalForm, onChangeClickOpen, dataClass, onSuccess, disabledClass }) {
+  
   // handle create class
   const handleCreateClass = (values) => {
     createClass(values).then((res) => {

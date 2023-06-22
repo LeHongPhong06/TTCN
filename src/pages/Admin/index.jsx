@@ -10,6 +10,8 @@ function DefaultLayoutAdmin(props) {
   const location = useLocation();
   const { roleId } = useParams();
   const { Header, Sider, Content } = Layout;
+  const userName = sessionStorage.getItem('userName');
+  const avatarLocal = sessionStorage.getItem('avatarUser');
   const checkPathName = () => {
     if (location.pathname.includes('/manage/students')) {
       return '1';
@@ -109,18 +111,13 @@ function DefaultLayoutAdmin(props) {
       },
     },
   ];
-  const avatarLocal = sessionStorage.getItem('avatarUser');
-  // const valueLocal = sessionStorage.getItem('infoUser');
-  // const value = JSON.parse(valueLocal);
-  // const getUserName = (roleId) => value?.find((data) => data.id === roleId);
-  const userName = sessionStorage.getItem('userName');
+
   return (
     <div className='p-1'>
       <Layout className='min-h-[99vh]'>
         <Sider style={{ borderRadius: '6px' }} width={230}>
           <div className='py-3 px-6 flex justify-center items-center border-b-2 border-stone-50'>
             <Title style={{ color: '#fff', marginBottom: 0, width: 150 }} level={4}>
-              {/* {getUserName(roleId)?.userName ? `${getUserName(roleId)?.userName}` : 'Xin chào Admin'} */}
               {userName ? `${userName}` : 'Xin chào Admin'}
             </Title>
           </div>

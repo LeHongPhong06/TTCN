@@ -143,7 +143,7 @@ function AdminListStudentPage() {
   const props = {
     name: 'file',
     multiple: false,
-    action: `${baseUrl}`,
+    action: `${baseUrl}/admin/student/import`,
     showUploadList: false,
     headers: {
       Authorization: jwt ? `Bearer ${jwt}` : undefined,
@@ -151,8 +151,6 @@ function AdminListStudentPage() {
     onChange(info) {
       const { response, status } = info.file;
       console.log(status);
-      setLoadingBtnImport(true);
-      setLoadingTable(true);
       if (response?.success === true) {
         notification.success({
           placement: 'topRight',
@@ -161,7 +159,7 @@ function AdminListStudentPage() {
           duration: 4,
         });
         handleGetDataStudentList();
-      } else {
+      } else if (response?.success === false) {
         notification.error({
           placement: 'topRight',
           message: 'Thất bại',
@@ -172,7 +170,7 @@ function AdminListStudentPage() {
       if (status === 'done') {
         setLoadingBtnImport(false);
         setLoadingTable(false);
-      } else if (status === 'updating') {
+      } else if (status === 'uploading') {
         setLoadingBtnImport(true);
         setLoadingTable(true);
       }
@@ -305,16 +303,23 @@ function AdminListStudentPage() {
   return (
     <div>
       <div className='flex justify-between items-center mb-3 relative'>
-        <Button
-          className='flex justify-center items-center text-md'
-          icon={<UsergroupDeleteOutlined />}
-          type='primary'
-          disabled={!hasSelected}
-          onClick={handleDeleteListStudent}
-          loading={loadingBtnDeleteListStudent}
+        <Popconfirm
+          title='Bạn có chắc chắn muốn xóa ?'
+          icon={<DeleteOutlined />}
+          okText='Xóa'
+          okType='danger'
+          onConfirm={handleDeleteListStudent}
         >
-          Xóa
-        </Button>
+          <Button
+            className='flex justify-center items-center text-md'
+            icon={<UsergroupDeleteOutlined />}
+            type='primary'
+            disabled={!hasSelected}
+            loading={loadingBtnDeleteListStudent}
+          >
+            Xóa
+          </Button>
+        </Popconfirm>
         <Text
           style={{
             position: 'absolute',

@@ -1,10 +1,4 @@
-import {
-  DeleteOutlined,
-  EditOutlined,
-  PlusCircleOutlined,
-  SearchOutlined,
-  SolutionOutlined
-} from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, PlusCircleOutlined, SearchOutlined, SolutionOutlined } from '@ant-design/icons';
 import { Button, Drawer, Input, Popconfirm, Space, Table, Tooltip, Typography, message, notification } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useDebounce } from 'use-debounce';
@@ -25,6 +19,7 @@ function AdminClassesPage(props) {
   const [totalClass, setTotalClass] = useState(0);
   const [disabledClass, setDisabledClass] = useState(false);
   const debunceValue = useDebounce(valueSearchClass, 750);
+
   // Handle Confirm Delete Class
   const handleConfirmDeleteClass = (id) => {
     setLoadingTable(true);

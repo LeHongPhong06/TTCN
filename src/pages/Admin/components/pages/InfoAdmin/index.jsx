@@ -4,6 +4,7 @@ import Cookies from 'js-cookie';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getInfoAdmin, updateInfoAdmin } from '../../../../../API/axios';
+import { baseUrl } from '../../../../../API/request';
 import ModalChangePassword from './ModalChangePassword';
 
 function AdminChangeInfomation() {
@@ -45,20 +46,20 @@ function AdminChangeInfomation() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roleId]);
   const props = {
-    action: `https://1c07-118-70-132-104.ngrok-free.app/admin/admin/avatar/${roleId}`,
+    action: `${baseUrl}/admin/admin/avatar/${roleId}`,
     headers: {
       Authorization: jwt ? `Bearer ${jwt}` : undefined,
     },
     onChange: (file) => {
       const { response } = file.file;
-      if (response && response.success === true) {
+      if (response && response?.success === true) {
         notification.success({
           message: 'Thành công',
           description: 'Ảnh đại diện đã được cập nhật',
           duration: 3,
         });
+        sessionStorage.setItem('avatarUser', response?.data?.avatar);
       }
-      sessionStorage.setItem('avatarUser', response?.data?.avatar);
     },
     beforeUpload: (file) => {
       const { size, type } = file;
