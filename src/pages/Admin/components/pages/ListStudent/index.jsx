@@ -150,7 +150,6 @@ function AdminListStudentPage() {
     },
     onChange(info) {
       const { response, status } = info.file;
-      console.log(status);
       if (response?.success === true) {
         notification.success({
           placement: 'topRight',

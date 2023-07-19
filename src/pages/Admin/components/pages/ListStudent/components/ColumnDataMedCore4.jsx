@@ -6,16 +6,16 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 
 function ColumnDataMedCore4({ dataStudent }) {
+  const { Text } = Typography;
   const studentId = dataStudent?.id;
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { Text } = Typography;
 
   const getDataMedCoreStudent4 = () => {
+    setLoading(true);
     if (studentId !== undefined) {
       getDataMedCore4(studentId)
         .then((res) => {
-          setLoading(true);
           if (res.data.success === true) {
             setData(res.data?.data?.items);
             setLoading(false);
@@ -39,6 +39,17 @@ function ColumnDataMedCore4({ dataStudent }) {
         fill: '#FFFFFF',
         opacity: 0.6,
       },
+    },
+    columnStyle: {
+      fill: 'red',
+      fillOpacity: 0.5,
+      stroke: 'black',
+      lineWidth: 1,
+      shadowColor: 'black',
+      shadowBlur: 10,
+      shadowOffsetX: 5,
+      shadowOffsetY: 5,
+      cursor: 'pointer',
     },
     xAxis: {
       label: {

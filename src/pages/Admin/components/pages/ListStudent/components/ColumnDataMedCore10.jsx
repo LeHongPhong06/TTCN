@@ -40,6 +40,17 @@ function ColumnDataMedCore10({ dataStudent }) {
         opacity: 0.6,
       },
     },
+    columnStyle: {
+      fill: 'red',
+      fillOpacity: 0.5,
+      stroke: 'black',
+      lineWidth: 1,
+      shadowColor: 'black',
+      shadowBlur: 10,
+      shadowOffsetX: 5,
+      shadowOffsetY: 5,
+      cursor: 'pointer',
+    },
     xAxis: {
       label: {
         autoHide: true,

@@ -1,27 +1,20 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
-const baseUrl = 'https://01b5-2405-4802-1d5e-850-ccd4-eba1-23b5-f08.ngrok-free.app';
-const login_path = '/client/login';
-const sendRequest = '/client/send-request';
-const confirmPassword = '/client/change-password';
+const jwt = Cookies.get('jwt');
+const baseUrl = 'https://d1a3-118-70-132-104.ngrok-free.app';
+axios.defaults.baseURL = baseUrl;
+axios.defaults.headers.common['ngrok-skip-browser-warning'] = '1';
+axios.defaults.headers.common['Authorization'] = jwt ? `Bearer ${jwt}` : undefined;
 
-axios.interceptors.request.use((req) => {
-  const jwt = Cookies.get('jwt');
-  const newUrl = baseUrl + req.url;
-  const Authorization =
-    login_path === req.url || sendRequest === req.url || confirmPassword === req.url ? undefined : `Bearer ${jwt}`;
-
-  return {
-    ...req,
-    url: newUrl,
-    headers: {
-      ...req.headers,
-      Authorization,
-      'ngrok-skip-browser-warning': '1',
-    },
-  };
-});
+axios.interceptors.request.use(
+  (req) => {
+    return req;
+  },
+  (err) => {
+    return Promise.reject(err);
+  }
+);
 
 axios.interceptors.response.use(
   (res) => {

@@ -1,7 +1,11 @@
 import axios from './request';
 // --------- login -----------------
 export const login = (values) => {
-  return axios.post(`/client/login`, values);
+  return axios.post(`/client/login`, values, {
+    headers: {
+      Authorization: undefined,
+    },
+  });
 };
 
 // =========== ADMIN =================
@@ -237,9 +241,17 @@ export const changePasswordStudent = (values) => {
 };
 
 export const changeForgotStudent = (values) => {
-  return axios.post(`/client/change-password`, values);
+  return axios.post(`/client/change-password`, values, {
+    headers: {
+      Authorization: undefined,
+    },
+  });
 };
 
 export const sendRequestForgotStudent = (values) => {
-  return axios.post(`/client/send-request`, values);
+  return axios.post(`/client/send-request`, values, {
+    headers: {
+      Authorization: undefined,
+    },
+  });
 };

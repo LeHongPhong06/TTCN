@@ -17,7 +17,7 @@ function ModalFormStudentInfo({ openForm, onChangeClickOpen, dataStudent, onSucc
     });
   };
   useEffect(() => handleMajorList(), []);
-
+  
   const handleCreateStudent = (values) => {
     createStudent(values).then((res) => {
       if (res.data?.success === true) {

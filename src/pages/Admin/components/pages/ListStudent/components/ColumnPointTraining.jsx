@@ -4,18 +4,20 @@ import React, { useEffect, useState } from 'react';
 import { getDataTraningPoint } from '../../../../../../API/axios';
 
 function ColumnPointTraining({ dataStudent }) {
+  const { Text } = Typography;
   const studentId = dataStudent?.id;
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { Text } = Typography;
   useEffect(() => {
-    getDataTraningPoint(studentId).then((res) => {
-      setLoading(true);
-      if (res.data.success === true) {
-        setData(res.data?.data?.items);
-        setLoading(false);
-      }
-    });
+    setLoading(true);
+    if (studentId !== undefined) {
+      getDataTraningPoint(studentId).then((res) => {
+        if (res.data.success === true) {
+          setData(res.data?.data?.items);
+          setLoading(false);
+        }
+      });
+    }
   }, [studentId]);
 
   const config = {
@@ -28,6 +30,17 @@ function ColumnPointTraining({ dataStudent }) {
         fill: '#FFFFFF',
         opacity: 0.6,
       },
+    },
+    columnStyle: {
+      fill: 'red',
+      fillOpacity: 0.5,
+      stroke: 'black',
+      lineWidth: 1,
+      shadowColor: 'black',
+      shadowBlur: 10,
+      shadowOffsetX: 5,
+      shadowOffsetY: 5,
+      cursor: 'pointer',
     },
     xAxis: {
       label: {
