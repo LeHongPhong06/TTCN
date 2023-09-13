@@ -1,32 +1,52 @@
 import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 import ErrorPage from './components/Error/ErrorPage';
-import DefaultLayoutAdmin from './pages/Admin';
-import Home from './pages/Admin/components/pages/AdminHome/Home';
-import AdminAuthorizationPage from './pages/Admin/components/pages/Authorization';
-import AdminClassesPage from './pages/Admin/components/pages/Classes';
-import Classclassification from './pages/Admin/components/pages/Classification/Class';
-import Majorclassification from './pages/Admin/components/pages/Classification/Major';
-import AdminCoursePage from './pages/Admin/components/pages/Course';
-import AdminChangeInfomation from './pages/Admin/components/pages/InfoAdmin';
-import AdminListStudentPage from './pages/Admin/components/pages/ListStudent';
-import AdminMajorPage from './pages/Admin/components/pages/Major';
-import AdminPointTermPage from './pages/Admin/components/pages/Point_Term';
-import AdminSemestersPage from './pages/Admin/components/pages/Semesters';
+import { NotFound } from './components/NotFound/NotFound';
+import { DefaultLayoutAdmin } from './pages/Admin/components/Layout/DefaultLayoutAdmin';
+import AdminChangeInfomation from './pages/Admin/pages/AdminChangeInfomation';
+import ManagerAuthorizationPage from './pages/Admin/pages/ManagerAuthorizationPage';
+import ManagerClassPage from './pages/Admin/pages/ManagerClassPage';
+import ManagerClassficationPage from './pages/Admin/pages/ManagerClassficationPage';
+import ManagerCoursePage from './pages/Admin/pages/ManagerCoursePage';
+import ManagerDisplayPage from './pages/Admin/pages/ManagerDisplayPage';
+import ManagerHomePage from './pages/Admin/pages/ManagerHomePage';
+import ManagerMajorPage from './pages/Admin/pages/ManagerMajorPage';
+import ManagerMajorficationPage from './pages/Admin/pages/ManagerMajorficationPage';
+import ManagerSemestersPage from './pages/Admin/pages/ManagerSemestersPage';
+import ManagerStatusPage from './pages/Admin/pages/ManagerStatusPage';
+import ManagerStudentPage from './pages/Admin/pages/ManagerStudentPage';
+import ManagerTermPointPage from './pages/Admin/pages/ManagerTermPointPage';
+import AboutUsPageUser from './pages/User/pages/AboutUsPageUser';
 import ChangePasswordPage from './pages/User/pages/ChangePasswordPage';
 import ConfirmChangPassword from './pages/User/pages/ConfirmChangePassword';
-import DeclareInformationPage from './pages/User/pages/DeclareInformation';
+import DocumentPageUser from './pages/User/pages/DocumentPageUser';
 import ForgotPasswordPage from './pages/User/pages/ForgotPassword';
-import HomePage from './pages/User/pages/HomePage';
-import HomePageStudent from './pages/User/pages/HomeStudentPage';
-import LayoutPageStudent from './pages/User/pages/LayoutStudentPage';
-import PersonalInformationStudent from './pages/User/pages/PersonalInformationPage';
-import PointPageStudent from './pages/User/pages/PointPageStudent';
+import HomePageUser from './pages/User/pages/HomePageUser';
+import NewsPageDetailUser from './pages/User/pages/NewsPageDetailUser';
+import NewsPageUser from './pages/User/pages/NewsPageUser';
+import PersonalInfoUser from './pages/User/pages/PersonalInfoUser';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <HomePage />,
+    element: <HomePageUser />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: '/news',
+    element: <NewsPageUser />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        path: ':newsId',
+        element: <NewsPageDetailUser />,
+        errorElement: <NotFound />,
+      },
+    ],
+  },
+  {
+    path: '/aboutus',
+    element: <AboutUsPageUser />,
     errorElement: <ErrorPage />,
   },
   {
@@ -35,43 +55,26 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
+    path: '/documents',
+    element: <DocumentPageUser />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: '/personal',
+    element: <PersonalInfoUser />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: '/changepassword',
+    element: <ChangePasswordPage />,
+    errorElement: <ErrorPage />,
+  },
+  {
     path: '/confirm-changepassword/:id',
     element: <ConfirmChangPassword />,
     errorElement: <ErrorPage />,
   },
-  // Student routes
-  {
-    path: '/student/:studentId',
-    element: <LayoutPageStudent />,
-    errorElement: <ErrorPage />,
-    children: [
-      {
-        path: '',
-        element: <HomePageStudent />,
-        errorElement: <ErrorPage />,
-      },
-      {
-        path: 'infor',
-        element: <PersonalInformationStudent />,
-        errorElement: <ErrorPage />,
-      },
-      {
-        path: 'points',
-        element: <PointPageStudent />,
-        errorElement: <ErrorPage />,
-      },
-      {
-        path: 'declare',
-        element: <DeclareInformationPage />,
-        errorElement: <ErrorPage />,
-      },
-      {
-        path: 'changepassword',
-        element: <ChangePasswordPage />,
-        errorElement: <ErrorPage />,
-      },
-    ],
-  },
+
   // Admin routes
   {
     path: '/:roleId/manage',
@@ -80,52 +83,62 @@ const router = createBrowserRouter([
     children: [
       {
         path: '',
-        element: <Home />,
+        element: <ManagerHomePage />,
         errorElement: <ErrorPage />,
       },
       {
         path: 'students',
-        element: <AdminListStudentPage />,
+        element: <ManagerStudentPage />,
         errorElement: <ErrorPage />,
       },
       {
         path: 'classes',
-        element: <AdminClassesPage />,
+        element: <ManagerClassPage />,
         errorElement: <ErrorPage />,
       },
       {
         path: 'semesters',
-        element: <AdminSemestersPage />,
+        element: <ManagerSemestersPage />,
         errorElement: <ErrorPage />,
       },
       {
         path: 'courses',
-        element: <AdminCoursePage />,
+        element: <ManagerCoursePage />,
         errorElement: <ErrorPage />,
       },
       {
         path: 'authorization',
-        element: <AdminAuthorizationPage />,
+        element: <ManagerAuthorizationPage />,
         errorElement: <ErrorPage />,
       },
       {
         path: 'majors',
-        element: <AdminMajorPage />,
+        element: <ManagerMajorPage />,
         errorElement: <ErrorPage />,
       },
       {
         path: 'points',
-        element: <AdminPointTermPage />,
+        element: <ManagerTermPointPage />,
         errorElement: <ErrorPage />,
       },
       {
         path: 'class-classification',
-        element: <Classclassification />,
+        element: <ManagerClassficationPage />,
         errorElement: <ErrorPage />,
       },
       {
         path: 'major-classification',
-        element: <Majorclassification />,
+        element: <ManagerMajorficationPage />,
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: 'status',
+        element: <ManagerStatusPage />,
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: 'display',
+        element: <ManagerDisplayPage />,
         errorElement: <ErrorPage />,
       },
       {

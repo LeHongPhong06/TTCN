@@ -1,6 +1,6 @@
-import axios from './request';
+import axios from './instane';
 // --------- login -----------------
-export const login = (values) => {
+export const login = async (values) => {
   return axios.post(`/client/login`, values, {
     headers: {
       Authorization: undefined,
@@ -11,9 +11,7 @@ export const login = (values) => {
 // =========== ADMIN =================
 
 // ----------- Student information ---------------
-export const getListStudent = (values) => {
-  return axios.post(`/admin/student/list`, values);
-};
+export const getListStudent = async (values) => {};
 
 export const createStudent = (values) => {
   return axios.post(`/admin/student/create`, values);

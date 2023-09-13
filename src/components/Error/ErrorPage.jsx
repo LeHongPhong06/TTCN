@@ -1,9 +1,9 @@
 import { Result } from 'antd';
 import React from 'react';
 
-function ErrorPage(props) {
+export default function ErrorPage(props) {
   return (
-    <div className='mt-[10%]'>
+    <div className='h-screen flex items-center justify-center bg-white'>
       <Result
         status='error'
         title='Submission Failed'
@@ -12,5 +12,3 @@ function ErrorPage(props) {
     </div>
   );
 }
-
-export default ErrorPage;
