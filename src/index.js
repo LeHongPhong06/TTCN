@@ -3,7 +3,7 @@ import viVN from 'antd/locale/vi_VN';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { RouterProvider } from 'react-router-dom';
-import './assets/styles/index.css';
+import './index.css';
 import ProviderRedux from './redux/ProviderRedux';
 import router from './router';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
