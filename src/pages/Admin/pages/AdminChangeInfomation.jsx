@@ -1,18 +1,22 @@
-import { PlusOutlined } from '@ant-design/icons';
-import { Button, Form, Input, Space, Typography, Upload, notification } from 'antd';
+import { UploadOutlined } from '@ant-design/icons';
+import { Button, Form, Input, Typography, Upload, notification } from 'antd';
 import Cookies from 'js-cookie';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getInfoAdmin, updateInfoAdmin } from '../../../API/axios';
+import { updateInfoAdmin } from '../../../API/axios';
+import { ButtonCustom } from '../../../components/Button';
+import { notificationError, notificationSuccess } from '../../../components/Notification';
 import { ModalChangePassword } from '../components/Modal';
 
 function AdminChangeInfomation() {
+  const [loadingBtnUpload, setLoadingBtnUpload] = useState(false);
+  const dataAdmin = JSON.parse(sessionStorage.getItem('info_admin'));
   const { roleId } = useParams();
   const [form] = Form.useForm();
   const { Title } = Typography;
   const [loading, setLoading] = useState(false);
   const [openModal, setOpenModal] = useState(false);
-  const jwt = Cookies.get('jwt');
+  const jwt = Cookies.get('access_token');
 
   const onFinish = (values) => {
     setLoading(true);
@@ -33,31 +37,23 @@ function AdminChangeInfomation() {
     }
   };
 
-  const handleGetInfoAdmin = () => {
-    getInfoAdmin(roleId).then((res) => {
-      if (res.data?.success === true) {
-        form.setFieldsValue(res.data?.data);
-      }
-    });
-  };
-  useEffect(() => {
-    handleGetInfoAdmin();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [roleId]);
   const props = {
-    action: `${process.env.BASE_URL_API}/admin/admin/avatar/${roleId}`,
+    multiple: false,
+    action: `http://localhost:8080/admin/admin/avatar`,
+    showUploadList: false,
     headers: {
       Authorization: jwt ? `Bearer ${jwt}` : undefined,
     },
     onChange: (file) => {
-      const { response } = file.file;
+      const { response, status } = file.file;
       if (response && response?.success === true) {
-        notification.success({
-          message: 'Thành công',
-          description: 'Ảnh đại diện đã được cập nhật',
-          duration: 3,
-        });
-        sessionStorage.setItem('avatarUser', response?.data?.avatar);
+        sessionStorage.setItem('info_admin', JSON.stringify(response.data));
+        notificationSuccess('Ảnh đại diện đã được cập nhật thành công.');
+      }
+      if (status === 'done') {
+        setLoadingBtnUpload(false);
+      } else if (status === 'uploading') {
+        setLoadingBtnUpload(true);
       }
     },
     beforeUpload: (file) => {
@@ -65,21 +61,11 @@ function AdminChangeInfomation() {
       const isSize = size / 1024 / 1024 < 2;
       const isType = type === 'image/jpeg' || file.type === 'image/png';
       if (!isType) {
-        notification.error({
-          message: 'Thất bại',
-          description: `${file.name} phải là một file ảnh`,
-          duration: 3,
-          placement: 'topRight',
-        });
+        notificationError(`${file.name} phải là một file ảnh`);
         return false;
       }
       if (!isSize) {
-        notification.error({
-          message: 'Thất bại',
-          description: `Ảnh tải lên không được quá 2MB`,
-          duration: 3,
-          placement: 'topRight',
-        });
+        notificationError(`Ảnh tải lên không được quá 2MB`);
         return false;
       }
       return true;
@@ -106,26 +92,15 @@ function AdminChangeInfomation() {
             onFinish={onFinish}
             autoComplete='off'
           >
-            <Form.Item label='Tên người dùng' name='name'>
+            <Form.Item label='Tên người dùng' name='name' initialValue={dataAdmin.name}>
               <Input />
             </Form.Item>
-            <Form.Item label='Email' name='email'>
+            <Form.Item label='Email' name='email' initialValue={dataAdmin.email}>
               <Input />
             </Form.Item>
             <Form.Item label='Ảnh đại diện' valuePropName='fileList'>
-              <Upload {...props} listType='picture-card'>
-                <Space direction='vertical'>
-                  <div>
-                    <PlusOutlined />
-                    <div
-                      style={{
-                        marginTop: 8,
-                      }}
-                    >
-                      Upload
-                    </div>
-                  </div>
-                </Space>
+              <Upload {...props}>
+                <ButtonCustom loading={loadingBtnUpload} title={'Cập nhật ảnh đại diện'} icon={<UploadOutlined />} />
               </Upload>
             </Form.Item>
             <Button type='link' onClick={() => setOpenModal(true)} className='pl-0'>

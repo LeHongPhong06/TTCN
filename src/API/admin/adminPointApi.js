@@ -58,10 +58,10 @@ export const adminPointApi = {
       throw new Error(error);
     }
   },
-  updatePoint: async (values) => {
-    const url = `/admin/point/update`;
+  updatePoint: async (id, values) => {
+    const url = `/admin/point/update/${id}`;
     try {
-      const res = await instane.put(url, values);
+      const res = await instane.post(url, values);
       return res.data;
     } catch (error) {
       throw new Error(error);

@@ -5,7 +5,7 @@ export const adminStudentApi = {
     const url = '/admin/student/list';
     try {
       const res = await instane.post(url, values);
-      return res.data;
+      return res.data || [];
     } catch (error) {
       throw new Error(error);
     }

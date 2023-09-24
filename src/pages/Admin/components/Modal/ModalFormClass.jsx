@@ -2,17 +2,14 @@ import { ModalForm, ProForm, ProFormText } from '@ant-design/pro-components';
 import { message, notification } from 'antd';
 import React from 'react';
 import { createClass, updateClass } from '../../../../API/axios';
+import { notificationSuccess } from '../../../../components/Notification';
 
 export function ModalFormClass({ openModalForm, onChangeClickOpen, dataClass, onSuccess, disabledClass }) {
   // handle create class
   const handleCreateClass = (values) => {
     createClass(values).then((res) => {
       if (res.data?.success === true) {
-        notification.success({
-          message: 'Thành công',
-          description: `Tạo lớp ${values.id} thành công`,
-          duration: 2,
-        });
+        notificationSuccess(`Tạo lớp ${values.id} thành công`);
         onSuccess();
       } else if (res.data?.error?.code === 2) {
         // eslint-disable-next-line no-lone-blocks

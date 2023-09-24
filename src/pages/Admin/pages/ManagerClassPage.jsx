@@ -57,22 +57,25 @@ function ManagerClassPage(props) {
       title: 'Tùy chọn',
       align: 'center',
       render: (e, record, index) => (
-        <Space size={16} key={index}>
-          <Tooltip title='Chỉnh sửa'>
-            <ButtonCustom icon={<EditOutlined />} handleClick={() => handleClickEditClass(record)}></ButtonCustom>
-          </Tooltip>
-          <Tooltip title='Xóa'>
-            <Popconfirm
-              title='Bạn có chắc chắn muốn xóa lớp này ?'
+        <Button.Group key={index}>
+          <ButtonCustom icon={<EditOutlined />} title={'Chỉnh sửa'} handleClick={() => handleClickEditClass(record)} />
+          <Popconfirm
+            title='Bạn có chắc chắn muốn xóa lớp này ?'
+            icon={<DeleteOutlined />}
+            okText='Xóa'
+            okType='danger'
+            onConfirm={() => handleConfirmDeleteClass(record.id)}
+          >
+            <Button
+              className='flex justify-center items-center text-md shadow-md'
+              danger
+              type='primary'
               icon={<DeleteOutlined />}
-              okText='Xóa'
-              okType='danger'
-              onConfirm={() => handleConfirmDeleteClass(record.id)}
             >
-              <Button className='flex justify-center items-center text-md shadow-md' icon={<DeleteOutlined />}></Button>
-            </Popconfirm>
-          </Tooltip>
-        </Space>
+              Xóa
+            </Button>
+          </Popconfirm>
+        </Button.Group>
       ),
     },
   ];

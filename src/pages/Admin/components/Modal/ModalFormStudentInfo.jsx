@@ -21,23 +21,13 @@ export function ModalFormStudentInfo({ openForm, onChangeClickOpen, dataStudent,
     staleTime: 2 * 60 * 1000,
     cacheTime: 5 * 60 * 1000,
     queryKey: ['majorList'],
-    queryFn: async () => {
-      try {
-        const res = await adminMajorApi.getAllMajor({ page: 1, size: 10 });
-        if (res) return res;
-      } catch (error) {}
-    },
+    queryFn: async () => adminMajorApi.getAllMajor({ page: 1, size: 10 }),
   });
   const optionMajor = data?.data?.items.map((e) => {
     return { label: e.name, value: e.id };
   });
   const handleCreateStudent = useMutation({
-    mutationFn: async (values) => {
-      try {
-        const res = await adminStudentApi.createStudent(values);
-        if (res) return res;
-      } catch (error) {}
-    },
+    mutationFn: async (values) => adminStudentApi.createStudent(values),
     onSuccess: (data) => {
       if (data && data.success === true) {
         dispatch(addStudent(data.data));
@@ -196,7 +186,7 @@ export function ModalFormStudentInfo({ openForm, onChangeClickOpen, dataStudent,
           <ProFormText
             rules={[{ required: true, message: 'Không được để trống' }]}
             width='md'
-            name={['classes', 'id']}
+            name={['aclass', 'id']}
             label='Lớp'
             placeholder='Nhập lớp học'
           />

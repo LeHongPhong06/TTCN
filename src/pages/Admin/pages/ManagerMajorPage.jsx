@@ -1,8 +1,10 @@
 import { DeleteOutlined, EditOutlined, PlusCircleOutlined, ReloadOutlined } from '@ant-design/icons';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Button, Popconfirm, Space, Table, Tooltip, Typography, notification } from 'antd';
+import { Button, Popconfirm, Table, Typography } from 'antd';
 import React, { useState } from 'react';
 import { adminMajorApi } from '../../../API/admin/adminMajorApi';
+import { ButtonCustom } from '../../../components/Button';
+import { notificationError, notificationSuccess } from '../../../components/Notification';
 import { ModalFormMajor } from '../components/Modal';
 
 function ManagerMajorPage(props) {
@@ -18,14 +20,10 @@ function ManagerMajorPage(props) {
     cacheTime: 5 * 60 * 5000,
     keepPreviousData: true,
     queryKey: ['majorList', pageCurrent],
-    queryFn: () => adminMajorApi.getAllMajor({ page: pageCurrent, size: 10 }),
+    queryFn: async () => await adminMajorApi.getAllMajor({ page: pageCurrent, size: 10 }),
   });
   if (error) {
-    notification.error({
-      message: 'Có lỗi',
-      description: error?.data?.data,
-      duration: 2,
-    });
+    notificationError(error?.data?.data);
   }
 
   const handleClickAddMajor = () => {
@@ -39,23 +37,17 @@ function ManagerMajorPage(props) {
   // handle confirm delete major
   const confirmDeleteMajor = useMutation({
     mutationKey: ['deleteMajor'],
-    mutationFn: (id) => adminMajorApi.deleteMajor(id),
+    mutationFn: async (id) => await adminMajorApi.deleteMajor(id),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({
-        queryKey: ['majorList', pageCurrent],
-      });
-      notification.success({
-        message: 'Thành công',
-        description: data?.data?.data,
-        duration: 2,
-      });
+      if (data && data.success === true) {
+        queryClient.invalidateQueries({
+          queryKey: ['majorList', pageCurrent],
+        });
+        notificationSuccess(data?.data?.data);
+      }
     },
     onError: (data) => {
-      notification.error({
-        message: 'Thất bại',
-        description: data?.data?.data,
-        duration: 2,
-      });
+      notificationError(data?.data?.data);
     },
   });
   const handleConfirmDeleteMajor = (id) => {
@@ -84,26 +76,25 @@ function ManagerMajorPage(props) {
       title: 'Tùy chọn',
       align: 'center',
       render: (e, record, idx) => (
-        <Space key={idx}>
-          <Tooltip title='Chỉnh sửa'>
+        <Button.Group key={idx}>
+          <ButtonCustom handleClick={() => handleClickEditMajor(record)} icon={<EditOutlined />} title={'Chỉnh sửa'} />
+          <Popconfirm
+            title={`Bạn có chắc chắn muốn xóa chuyên ngành ${record.id}`}
+            icon={<DeleteOutlined />}
+            okText='Xóa'
+            okType='danger'
+            onConfirm={() => handleConfirmDeleteMajor(record.id)}
+          >
             <Button
-              onClick={() => handleClickEditMajor(record)}
-              icon={<EditOutlined />}
-              className='flex justify-center items-center shadow-xl'
-            ></Button>
-          </Tooltip>
-          <Tooltip title='Xóa'>
-            <Popconfirm
-              title={`Bạn có chắc chắn muốn xóa chuyên ngành ${record.id}`}
+              className='flex justify-center items-center text-md shadow-md'
+              danger
+              type='primary'
               icon={<DeleteOutlined />}
-              okText='Xóa'
-              okType='danger'
-              onConfirm={() => handleConfirmDeleteMajor(record.id)}
             >
-              <Button className='flex justify-center items-center text-md shadow-md' icon={<DeleteOutlined />}></Button>
-            </Popconfirm>
-          </Tooltip>
-        </Space>
+              Xóa
+            </Button>
+          </Popconfirm>
+        </Button.Group>
       ),
     },
   ];

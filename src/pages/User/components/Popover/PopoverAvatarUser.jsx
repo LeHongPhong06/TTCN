@@ -5,12 +5,12 @@ import { PopoverIndex } from '.';
 import { MenuUser } from '../Menu';
 
 export function PopoverAvatarUser(props) {
-  // const dataLocal = JSON.parse(sessionStorage.getItem('info_student'));
+  const dataStudent = JSON.parse(sessionStorage.getItem('info_student'));
   return (
     <div>
       <PopoverIndex content={<MenuUser />}>
         <Avatar
-          className='flex justify-center items-center'
+          className='flex justify-center items-center border-1 border-black'
           size={{
             xs: 38,
             sm: 40,
@@ -20,7 +20,7 @@ export function PopoverAvatarUser(props) {
             xxl: 57,
           }}
           icon={<UserOutlined />}
-          // src={<img src={dataLocal?.avatar} alt='avatar_user' />}
+          src={<img src={dataStudent?.avatar} alt='avatar_user' />}
         />
       </PopoverIndex>
     </div>

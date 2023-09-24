@@ -15,7 +15,7 @@ export function ButtonCustom({
       danger={danger}
       disabled={disabled}
       loading={loading}
-      className='flex justify-center items-center bg-white'
+      className='flex justify-center items-center bg-white shadow-lg'
       icon={icon}
       onClick={handleClick}
       type={type}

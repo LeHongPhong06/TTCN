@@ -5,6 +5,7 @@ import { useDebounce } from 'use-debounce';
 import { deleteAdmin, getAdminList } from '../../../API/axios';
 import DrawerAdminAuther from '../components/Drawer/DrawerAdminAuther';
 import { ModalFormAdmin } from '../components/Modal';
+import { ButtonCustom } from '../../../components/Button';
 
 function ManagerAuthorizationPage(props) {
   const { Title } = Typography;
@@ -55,6 +56,11 @@ function ManagerAuthorizationPage(props) {
       })
       .finally(() => setLoadingTable(false));
   };
+  const handleClickEdit = (record) => {
+    setRequired(false);
+    setDataAdmin(record);
+    setOpenModalFormAdmin(true);
+  };
   useEffect(() => {
     handleGetAdminList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -95,30 +101,25 @@ function ManagerAuthorizationPage(props) {
       title: 'Tùy chọn',
       align: 'center',
       render: (e, record, index) => (
-        <Space size={16} key={index}>
-          <Tooltip title='Chỉnh sửa'>
+        <Button.Group key={index}>
+          <ButtonCustom title={'Chỉnh sửa'} icon={<EditOutlined />} handleClick={() => handleClickEdit(record)} />
+          <Popconfirm
+            title='Bạn có chắc chắn muốn xóa sinh viên này ?'
+            icon={<DeleteOutlined />}
+            okText='Xóa'
+            okType='danger'
+            onConfirm={() => handleConfirmDeleteAdmin(record.id)}
+          >
             <Button
               className='flex justify-center items-center text-md shadow-md'
-              icon={<EditOutlined />}
-              onClick={() => {
-                setRequired(false);
-                setDataAdmin(record);
-                setOpenModalFormAdmin(true);
-              }}
-            ></Button>
-          </Tooltip>
-          <Tooltip title='Xóa'>
-            <Popconfirm
-              title='Bạn có chắc chắn muốn xóa sinh viên này ?'
               icon={<DeleteOutlined />}
-              okText='Xóa'
-              okType='danger'
-              onConfirm={() => handleConfirmDeleteAdmin(record.id)}
+              type='primary'
+              danger
             >
-              <Button className='flex justify-center items-center text-md shadow-md' icon={<DeleteOutlined />}></Button>
-            </Popconfirm>
-          </Tooltip>
-        </Space>
+              Xóa
+            </Button>
+          </Popconfirm>
+        </Button.Group>
       ),
     },
   ];

@@ -9,33 +9,26 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { Button, Drawer, Input, Popconfirm, Popover, Space, Table, Tooltip, Typography } from 'antd';
 import { useState } from 'react';
+import { adminStudentStatusApi } from '../../../API/admin/adminStudentStatusApi';
 import { ButtonCustom } from '../../../components/Button';
 import { ModalFormStudentStatus } from '../components/Modal';
 import { TableListStatus } from '../components/Table';
-import { adminStudentStatusApi } from '../../../API/admin/adminStudentStatusApi';
 
 function ManagerStatusPage(props) {
+  const { Title } = Typography;
   const [pageCurrent, setPageCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [openModal, setOpenModal] = useState(false);
+  const [openDrawer, setOpenDrawer] = useState(false);
+  const [dataStudent, setDataStudent] = useState({});
+
   const { data, isFetching } = useQuery({
     staleTime: 60 * 5000,
     cacheTime: 5 * 60 * 5000,
     queryKey: ['studentStatusList', pageCurrent, pageSize],
-    queryFn: async () => {
-      try {
-        const res = await adminStudentStatusApi.getAllStudentStatus({ page: pageCurrent, size: pageSize });
-        if (res) return res;
-      } catch (error) {}
-    },
+    queryFn: async () => await adminStudentStatusApi.getAllStudentStatus({ page: pageCurrent, size: pageSize }),
   });
-  const [valueInputStudent, setValueInputStudent] = useState('');
-  const [openModal, setOpenModal] = useState(false);
-  const [openDrawer, setOpenDrawer] = useState(false);
-  const [dataStudent, setDataStudent] = useState({});
-  const handleChangeInputStudentId = (id) => {
-    setValueInputStudent(id);
-  };
-  const handleClickReset = () => {};
+
   const handleChangePaginationTable = (page, size) => {
     setPageCurrent(page);
     setPageSize(size);
@@ -55,57 +48,38 @@ function ManagerStatusPage(props) {
   const columns = [
     {
       title: 'Mã sinh viên',
-      dataIndex: 'studentId',
-      filterIcon: (filtered) => (
-        <SearchOutlined
-          style={{
-            color: filtered ? '#1677ff' : undefined,
-          }}
-        />
-      ),
-      filterDropdown: ({ selectedKeys }) => (
-        <div
-          style={{
-            padding: 8,
-          }}
-        >
-          <Tooltip title='Nhập mã sinh viên'>
-            <Input
-              value={valueInputStudent}
-              onChange={(e) => handleChangeInputStudentId(e.target.value)}
-              onPressEnter={() => {}}
-              className='w-[200px] block mb-4'
-            />
-          </Tooltip>
-          <Space>
-            <ButtonCustom title='Reset' handleClick={handleClickReset} />
-            <ButtonCustom title='Đóng' type='link' />
-          </Space>
-        </div>
-      ),
-      filterSearch: (input, record) => {
-        console.log(input, record);
-      },
+      dataIndex: ['student', 'id'],
+      align: 'center',
     },
     {
       title: 'Họ đệm',
-      dataIndex: 'surname',
+      dataIndex: ['student', 'surname'],
+      align: 'center',
     },
     {
       title: 'Tên',
-      dataIndex: 'lastName',
+      dataIndex: ['student', 'lastName'],
+      align: 'center',
+    },
+    {
+      title: 'Lớp',
+      dataIndex: ['student', 'aclass', 'id'],
+      align: 'center',
     },
     {
       title: 'Trạng thái',
-      dataIndex: 'statusName',
+      dataIndex: ['status', 'name'],
+      align: 'center',
     },
     {
       title: 'Thời gian',
       dataIndex: 'time',
+      align: 'center',
     },
     {
       title: 'Ghi chú',
       dataIndex: 'note',
+      align: 'center',
     },
     {
       align: 'center',
@@ -142,7 +116,6 @@ function ManagerStatusPage(props) {
     },
   ];
 
-  const { Title } = Typography;
   return (
     <div>
       <div className='flex justify-between items-center mb-3 relative'>

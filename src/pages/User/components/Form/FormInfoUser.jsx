@@ -2,14 +2,21 @@ import { ProForm, ProFormDatePicker, ProFormSelect, ProFormText } from '@ant-des
 import { Col, Row } from 'antd';
 import React from 'react';
 import { ButtonCustom } from '../../../../components/Button';
+import { notificationSuccess } from '../../../../components/Notification';
 
 export function FormInfoUser() {
+  const dataStudent = JSON.parse(sessionStorage.getItem('info_student'));
+  const onFinish = (values) => {
+    notificationSuccess(values);
+  };
   const handleClickSubmit = (e) => {
     e.submit();
   };
   return (
     <div>
       <ProForm
+        onFinish={onFinish}
+        initialValues={dataStudent}
         submitter={{
           render: (props) => {
             return [
@@ -19,7 +26,7 @@ export function FormInfoUser() {
                   size='large'
                   type='primary'
                   handleClick={() => handleClickSubmit(props)}
-                ></ButtonCustom>
+                />
               </div>,
             ];
           },
@@ -33,9 +40,8 @@ export function FormInfoUser() {
               }}
               disabled
               width='md'
-              name='name'
-              label=<p className='text-base'>Họ và tên</p>
-              placeholder='Nguyễn Văn A'
+              name='surname'
+              label=<p className='text-base'>Họ Đệm</p>
               rules={[{ required: true, message: 'Không thể bỏ trống' }]}
             />
           </Col>
@@ -44,6 +50,19 @@ export function FormInfoUser() {
               fieldProps={{
                 size: 'large',
               }}
+              disabled
+              width='md'
+              name='lastName'
+              label=<p className='text-base'>Tên</p>
+              rules={[{ required: true, message: 'Không thể bỏ trống' }]}
+            />
+          </Col>
+          <Col>
+            <ProFormText
+              fieldProps={{
+                size: 'large',
+              }}
+              disabled
               width='md'
               name='id'
               label=<p className='text-base'>Mã sinh viên</p>
@@ -56,8 +75,9 @@ export function FormInfoUser() {
               fieldProps={{
                 size: 'large',
               }}
+              disabled
               width='md'
-              name={['classes', 'id']}
+              name={['aclass', 'id']}
               label=<p className='text-base'>Lớp</p>
               placeholder='Lớp'
               rules={[{ required: true, message: 'Không thể bỏ trống' }]}
@@ -68,6 +88,7 @@ export function FormInfoUser() {
               fieldProps={{
                 size: 'large',
               }}
+              disabled
               width='md'
               name={['major', 'id']}
               label=<p className='text-base'>Chuyên ngành</p>
@@ -75,34 +96,35 @@ export function FormInfoUser() {
               rules={[{ required: true, message: 'Không thể bỏ trống' }]}
             />
           </Col>
-          {/* <Col>
-            <ProFormText
-              fieldProps={{
-                size: 'large',
-              }}
-              width='md'
-              name='phoneNumber'
-              label=<p className='text-base'>Số điện thoại</p>
-              placeholder='+ 84'
-              rules={[
-                { required: true, message: 'Không thể bỏ trống' },
-                {
-                  pattern: '^0[0-9]{10}$',
-                  message: 'Bắt đầu là số 0 và dài 10 kí tự số',
-                },
-              ]}
-            />
-          </Col> */}
           <Col>
             <ProFormText
               fieldProps={{
                 size: 'large',
               }}
+              disabled
               width='md'
               name='email'
               label=<p className='text-base'>Email</p>
               placeholder='example@gamil.com'
               rules={[{ required: true, message: 'Không thể bỏ trống' }]}
+            />
+          </Col>
+          <Col>
+            <ProFormText
+              fieldProps={{
+                size: 'large',
+              }}
+              disabled
+              width='md'
+              rules={[
+                {
+                  required: true,
+                  message: 'Không thể để trống',
+                },
+              ]}
+              name='homeTown'
+              label=<p className='text-base'>Địa chỉ quê quán</p>
+              placeholder='Số nhà - Ngõ (Ngách) - Xã - Phường'
             />
           </Col>
           <Col>
@@ -119,23 +141,6 @@ export function FormInfoUser() {
                 },
               ]}
               label=<p className='text-base'>Địa chỉ nơi ở hiện tại</p>
-              placeholder='Số nhà - Ngõ (Ngách) - Xã - Phường'
-            />
-          </Col>
-          <Col>
-            <ProFormText
-              fieldProps={{
-                size: 'large',
-              }}
-              width='md'
-              rules={[
-                {
-                  required: true,
-                  message: 'Không thể để trống',
-                },
-              ]}
-              name='homeTown'
-              label=<p className='text-base'>Địa chỉ quê quán</p>
               placeholder='Số nhà - Ngõ (Ngách) - Xã - Phường'
             />
           </Col>

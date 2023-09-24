@@ -8,8 +8,8 @@ import { useNavigate } from 'react-router-dom';
 import { visitor } from '../../../../API/client';
 import { ButtonCustom } from '../../../../components/Button';
 import { notificationError, notificationSuccess } from '../../../../components/Notification';
-import { setAccessToken } from '../../../../redux/User/userSlice';
 import { setOpenModal } from '../../../../redux/Modal/modalLoginSlice';
+import { LockOutlined, UserOutlined } from '@ant-design/icons';
 
 export function ModalFormLogin({ onChangeClickOpen }) {
   const dispatch = useDispatch();
@@ -27,16 +27,16 @@ export function ModalFormLogin({ onChangeClickOpen }) {
     onSuccess: (res) => {
       if (res && res.success === true && res.data) {
         Cookies.set('access_token', res.data.jwt);
-        dispatch(setAccessToken(res.data.jwt));
         if (res.data.roleId === 'STUDENT') {
           sessionStorage.setItem('info_student', JSON.stringify(res.data));
           notificationSuccess('Đăng nhập thành công');
           dispatch(setOpenModal(false));
+          window.location.reload();
         } else if (res.data.roleId !== 'STUDENT') {
           sessionStorage.setItem('info_admin', JSON.stringify(res.data));
           notificationSuccess('Đăng nhập thành công');
           dispatch(setOpenModal(false));
-          navigate(`/${res.data.id}/manage`);
+          navigate(`/manage`);
         }
       } else if (res && res.success === false && res.error.code === 500) {
         notificationError(res.error.message);
@@ -108,6 +108,9 @@ export function ModalFormLogin({ onChangeClickOpen }) {
                 message: <p className='font-saira'>Không thể để trống tài khoản</p>,
               },
             ]}
+            fieldProps={{
+              prefix: <UserOutlined className='opacity-50 mr-1' />,
+            }}
           />
           <ProFormText.Password
             width='md'
@@ -120,6 +123,9 @@ export function ModalFormLogin({ onChangeClickOpen }) {
                 message: <p className='font-saira'>Không thể để trống mật khẩu</p>,
               },
             ]}
+            fieldProps={{
+              prefix: <LockOutlined className='opacity-50 mr-1' />,
+            }}
           />
         </ProForm.Group>
       </ModalForm>

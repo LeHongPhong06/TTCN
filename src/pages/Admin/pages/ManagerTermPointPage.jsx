@@ -11,30 +11,31 @@ import {
   UsergroupDeleteOutlined,
 } from '@ant-design/icons';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { Button, Input, Popconfirm, Popover, Space, Table, Typography, Upload, notification } from 'antd';
+import { Button, Input, Popconfirm, Popover, Space, Table, Typography, Upload } from 'antd';
 import Cookies from 'js-cookie';
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useDebounce } from 'use-debounce';
 import { adminPointApi } from '../../../API/admin/adminPointApi';
 import { ButtonCustom } from '../../../components/Button';
-import { notificationSuccess } from '../../../components/Notification';
-import { ModalFormPoint, ModalTrashCanPoint } from '../components/Modal';
-import { ContentPopoverPoint } from '../components/Popover';
-import { useDispatch, useSelector } from 'react-redux';
+import { notificationError, notificationSuccess } from '../../../components/Notification';
 import {
-  setStudentId,
-  setTermId,
+  deletePoint,
   setDataPointList,
-  setTotal,
   setPageCurrent,
   setPageSize,
-  deletePoint,
+  setStudentId,
+  setTermId,
+  setTotal,
 } from '../../../redux/Point/pointSlice';
 import { addPoint } from '../../../redux/Trash/pointTrashSilce';
+import { ModalFormPoint, ModalShowError, ModalTrashCanPoint } from '../components/Modal';
+import { ContentPopoverPoint } from '../components/Popover';
+import { adminDisplayApi } from '../../../API/admin/adminDisplayApi';
 
 function ManagerTermPointPage() {
   const { Title } = Typography;
-  const jwt = Cookies.get('jwt');
+  const token = Cookies.get('access_token');
   const dispatch = useDispatch();
   const pointList = useSelector((state) => state.pointList.pointList);
   const studentId = useSelector((state) => state.pointList.studentId);
@@ -46,9 +47,11 @@ function ManagerTermPointPage() {
   const [disabled, setDisabled] = useState(false);
   const [openModalFormPoint, setOpenModalFormPoint] = useState(false);
   const [openModalTrush, setOpenModalTrush] = useState(false);
+  const [openModalError, setOpenModalError] = useState(false);
   const [loadingBtnImportPoint, setLoadingBtnImportPoint] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [dataPoint, setDataPoint] = useState({});
+  const [dataError, setDataError] = useState({});
   const [valueSearchTermId, setValueSearchTermId] = useState('');
   const [valueSearchStudentId, setValueSearchStudentId] = useState('');
   const [termIdValue] = useDebounce(valueSearchTermId, 750);
@@ -61,18 +64,14 @@ function ManagerTermPointPage() {
     cacheTime: 5 * 60 * 5000,
     keepPreviousData: true,
     queryKey: ['pointTermList', studentId, termId, pageCurrent, pageSize, valueFilter],
-    queryFn: async () => {
-      try {
-        const res = await adminPointApi.getAllPoint({
-          studentId: studentId,
-          termId: termId,
-          page: pageCurrent,
-          size: pageSize,
-          filter: valueFilter,
-        });
-        if (res) return res;
-      } catch (error) {}
-    },
+    queryFn: async () =>
+      adminPointApi.getAllPoint({
+        studentId: studentId,
+        termId: termId,
+        page: pageCurrent,
+        size: pageSize,
+        filter: valueFilter,
+      }),
     onSuccess: (data) => {
       if (data && data.success === true) {
         dispatch(setDataPointList(data.data.items));
@@ -85,12 +84,7 @@ function ManagerTermPointPage() {
   // Handle click confirm delete major
   const deletePointTerm = useMutation({
     mutationKeys: ['deletePoint'],
-    mutationFn: async (id) => {
-      try {
-        const res = await adminPointApi.deletePoint(id);
-        if (res) return res;
-      } catch (error) {}
-    },
+    mutationFn: async (id) => adminPointApi.deletePoint(id),
     onSuccess: (data) => {
       if (data && data.success === true) {
         notificationSuccess('Xóa thành công');
@@ -103,21 +97,31 @@ function ManagerTermPointPage() {
   // handle export file data student points
   const exportFileData = useMutation({
     mutationKey: ['exportFileDataPoint'],
-    mutationFn: async () => {
-      try {
-        const res = await adminPointApi.exportPointStudent({
-          studentId: studentId,
-          termId: termId,
-          filter: valueFilter,
-        });
-        if (res) return res;
-      } catch (error) {}
-    },
+    mutationFn: async () =>
+      adminPointApi.exportPointStudent({
+        studentId: studentId,
+        termId: termId,
+        filter: valueFilter,
+      }),
     onSuccess: (data) => {
-      notificationSuccess('Đã xuất file excel thành công hãy kiểm tra trong máy của bạn nhé ');
+      if (data && data.success === true) {
+        window.open(data.data);
+        notificationSuccess('Đã xuất file excel thành công hãy kiểm tra trong máy của bạn nhé ');
+      }
     },
   });
-
+  const getDataError = useMutation({
+    mutationKey: ['getDataError'],
+    mutationFn: async () => await adminDisplayApi.getDisplayErrorImport(1),
+    onSuccess: (res) => {
+      if (res && res.success === true) {
+        setDataError(res.data);
+      }
+    },
+    onError: (err) => {
+      notificationError(err);
+    },
+  });
   // ===============================
   const hasSelected = selectedRowKeys.length > 0;
   const handleConfirmDeletePoint = (id) => {
@@ -154,27 +158,20 @@ function ManagerTermPointPage() {
   const props = {
     name: 'file',
     multiple: false,
-    action: `${process.env.BASE_URL_API}/admin/point/import`,
+    action: `http://localhost:8080/admin/point/import`,
     showUploadList: false,
     headers: {
-      Authorization: jwt ? `Bearer ${jwt}` : undefined,
+      Authorization: token ? `Bearer ${token}` : undefined,
     },
     onChange(info) {
       const { response, status } = info.file;
       if (response?.success === true) {
-        notification.success({
-          placement: 'topRight',
-          message: 'Thành công',
-          description: `Upload ${info.file.name} thành công`,
-          duration: 4,
-        });
+        notificationSuccess(`Upload ${info.file.name} thành công`);
       } else if (response?.success === false) {
-        notification.error({
-          placement: 'topRight',
-          message: 'Thất bại',
-          description: response?.error?.message,
-          duration: 4,
-        });
+        getDataError.mutate();
+        notificationError(`Upload ${info.file.name} thất bại. Hãy làm theo đúng form excel được tải về máy của bạn`);
+        setOpenModalError(true);
+        window.open(response?.error?.message);
       }
       if (status === 'done') {
         setLoadingBtnImportPoint(false);
@@ -186,21 +183,11 @@ function ManagerTermPointPage() {
       const checkSize = file.size / 1024 / 1024 < 5;
       const isXLXS = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
       if (!isXLXS) {
-        notification.error({
-          message: 'Thất bại',
-          description: `${file.name} không phải là một file excel`,
-          duration: 3,
-          placement: 'topRight',
-        });
+        notificationError(`${file.name} không phải là một file excel`);
         return false;
       }
       if (!checkSize) {
-        notification.error({
-          message: 'Thất bại',
-          description: `File tải lên không được quá 5MB`,
-          duration: 3,
-          placement: 'topRight',
-        });
+        notificationError(`File tải lên không được quá 5MB`);
         return false;
       }
       return true;
@@ -210,25 +197,26 @@ function ManagerTermPointPage() {
   const columns = [
     {
       title: 'Mã sinh viên',
-      dataIndex: 'studentId',
+      dataIndex: ['student', 'id'],
       align: 'center',
       key: 'studentId',
     },
     {
       title: 'Họ đệm',
-      dataIndex: 'surname',
+      dataIndex: ['student', 'surname'],
       align: 'center',
       key: 'surname',
+      width: '15%',
     },
     {
       title: 'Tên',
-      dataIndex: 'lastName',
+      dataIndex: ['student', 'lastName'],
       align: 'center',
       key: 'lastName',
     },
     {
       title: 'Mã học kì',
-      dataIndex: 'termId',
+      dataIndex: ['term', 'id'],
       align: 'center',
       key: 'termId',
     },
@@ -401,6 +389,7 @@ function ManagerTermPointPage() {
         }}
         disabled={disabled}
       />
+      <ModalShowError open={openModalError} setOpen={(open) => setOpenModalError(open)} dataError={dataError} />
       <ModalTrashCanPoint open={openModalTrush} close={() => setOpenModalTrush(false)} />
     </div>
   );

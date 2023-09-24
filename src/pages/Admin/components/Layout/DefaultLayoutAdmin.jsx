@@ -2,20 +2,18 @@ import { BellOutlined, PoweroffOutlined } from '@ant-design/icons';
 import { Avatar, Badge, Button, Layout, Menu, Space, Tooltip, Typography } from 'antd';
 import Cookies from 'js-cookie';
 import React from 'react';
-import { Outlet, useNavigate, useParams } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 
 export function DefaultLayoutAdmin(props) {
   const { Title } = Typography;
   const navigate = useNavigate();
-  const { roleId } = useParams();
   const { Header, Sider, Content } = Layout;
-  const dataLocal = JSON.parse(sessionStorage.getItem('info_admin'));
-  const { name, avatar } = dataLocal;
+  const dataAdmin = JSON.parse(sessionStorage.getItem('info_admin'));
   const handleClickItemMenu = ({ key }) => {
     navigate(key);
   };
   const handleClickAvatar = () => {
-    navigate(`/${roleId}/manage/infomation`);
+    navigate(`/manage/infomation`);
   };
   const handleClickLogout = () => {
     Cookies.remove('access_token');
@@ -32,20 +30,19 @@ export function DefaultLayoutAdmin(props) {
     };
   };
   const items = [
-    getItem('Quản lí sinh viên', `/${roleId}/manage/students`),
-    getItem('Quản lí lớp', `/${roleId}/manage/classes`),
-    getItem('Quản lí ngành', `/${roleId}/manage/majors`),
-    getItem('Quản lí khóa', `/${roleId}/manage/courses`),
-    getItem('Quản lí điểm', `/${roleId}/manage/points`),
-    // getItem('Quản lí xếp loại', null, null, [
-    //   getItem('Xếp loại theo lớp', `/${roleId}/manage/class-classification`),
-    //   getItem('Xếp loại theo khóa', `/${roleId}/manage/major-classification`),
-    // ]),
-    getItem('Quản lí học kì', `/${roleId}/manage/semesters`),
-    getItem('Quản lí trạng thái sinh viên', `/${roleId}/manage/status`),
-    getItem('Quản lí quản trị viên', `/${roleId}/manage/authorization`),
-    getItem('Quản lí hiển thị', `/${roleId}/manage/display`),
-    getItem('Thống kê', `/${roleId}/manage/statistical`),
+    getItem('Quản lí sinh viên', `/manage/students`),
+    getItem('Quản lí lớp', `/manage/classes`),
+    getItem('Quản lí ngành', `/manage/majors`),
+    getItem('Quản lí khóa', `/manage/courses`),
+    getItem('Quản lí điểm', `/manage/points`),
+    getItem('Quản lí học kì', `/manage/semesters`),
+    getItem('Quản lí trạng thái sinh viên', `/manage/status`),
+    getItem('Quản lí quản trị viên', `/manage/authorization`),
+    getItem('Quản lí hiển thị', null, null, [
+      getItem('Lỗi nhập dữ liệu', `/manage/news`),
+      getItem('Banner', `/manage/banner`),
+    ]),
+    getItem('Thống kê', `/manage/statistical`),
   ];
 
   return (
@@ -54,7 +51,7 @@ export function DefaultLayoutAdmin(props) {
         <Sider style={{ borderRadius: '6px' }} width={250}>
           <div className='py-3 px-6 flex justify-center items-center border-b-2 border-stone-50'>
             <Title style={{ color: '#fff', marginBottom: 0, width: 150 }} level={4}>
-              {name ? `${name}` : 'Xin chào Admin'}
+              {dataAdmin?.name ? `${dataAdmin?.name}` : 'Xin chào Admin'}
             </Title>
           </div>
           <Menu
@@ -86,16 +83,7 @@ export function DefaultLayoutAdmin(props) {
                   shape='circle'
                   size={40}
                   onClick={handleClickAvatar}
-                  src={
-                    <img
-                      src={avatar}
-                      alt={'avatar'}
-                      style={{
-                        width: '100%',
-                        objectFit: 'cover',
-                      }}
-                    />
-                  }
+                  src={<img src={dataAdmin?.avatar} alt={'avatar'} />}
                 />
               </Tooltip>
               <Tooltip title='Đăng xuất'>
@@ -108,7 +96,7 @@ export function DefaultLayoutAdmin(props) {
               </Tooltip>
             </Space>
           </Header>
-          <Content className='mt-2 p-6 pb-0 bg-slate-200 rounded-md'>
+          <Content className='mt-2 p-6 pb-0 bg-slate-200 rounded-md max-h-[91vh] overflow-y-auto'>
             <Outlet />
           </Content>
         </Layout>

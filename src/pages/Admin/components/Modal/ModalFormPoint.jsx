@@ -1,58 +1,66 @@
 import { ModalForm, ProForm, ProFormText } from '@ant-design/pro-components';
+import { useMutation } from '@tanstack/react-query';
 import { message } from 'antd';
 import React from 'react';
-import { createPoint, updatePoint } from '../../../../API/axios';
+import { adminPointApi } from '../../../../API/admin/adminPointApi';
+import { useDispatch } from 'react-redux';
+import { addPoint, updatePoint } from '../../../../redux/Point/pointSlice';
+import { notificationSuccess } from '../../../../components/Notification/NotificationSuccess';
 export function ModalFormPoint({ openForm, onChangeClickOpen, dataPoint, onSuccess, disabled }) {
-  const handleCreatePoints = (values) => {
-    createPoint(values).then((res) => {
-      if (res.data?.success === true) {
+  const dispatch = useDispatch();
+  const handleCreatePoint = useMutation({
+    mutationKey: ['createPoint'],
+    mutationFn: async (value) => adminPointApi.createPoint(value),
+    onSuccess: (res) => {
+      if (res && res.success === true) {
+        dispatch(addPoint(res.data));
+        notificationSuccess('Tạo điểm mới thành công');
         onSuccess();
-        message.success('Tạo điểm học kỳ mới thành công');
-      } else if (res.data?.error?.code === 2) {
+      } else if (res && res.error?.code === 2) {
         // eslint-disable-next-line no-lone-blocks
         {
-          res.data?.error?.errorDetailList.forEach((e) => message.error(e.message));
+          res.error.errorDetailList.forEach((e) => message.error(e.message));
         }
-      } else if (res.data?.error?.code === 500) {
-        message.error(res.data?.error?.message);
       }
-    });
-  };
-  const handleUpdatePoints = (values) => {
-    updatePoint(values).then((res) => {
-      if (res.data?.success === true) {
+    },
+  });
+  const handleUpdatePoint = useMutation({
+    mutationKey: ['updatePoint'],
+    mutationFn: async (value) => {
+      return adminPointApi.updatePoint(dataPoint.id, value);
+    },
+    onSuccess: (res) => {
+      if (res && res.success === true) {
+        dispatch(updatePoint(res.data));
+        notificationSuccess('Cập nhật điểm thành công');
         onSuccess();
-        message.success(`Sửa thông tin điểm thành công`);
-      } else if (res.data?.error?.code === 2) {
+      } else if (res && res.error?.code === 2) {
         // eslint-disable-next-line no-lone-blocks
         {
-          res.data?.error?.errorDetailList.forEach((e) => message.error(e.message));
+          res.error.errorDetailList.forEach((e) => message.error(e.message));
         }
-      } else if (res.data?.error?.code === 500) {
-        message.error(res.data?.error?.message);
       }
-    });
-  };
-
+    },
+  });
   return (
     <div>
       <ModalForm
         width={750}
-        title={dataPoint.studentId ? 'Sửa thông tin điểm' : 'Thêm điểm'}
+        title={dataPoint.id ? 'Sửa thông tin điểm' : 'Thêm điểm'}
         initialValues={dataPoint}
         modalProps={{
           maskClosable: false,
           destroyOnClose: true,
-          okText: dataPoint.studentId ? 'Lưu' : 'Tạo',
+          okText: dataPoint.id ? 'Lưu' : 'Tạo',
           okType: 'primary',
           cancelText: 'Hủy',
         }}
         open={openForm}
         onFinish={(value) => {
-          if (dataPoint.studentId) {
-            handleUpdatePoints(value);
+          if (dataPoint.id) {
+            handleUpdatePoint.mutate(value);
           } else {
-            handleCreatePoints(value);
+            handleCreatePoint.mutate(value);
           }
         }}
         onOpenChange={onChangeClickOpen}
@@ -61,7 +69,7 @@ export function ModalFormPoint({ openForm, onChangeClickOpen, dataPoint, onSucce
           <ProFormText
             rules={[{ required: true, message: 'Vui lòng nhập đầy đủ thông tin' }]}
             width='md'
-            name='studentId'
+            name={['student', 'id']}
             label='Mã sinh viên'
             placeholder='Nhập mã sinh viên. Ví dụ: 655103'
             disabled={disabled}
@@ -69,7 +77,7 @@ export function ModalFormPoint({ openForm, onChangeClickOpen, dataPoint, onSucce
           <ProFormText
             rules={[{ required: true, message: 'Vui lòng nhập đầy đủ thông tin' }]}
             width='md'
-            name='termId'
+            name={['term', 'id']}
             label='Mã học kì'
             placeholder='Nhập mã học kì. Ví dụ: 20211'
             disabled={disabled}
@@ -79,14 +87,14 @@ export function ModalFormPoint({ openForm, onChangeClickOpen, dataPoint, onSucce
           <ProFormText
             width='md'
             rules={[{ required: true, message: 'Vui lòng chọn đầy đủ thông tin !' }]}
-            name='medScore10'
+            name='avgPoint10'
             label='Điểm trung bình hệ 10'
             placeholder='Nhập điểm trung bình hệ 10'
           />
           <ProFormText
             width='md'
             rules={[{ required: true, message: 'Vui lòng chọn đầy đủ thông tin !' }]}
-            name='medScore4'
+            name='avgPoint4'
             label='Điểm trung bình hệ 4'
             placeholder='Nhập điểm trung bình hệ 4'
           />
@@ -102,7 +110,7 @@ export function ModalFormPoint({ openForm, onChangeClickOpen, dataPoint, onSucce
           <ProFormText
             width='md'
             rules={[{ required: true, message: 'Vui lòng chọn đầy đủ thông tin !' }]}
-            name='creditsAccumulated'
+            name='creditsAcc'
             label='Tín chỉ tích lũy'
             placeholder='Nhập số tín chỉ tích lũy'
           />
@@ -111,14 +119,14 @@ export function ModalFormPoint({ openForm, onChangeClickOpen, dataPoint, onSucce
           <ProFormText
             width='md'
             rules={[{ required: true, message: 'Vui lòng chọn đầy đủ thông tin !' }]}
-            name='scoreAccumulated10'
+            name='pointAcc10'
             label='Điểm trung bình tích lũy ( hệ 10 )'
             placeholder='Nhập điểm trung bình tích lũy ( hệ 10 )'
           />
           <ProFormText
             width='md'
             rules={[{ required: true, message: 'Vui lòng chọn đầy đủ thông tin !' }]}
-            name='scoreAccumulated4'
+            name='pointAcc4'
             label='Điểm trung bình tích lũy ( hệ 4 )'
             placeholder='Nhập điểm trung bình tích lũy ( hệ 4 )'
           />

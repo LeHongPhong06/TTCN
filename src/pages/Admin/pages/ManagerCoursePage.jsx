@@ -1,9 +1,11 @@
 import { DeleteOutlined, EditOutlined, PlusCircleOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Button, Input, Popconfirm, Space, Table, Tooltip, Typography, notification } from 'antd';
+import { Button, Input, Popconfirm, Space, Table, Tooltip, Typography } from 'antd';
 import React, { useState } from 'react';
 import { useDebounce } from 'use-debounce';
 import { adminCourseApi } from '../../../API/admin/adminCourseApi';
+import { ButtonCustom } from '../../../components/Button';
+import { notificationError, notificationSuccess } from '../../../components/Notification';
 import { ModalFormCourse } from '../components/Modal';
 
 function ManagerCoursePage(props) {
@@ -22,30 +24,24 @@ function ManagerCoursePage(props) {
     cacheTime: 5 * 60 * 5000,
     keepPreviousData: true,
     queryKey: ['courseList', pageCurrent, pageSize, courseId],
-    queryFn: () => adminCourseApi.getAllCourse({ id: courseId, page: pageCurrent, size: pageSize }),
+    queryFn: async () => await adminCourseApi.getAllCourse({ id: courseId, page: pageCurrent, size: pageSize }),
   });
 
   // Handle Confirm Delete Course
   const deleteCourse = useMutation({
     mutationKey: ['deleteCourse'],
-    mutationFn: (id) => adminCourseApi.deleteCourse(id),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({
-        queryKey: ['courseList', pageCurrent, pageSize, courseId],
-        exact: true,
-      });
-      notification.success({
-        message: 'Thành công',
-        description: data?.data?.data,
-        duration: 2,
-      });
+    mutationFn: async (id) => await adminCourseApi.deleteCourse(id),
+    onSuccess: (res) => {
+      if (res && res.success === true) {
+        queryClient.invalidateQueries({
+          queryKey: ['courseList', pageCurrent, pageSize, courseId],
+          exact: true,
+        });
+        notificationSuccess(data?.data?.data);
+      }
     },
     onError: (error) => {
-      notification.success({
-        message: 'Thành công',
-        description: error?.data?.data,
-        duration: 2,
-      });
+      notificationError(error?.data?.data);
     },
   });
   const handleConfirmDeleteCourse = (id) => {
@@ -69,29 +65,32 @@ function ManagerCoursePage(props) {
       title: 'Tùy chọn',
       align: 'center',
       render: (e, record, index) => (
-        <Space size={16} key={index}>
-          <Tooltip title='Chỉnh sửa'>
+        <Button.Group key={index}>
+          <ButtonCustom
+            title={'Chỉnh sửa'}
+            icon={<EditOutlined />}
+            handleClick={() => {
+              setDataCourse(record);
+              setOpenModalFormCourse(true);
+            }}
+          />
+          <Popconfirm
+            title={`Bạn có chắc chắn muốn xóa ${record.name} ?`}
+            icon={<DeleteOutlined />}
+            okText='Xóa'
+            okType='danger'
+            onConfirm={() => handleConfirmDeleteCourse(record.id)}
+          >
             <Button
               className='flex justify-center items-center text-md shadow-md'
-              icon={<EditOutlined />}
-              onClick={() => {
-                setDataCourse(record);
-                setOpenModalFormCourse(true);
-              }}
-            ></Button>
-          </Tooltip>
-          <Tooltip title='Xóa'>
-            <Popconfirm
-              title={`Bạn có chắc chắn muốn xóa ${record.name} ?`}
+              danger
+              type='primary'
               icon={<DeleteOutlined />}
-              okText='Xóa'
-              okType='danger'
-              onConfirm={() => handleConfirmDeleteCourse(record.id)}
             >
-              <Button className='flex justify-center items-center text-md shadow-md' icon={<DeleteOutlined />}></Button>
-            </Popconfirm>
-          </Tooltip>
-        </Space>
+              Xóa
+            </Button>
+          </Popconfirm>
+        </Button.Group>
       ),
     },
   ];

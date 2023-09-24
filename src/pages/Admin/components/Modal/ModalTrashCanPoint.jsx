@@ -56,25 +56,31 @@ export const ModalTrashCanPoint = ({ open, close }) => {
   const columns = [
     {
       title: 'Mã sinh viên',
-      dataIndex: ['point', 'studentId'],
+      dataIndex: ['point', 'student', 'id'],
       align: 'center',
       key: 'studentId',
     },
     {
       title: 'Họ Đệm',
-      dataIndex: ['point', 'surname'],
+      dataIndex: ['point', 'student', 'surname'],
       align: 'center',
       key: 'surname',
     },
     {
       title: 'Tên',
-      dataIndex: ['point', 'lastName'],
+      dataIndex: ['point', 'student', 'lastName'],
       align: 'center',
       key: 'lastName',
     },
     {
+      title: 'Lớp',
+      dataIndex: ['point', 'student', 'aclass', 'id'],
+      align: 'center',
+      key: 'class',
+    },
+    {
       title: 'Mã học kì',
-      dataIndex: ['point', 'termId'],
+      dataIndex: ['point', 'term', 'id'],
       align: 'center',
       key: 'termId',
     },
@@ -83,14 +89,14 @@ export const ModalTrashCanPoint = ({ open, close }) => {
       dataIndex: 'time',
       align: 'center',
       key: 'time',
-      width: '20%',
+      width: '15%',
     },
     {
       title: 'Người xóa',
-      dataIndex: 'byWhom',
+      dataIndex: ['deletedBy', 'name'],
       align: 'center',
       key: 'byWhom',
-      width: '20%',
+      width: '15%',
     },
     {
       align: 'center',

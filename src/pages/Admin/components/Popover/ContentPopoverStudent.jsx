@@ -26,7 +26,7 @@ export function ContentPopoverStudent() {
   const handleReset = () => {
     form.setFieldsValue({
       majorId: null,
-      courseId: '',
+      courseId: null,
       classId: '',
     });
     dispatch(setFilter({}));
@@ -34,48 +34,17 @@ export function ContentPopoverStudent() {
   };
 
   return (
-    <div className='w-[400px]'>
+    <div className='w-[300px]'>
       <Form
         form={form}
         layout='vertical'
         style={{
-          width: 400,
+          width: 300,
         }}
         onFinish={onFinish}
       >
         <Row gutter={[24]}>
-          <Col span={12}>
-            <Form.Item label='Ngành' name='majorId'>
-              <Select placeholder='Chọn ngành'>
-                {data?.data?.items &&
-                  data.data.items.map((e) => (
-                    <Select.Option key={e.id} value={e.id}>
-                      {e.name}
-                    </Select.Option>
-                  ))}
-              </Select>
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
-              label='Khóa'
-              name='courseId'
-              rules={[
-                {
-                  min: 1,
-                  max: 10,
-                  message: 'Mã khóa quá lớn',
-                },
-                {
-                  pattern: '^[0-9]+$',
-                  message: 'Không đúng định dạng',
-                },
-              ]}
-            >
-              <Input placeholder='VD: 65' />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
+          <Col span={16}>
             <Form.Item
               label='Lớp'
               name='classId'
@@ -92,6 +61,32 @@ export function ContentPopoverStudent() {
               ]}
             >
               <Input placeholder='VD: K65CNTTA' />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item
+              label='Khóa'
+              name='courseId'
+              rules={[
+                {
+                  min: 1,
+                  message: 'Khóa không được nhỏ hơn 1',
+                },
+              ]}
+            >
+              <Input placeholder='VD: 65' />
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item label='Ngành' name='majorId'>
+              <Select placeholder='Chọn ngành'>
+                {data?.data?.items &&
+                  data.data.items.map((e) => (
+                    <Select.Option key={e.id} value={e.id}>
+                      {e.name}
+                    </Select.Option>
+                  ))}
+              </Select>
             </Form.Item>
           </Col>
           <Col span={24} className='flex justify-end'>

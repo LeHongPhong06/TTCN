@@ -8,11 +8,12 @@ import ManagerAuthorizationPage from './pages/Admin/pages/ManagerAuthorizationPa
 import ManagerClassPage from './pages/Admin/pages/ManagerClassPage';
 import ManagerClassficationPage from './pages/Admin/pages/ManagerClassficationPage';
 import ManagerCoursePage from './pages/Admin/pages/ManagerCoursePage';
-import ManagerDisplayPage from './pages/Admin/pages/ManagerDisplayPage';
 import ManagerHomePage from './pages/Admin/pages/ManagerHomePage';
 import ManagerMajorPage from './pages/Admin/pages/ManagerMajorPage';
 import ManagerMajorficationPage from './pages/Admin/pages/ManagerMajorficationPage';
+import ManagerNewsPage from './pages/Admin/pages/ManagerNewsPage';
 import ManagerSemestersPage from './pages/Admin/pages/ManagerSemestersPage';
+import ManagerStatisticalPage from './pages/Admin/pages/ManagerStatisticalPage';
 import ManagerStatusPage from './pages/Admin/pages/ManagerStatusPage';
 import ManagerStudentPage from './pages/Admin/pages/ManagerStudentPage';
 import ManagerTermPointPage from './pages/Admin/pages/ManagerTermPointPage';
@@ -77,7 +78,7 @@ const router = createBrowserRouter([
 
   // Admin routes
   {
-    path: '/:roleId/manage',
+    path: '/manage',
     element: <DefaultLayoutAdmin />,
     errorElement: <ErrorPage />,
     children: [
@@ -137,13 +138,18 @@ const router = createBrowserRouter([
         errorElement: <ErrorPage />,
       },
       {
-        path: 'display',
-        element: <ManagerDisplayPage />,
+        path: 'news',
+        element: <ManagerNewsPage />,
         errorElement: <ErrorPage />,
       },
       {
         path: 'infomation',
         element: <AdminChangeInfomation />,
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: 'statistical',
+        element: <ManagerStatisticalPage />,
         errorElement: <ErrorPage />,
       },
     ],

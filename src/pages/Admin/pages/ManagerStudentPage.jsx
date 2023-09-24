@@ -31,7 +31,7 @@ import {
 } from '../../../redux/Student/studentSilce';
 import { addStudent } from '../../../redux/Trash/studentTrashSlice';
 import { CollapsePointStudent } from '../components/Collapse';
-import { ModalFormStudentInfo, ModalTrashCanStudent } from '../components/Modal';
+import { ModalFormStudentInfo, ModalShowError, ModalTrashCanStudent } from '../components/Modal';
 import { ContentPopoverStudent } from '../components/Popover';
 
 function ManagerStudentPage() {
@@ -49,6 +49,7 @@ function ManagerStudentPage() {
   const [openDrawerInfo, setOpenDrawerInfo] = useState(false);
   const [loadingBtnImport, setLoadingBtnImport] = useState(false);
   const [openModalFormUser, setOpenModalFormStudent] = useState(false);
+  const [openModalError, setOpenModalError] = useState(false);
   const [openModalTrush, setOpenModalTrush] = useState(false);
   const [dataStudent, setDataStudent] = useState({});
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -61,17 +62,13 @@ function ManagerStudentPage() {
     cacheTime: 10 * 60 * 1000,
     keepPreviousData: true,
     queryKey: ['studentList', pageSize, pageCurrent, studentId, valueFilter],
-    queryFn: async () => {
-      try {
-        const res = await adminStudentApi.getAllStudent({
-          studentId: studentId,
-          page: pageCurrent,
-          size: pageSize,
-          filter: valueFilter,
-        });
-        if (res) return res;
-      } catch (error) {}
-    },
+    queryFn: async () =>
+      await adminStudentApi.getAllStudent({
+        studentId: studentId,
+        page: pageCurrent,
+        size: pageSize,
+        filter: valueFilter,
+      }),
     onSuccess: (data) => {
       if (data) {
         dispatch(setTotal(data.data.total));
@@ -82,12 +79,7 @@ function ManagerStudentPage() {
 
   const hasSelected = selectedRowKeys.length > 0;
   const deleteStudentList = useMutation({
-    mutationFn: async () => {
-      try {
-        const res = await adminStudentApi.deleteListStudent({ ids: selectedRowKeys });
-        if (res) return res;
-      } catch (error) {}
-    },
+    mutationFn: async () => adminStudentApi.deleteListStudent({ ids: selectedRowKeys }),
     onSuccess: (data) => {
       if (data) {
       }
@@ -99,14 +91,7 @@ function ManagerStudentPage() {
     },
   });
   const deleteStudents = useMutation({
-    mutationFn: async (id) => {
-      if (id) {
-        try {
-          const res = await adminStudentApi.deleteStudent(id);
-          if (res) return res;
-        } catch (error) {}
-      }
-    },
+    mutationFn: async (id) => await adminStudentApi.deleteStudent(id),
     onSuccess: (data) => {
       if (data && data.success === true) {
         notificationSuccess('Xóa thành công');
@@ -122,12 +107,7 @@ function ManagerStudentPage() {
   // Export File Data List Student
   const exportStudentFormExcel = useMutation({
     mutationKey: ['exportFileDataStudent'],
-    mutationFn: async () => {
-      try {
-        const res = await adminStudentApi.exportStudentList({ studentId: studentId, filter: valueFilter });
-        if (res) return res;
-      } catch (error) {}
-    },
+    mutationFn: async () => adminStudentApi.exportStudentList({ studentId: studentId, filter: valueFilter }),
     onSuccess: (data) => {
       if (data && data.success === true) {
         window.open(data.data);
@@ -190,7 +170,9 @@ function ManagerStudentPage() {
       if (response?.success === true) {
         notificationSuccess(`Upload ${info.file.name} thành công`);
       } else if (response?.success === false) {
-        notificationError(response?.error?.message);
+        notificationError(`Upload ${info.file.name} thất bại. Hãy làm theo đúng form excel được tải về máy của bạn`);
+        setOpenModalError(true);
+        window.open(response?.error?.message);
       }
       if (status === 'done') {
         setLoadingBtnImport(false);
@@ -215,6 +197,11 @@ function ManagerStudentPage() {
 
   const columns = [
     {
+      title: 'Mã sinh viên',
+      dataIndex: 'id',
+      align: 'center',
+    },
+    {
       title: 'Họ đệm',
       align: 'center',
       dataIndex: 'surname',
@@ -225,19 +212,13 @@ function ManagerStudentPage() {
       dataIndex: 'lastName',
     },
     {
-      title: 'Mã sinh viên',
-      dataIndex: 'id',
-      align: 'center',
-    },
-    {
       title: 'Khóa',
       dataIndex: ['course', 'name'],
       align: 'center',
     },
     {
       title: 'Lớp',
-      dataIndex: ['classes', 'name'],
-      align: 'center',
+      dataIndex: ['aclass', 'name'],
       width: '15%',
     },
     {
@@ -391,6 +372,7 @@ function ManagerStudentPage() {
         disabled={disabled}
       />
       <ModalTrashCanStudent open={openModalTrush} close={() => setOpenModalTrush(false)} />
+      <ModalShowError open={openModalError} setOpen={(open) => setOpenModalError(open)} />
       <Drawer size='large' open={openDrawerInfo} onClose={handleClickBtnCloseDrawerDetailStudent} placement='right'>
         <CollapsePointStudent dataStudent={dataStudent} />
       </Drawer>

@@ -63,12 +63,7 @@ export function Navigate() {
               {isLogin && <PopoverAvatarUser />}
               <PopoverSubMenu />
               {!isLogin && (
-                <ButtonCustom
-                  title='Đăng nhập'
-                  type='primary'
-                  size='large'
-                  handleClick={handleClickLogin}
-                ></ButtonCustom>
+                <ButtonCustom title='Đăng nhập' type='primary' size='large' handleClick={handleClickLogin} />
               )}
             </div>
           </div>

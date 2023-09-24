@@ -1,9 +1,10 @@
 import { DeleteOutlined, PlusCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Button, Input, Popconfirm, Space, Table, Tooltip, Typography, notification } from 'antd';
+import { Button, Input, Popconfirm, Space, Table, Tooltip, Typography } from 'antd';
 import React, { useState } from 'react';
 import { useDebounce } from 'use-debounce';
 import { adminSemesterApi } from '../../../API/admin/adminSemesterApi';
+import { notificationError, notificationSuccess } from '../../../components/Notification';
 import { ModalFormTerm } from '../components/Modal';
 
 function ManagerSemestersPage(props) {
@@ -22,29 +23,22 @@ function ManagerSemestersPage(props) {
     cacheTime: 5 * 60 * 5000,
     keepPreviousData: true,
     queryKey: ['semesterList', termId, pageCurrent, pageSize],
-    queryFn: () => adminSemesterApi.getAllSemester({ id: termId, page: pageCurrent, size: pageSize }),
+    queryFn: async () => await adminSemesterApi.getAllSemester({ id: termId, page: pageCurrent, size: pageSize }),
   });
   if (error) {
-    notification.error({
-      message: 'Có lỗi',
-      description: error?.data?.data,
-    });
+    notificationError(error?.data?.data);
   }
 
   // hande  confirm delete term
   const confirmDeleteSemester = useMutation({
     mutationKey: ['deleteSemester'],
-    mutationFn: (id) => adminSemesterApi.deleteSemester(id),
+    mutationFn: async (id) => await adminSemesterApi.deleteSemester(id),
     onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: ['semesterList', termId, pageCurrent, pageSize],
         exact: true,
       });
-      notification.success({
-        message: 'Thành công',
-        description: data?.data?.data,
-        duration: 2,
-      });
+      notificationSuccess(data?.data?.data);
     },
   });
   const handleConfirmDeleteSemesters = (id) => {
@@ -72,22 +66,24 @@ function ManagerSemestersPage(props) {
     },
     {
       title: 'Hành động',
-      align: 'center',
       render: (e, record, idx) => (
-        <Space key={idx}>
-          <Tooltip title='Chỉnh sửa'></Tooltip>
-          <Tooltip title='Xóa'>
-            <Popconfirm
-              title='Bạn có chắc chắn muốn xóa ?'
-              icon={<DeleteOutlined />}
-              okText='Xóa'
-              okType='danger'
-              onConfirm={() => handleConfirmDeleteSemesters(record.id)}
-            >
-              <Button className='flex justify-center items-center text-md shadow-md' icon={<DeleteOutlined />}></Button>
-            </Popconfirm>
-          </Tooltip>
-        </Space>
+        <Popconfirm
+          key={idx}
+          title='Bạn có chắc chắn muốn xóa ?'
+          icon={<DeleteOutlined />}
+          okText='Xóa'
+          okType='danger'
+          onConfirm={() => handleConfirmDeleteSemesters(record.id)}
+        >
+          <Button
+            className='flex justify-center items-center text-md shadow-md'
+            danger
+            type='primary'
+            icon={<DeleteOutlined />}
+          >
+            Xóa
+          </Button>
+        </Popconfirm>
       ),
     },
   ];

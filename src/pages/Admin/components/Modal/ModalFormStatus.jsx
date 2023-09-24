@@ -17,14 +17,7 @@ export function ModalFormStatus({ open, onChangeClickOpen, dataStatus }) {
   // handle create class
   const handleCreateStatus = useMutation({
     mutationKey: ['createStatus'],
-    mutationFn: async (values) => {
-      if (values) {
-        try {
-          const res = await adminStatusApi.createStatus(values);
-          if (res) return res;
-        } catch (error) {}
-      }
-    },
+    mutationFn: async (values) => adminStatusApi.createStatus(values),
     onSuccess: (res) => {
       if (res && res.success === true) {
         queryClient.invalidateQueries({
@@ -42,14 +35,7 @@ export function ModalFormStatus({ open, onChangeClickOpen, dataStatus }) {
   // handle update class
   const handleUpdateStatus = useMutation({
     mutationKey: ['updateStatus'],
-    mutationFn: async (id, values) => {
-      if (values) {
-        try {
-          const res = await adminStatusApi.createStatus(id, values);
-          if (res) return res;
-        } catch (error) {}
-      }
-    },
+    mutationFn: async (id, values) => adminStatusApi.createStatus(id, values),
     onSuccess: (res) => {
       if (res && res.success === true) {
         queryClient.invalidateQueries({

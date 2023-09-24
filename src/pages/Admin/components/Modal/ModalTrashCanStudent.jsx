@@ -19,12 +19,7 @@ export const ModalTrashCanStudent = ({ open, close }) => {
   const getStudentListTrash = useQuery({
     cacheTime: 5 * 60 * 1000,
     queryKey: ['studentListTrash', pageCurrent, pageSize],
-    queryFn: async () => {
-      try {
-        const res = await trashStudentApi.getTrashAll({ page: pageCurrent, size: pageSize });
-        if (res) return res;
-      } catch (error) {}
-    },
+    queryFn: async () => trashStudentApi.getTrashAll({ page: pageCurrent, size: pageSize }),
     onSuccess: (data) => {
       if (data && data.success === true) {
         dispatch(getStudentList(data.data.items));
@@ -33,12 +28,7 @@ export const ModalTrashCanStudent = ({ open, close }) => {
   });
   const handleRestoreStudent = useMutation({
     mutationKey: ['restoreStudent'],
-    mutationFn: async (id) => {
-      try {
-        const res = await trashStudentApi.restoreStudent(id);
-        if (res) return res;
-      } catch (error) {}
-    },
+    mutationFn: async (id) => trashStudentApi.restoreStudent(id),
     onSuccess: (data) => {
       if (data && data.success === true) {
         dispatch(restoreStudent(data.data));
@@ -76,18 +66,24 @@ export const ModalTrashCanStudent = ({ open, close }) => {
       key: 'name',
     },
     {
+      title: 'Lớp',
+      dataIndex: ['student', 'aclass', 'id'],
+      align: 'center',
+      key: 'class',
+    },
+    {
       title: 'Thời gian xóa',
       dataIndex: 'time',
       align: 'center',
       key: 'time',
-      width: '20%',
+      width: '15%',
     },
     {
       title: 'Người xóa',
-      dataIndex: 'byWhom',
+      dataIndex: ['deletedBy', 'name'],
       align: 'center',
       key: 'byWhom',
-      width: '25%',
+      width: '20%',
     },
     {
       align: 'center',

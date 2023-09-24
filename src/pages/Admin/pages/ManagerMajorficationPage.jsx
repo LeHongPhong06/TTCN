@@ -41,11 +41,13 @@ function ManagerMajorficationPage(props) {
     mutationFn: async (courseId, termId) =>
       await adminMajorfication.deleteMajor({ courseId: courseId, termId: termId }),
     onSuccess: (res) => {
-      queryClient.invalidateQueries({
-        queryKey: ['majortificationList', courseId, termId, pageCurrent, pageSize],
-        exact: true,
-      });
-      notificationSuccess(res?.data?.message);
+      if (res && res.success === true) {
+        queryClient.invalidateQueries({
+          queryKey: ['majortificationList', courseId, termId, pageCurrent, pageSize],
+          exact: true,
+        });
+        notificationSuccess(res?.data?.message);
+      }
     },
     onError: (err) => {
       notificationError(err?.data?.message);
@@ -107,18 +109,16 @@ function ManagerMajorficationPage(props) {
       title: 'Tùy chọn',
       align: 'center',
       render: (e, record, index) => (
-        <Space size={10} key={index}>
-          <Tooltip title='Xóa'>
-            <Popconfirm
-              title='Bạn có chắc chắn muốn xóa ?'
-              icon={<DeleteOutlined />}
-              okText='Xóa'
-              okType='danger'
-              onConfirm={() => handleConfirmDeleteData(record.courseId, record.termId)}
-            >
-              <ButtonCustom icon={<DeleteOutlined />} />
-            </Popconfirm>
-          </Tooltip>
+        <Button.Group key={index}>
+          <Popconfirm
+            title='Bạn có chắc chắn muốn xóa ?'
+            icon={<DeleteOutlined />}
+            okText='Xóa'
+            okType='danger'
+            onConfirm={() => handleConfirmDeleteData(record.courseId, record.termId)}
+          >
+            <ButtonCustom icon={<DeleteOutlined />} />
+          </Popconfirm>
           <Tooltip title='Xem dưới dạng biểu đồ'>
             <Button
               onClick={() => {
@@ -129,7 +129,7 @@ function ManagerMajorficationPage(props) {
               icon={<PieChartOutlined />}
             ></Button>
           </Tooltip>
-        </Space>
+        </Button.Group>
       ),
     },
   ];

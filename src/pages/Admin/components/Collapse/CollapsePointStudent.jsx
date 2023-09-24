@@ -1,6 +1,6 @@
 import { Collapse } from 'antd';
 import React from 'react';
-import { ColumnDataMedCore10, ColumnDataMedCore4, ColumnPointTraining, ProgressCredits } from '../Chart';
+import { ColumnDataMedCore10, ColumnPointTraining, ChartLiquid } from '../Chart';
 import DescriptionInfoStudent from '../Description/DescriptionInfoStudent';
 
 export function CollapsePointStudent({ dataStudent }) {
@@ -16,16 +16,13 @@ export function CollapsePointStudent({ dataStudent }) {
             <Panel header='Hệ 10' key='3'>
               <ColumnDataMedCore10 dataStudent={dataStudent} />
             </Panel>
-            <Panel header='Hệ 4' key='4'>
-              <ColumnDataMedCore4 dataStudent={dataStudent} />
-            </Panel>
           </Collapse>
         </Panel>
         <Panel header='Điểm rèn luyện' key='5'>
           <ColumnPointTraining dataStudent={dataStudent} />
         </Panel>
         <Panel header='Quá trình học tập' key='6'>
-          <ProgressCredits dataStudent={dataStudent} />
+          <ChartLiquid dataStudent={dataStudent} />
         </Panel>
       </Collapse>
     </div>

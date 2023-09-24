@@ -2,6 +2,7 @@ import { ModalForm, ProFormCaptcha, ProFormText } from '@ant-design/pro-componen
 import { ButtonCustom } from '../../../../components/Button';
 import { notificationSuccess } from '../../../../components/Notification';
 export function ModalEditPhoneNumber({ open, onOpenChange }) {
+  const dataStudentLocal = JSON.parse(sessionStorage.getItem('info_student'));
   const onFinish = (values) => {
     console.log(values);
   };
@@ -23,16 +24,16 @@ export function ModalEditPhoneNumber({ open, onOpenChange }) {
           submitter={{
             render: (props) => [
               <div className='w-full flex justify-between items-center'>
-                <p className='opacity-75 italic'>Số điện thoại hiện tại: 0987654321</p>
+                <p className='opacity-75 italic'>{`Số điện thoại hiện tại: ${dataStudentLocal?.phoneNumber}`}</p>
                 <div className='flex items-center'>
                   <ButtonCustom type='primary' title={'Cập nhật'} handleClick={() => handleClickSubmit(props)} />
-                  <ButtonCustom title={'Hủy'} handleClick={() => handleClickCancel(props)} />
+                  <ButtonCustom title={'Hủy'} handleClick={handleClickCancel} />
                 </div>
               </div>,
             ],
           }}
           modalProps={{
-            destroyOnClose: true,
+            destroyOnClose: false,
             maskClosable: false,
           }}
         >

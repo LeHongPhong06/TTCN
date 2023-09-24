@@ -14,12 +14,7 @@ import { ButtonCustom } from '../../../../components/Button';
 export function ModalFormStudentStatus({ open, dataStudent, onChangeClickOpen }) {
   const { data } = useQuery({
     queryKey: ['statusList'],
-    queryFn: async () => {
-      try {
-        const res = await adminStatusApi.getAllStatus({ page: 1, size: 100 });
-        if (res) return res;
-      } catch (error) {}
-    },
+    queryFn: async () => adminStatusApi.getAllStatus({ page: 1, size: 100 }),
   });
   const optionSelected = data?.data?.items.map((item) => {
     return { label: item.name, value: item.id };

@@ -23,25 +23,6 @@ export function ModalFormTerm({ openForm, onChangeClickOpen, dataTerm, onSuccess
       }
     });
   };
-  // const handleUpdateTerm = (id, values) => {
-  //   updateSemester(id, values).then((res) => {
-  //     if (res.data?.success === true) {
-  //       onSuccess();
-  //       notification.success({
-  //         message: 'Thành công',
-  //         description: 'Sửa thông tin học kỳ thành công',
-  //         duration: 2,
-  //       });
-  //     } else if (res.data?.error?.code === 2) {
-  //       // eslint-disable-next-line no-lone-blocks
-  //       {
-  //         res.data?.error?.errorDetailList.forEach((e) => message.error(e.message));
-  //       }
-  //     } else if (res.data?.error?.code === 500) {
-  //       message.error(res.data?.error?.message);
-  //     }
-  //   });
-  // };
   return (
     <div>
       <ModalForm
